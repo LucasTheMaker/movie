@@ -4,117 +4,86 @@
     <meta charset="UTF-8">
     <title>LucasFlix - Spider-Man (2002)</title>
     <style>
-        /* Netflix-style dark theme */
-        body { 
-            background-color: #000; 
-            color: #e5e5e5; 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-            margin: 0; 
+        body {
+            background-color: #000;
+            color: #e5e5e5;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
             padding: 0;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
             height: 100vh;
+            overflow: hidden;
         }
-
-        /* Use your provided image as a full background */
         .background-image {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* This is the new image you uploaded */
-            background-image: url('https://w.wallhaven.cc/full/8o/wallhaven-8owmxj.jpg'); 
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image: linear-gradient(77deg,rgba(0,0,0,.9) 0,rgba(0,0,0,0) 85%), 
+                              url('https://w.wallhaven.cc/full/8o/wallhaven-8owmxj.jpg');
             background-size: cover;
             background-position: center;
             z-index: -1;
-            /* Black gradient so the text stays readable on the left */
-            background-image: linear-gradient(77deg,rgba(0,0,0,.9) 0,rgba(0,0,0,0) 85%);
         }
-
-        /* Navigation Bar */
         .navbar {
-            height: 68px;
-            display: flex;
-            align-items: center;
-            padding: 0 4%;
             position: fixed;
-            width: 100%;
             top: 0;
+            width: 100%;
+            padding: 20px 4%;
             z-index: 10;
         }
-        .logo { color: #e50914; font-weight: bold; font-size: 25px; margin-right: 25px; text-decoration: none;}
-
-        /* Movie Info Section */
+        .logo {
+            color: #e50914;
+            font-weight: bold;
+            font-size: 25px;
+            text-decoration: none;
+        }
         .info-container {
-            max-width: 550px;
-            text-align: left;
+            max-width: 600px;
             padding: 0 4%;
             z-index: 2;
         }
-        
-        .series-tag { color: #e50914; font-weight: bold; font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase;}
-        
-        h1 { font-size: 4.5rem; margin: 0 0 20px 0; font-weight: 900; line-height: 1; }
-        
-        .meta-data { margin-bottom: 25px; font-weight: bold; color: #46d369; font-size: 1.1rem;} 
-        
-        .description { font-size: 1.2rem; line-height: 1.5; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,.45); }
-
-        /* Ratings */
-        .ratings { margin-top: 30px; display: flex; gap: 15px; }
-        .score { background: rgba(51, 51, 51, 0.8); padding: 8px 12px; border-radius: 4px; font-size: 14px; }
-        .tomato { color: #ff3208; }
-        .popcorn { color: #ffca28; }
-
-        /* Play Button */
+        h1 {
+            font-size: 4rem;
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+        .meta {
+            color: #46d369;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .description {
+            font-size: 1.2rem;
+            line-height: 1.4;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
         .play-btn {
             background-color: white;
             color: black;
             border: none;
-            padding: 15px 45px;
-            font-size: 1.3rem;
+            padding: 15px 40px;
+            font-size: 1.2rem;
             font-weight: bold;
             border-radius: 4px;
-            margin-top: 40px;
+            margin-top: 30px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
-        .play-btn:hover { background-color: rgba(255,255,255,0.75); }
-        
-        .back-link { display: block; color: #aaa; margin-top: 25px; text-decoration: none; font-size: 1rem;}
-        .back-link:hover { color: white; }
+        .play-btn:hover { background-color: rgba(255,255,255,0.8); }
     </style>
 </head>
 <body>
-    
     <div class="background-image"></div>
-
     <div class="navbar">
         <a href="index.html" class="logo">LUCASFLIX</a>
     </div>
-
     <div class="info-container">
-        <div class="series-tag">A Sony Pictures Movie</div>
         <h1>SPIDER-MAN</h1>
-        
-        <div class="meta-data">98% Match &nbsp; 2002 &nbsp; PG-13 &nbsp; 2h 1m</div>
-        
+        <div class="meta">98% Match &nbsp; 2002 &nbsp; PG-13</div>
         <div class="description">
-            "Spider-Man" centers on student Peter Parker (Tobey Maguire) who, after being bitten by a genetically-altered spider, gains superhuman strength and the spider-like ability to cling to any surface. He vows to use his abilities to fight crime, coming to understand the words of his beloved Uncle Ben: "With great power comes great responsibility."
+            After being bitten by a genetically-altered spider, Peter Parker gains superhuman strength and the ability to cling to any surface. He vows to use his abilities to fight crime.
         </div>
-
-        <div class="ratings">
-            <span class="score tomato">🍅 Rotten Tomatoes: 90%</span>
-            <span class="score popcorn">🍿 Audience: 67%</span>
-        </div>
-
-        <button class="play-btn">▶ Play</button>
-        <a href="index.html" class="back-link">← Back to Browse</a>
+        <button class="play-btn" onclick="alert('Starting Movie...')">▶ Play</button>
     </div>
-
 </body>
 </html>
