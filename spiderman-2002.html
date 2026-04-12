@@ -4,86 +4,91 @@
     <meta charset="UTF-8">
     <title>LucasFlix - Spider-Man (2002)</title>
     <style>
-        body {
-            background-color: #000;
-            color: #e5e5e5;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            margin: 0;
+        body { 
+            background-color: #000; 
+            color: #e5e5e5; 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            margin: 0; 
             padding: 0;
             display: flex;
             align-items: center;
+            justify-content: flex-start;
             height: 100vh;
             overflow: hidden;
         }
+
+        /* The background uses the city-view image you provided */
         .background-image {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-image: linear-gradient(77deg,rgba(0,0,0,.9) 0,rgba(0,0,0,0) 85%), 
-                              url('https://w.wallhaven.cc/full/8o/wallhaven-8owmxj.jpg');
-            background-size: cover;
-            background-position: center;
-            z-index: -1;
-        }
-        .navbar {
-            position: fixed;
             top: 0;
+            left: 0;
             width: 100%;
-            padding: 20px 4%;
+            height: 100%;
+            background-image: url('https://image.tmdb.org/t/p/original/a4wW508oN4b5A6lS897mU86E0Yq.jpg'); 
+            background-size: cover;
+            background-position: center top;
+            z-index: -1;
+            /* This gradient makes sure the text is readable over the bright city sky */
+            background-image: linear-gradient(77deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%);
+        }
+
+        .navbar {
+            height: 68px;
+            display: flex;
+            align-items: center;
+            padding: 0 4%;
+            position: fixed;
+            width: 100%;
+            top: 0;
             z-index: 10;
         }
-        .logo {
-            color: #e50914;
-            font-weight: bold;
-            font-size: 25px;
-            text-decoration: none;
-        }
+        .logo { color: #e50914; font-weight: bold; font-size: 25px; text-decoration: none; }
+
         .info-container {
             max-width: 600px;
-            padding: 0 4%;
+            text-align: left;
+            padding: 0 6%;
             z-index: 2;
         }
-        h1 {
-            font-size: 4rem;
-            margin: 0 0 10px 0;
-            color: #fff;
-        }
-        .meta {
-            color: #46d369;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .description {
-            font-size: 1.2rem;
-            line-height: 1.4;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
+        
+        .series-tag { color: #e50914; font-weight: bold; font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 10px; text-transform: uppercase; }
+        
+        h1 { font-size: 5rem; margin: 0 0 20px 0; font-weight: 900; line-height: 0.9; }
+        
+        .meta-data { margin-bottom: 25px; font-weight: bold; color: #46d369; font-size: 1.1rem; }
+        
+        .description { font-size: 1.3rem; line-height: 1.4; color: #fff; text-shadow: 2px 2px 8px rgba(0,0,0,0.8); }
+
+        .ratings { margin-top: 30px; display: flex; gap: 15px; }
+        .score { background: rgba(30, 30, 30, 0.9); padding: 8px 15px; border-radius: 4px; font-size: 14px; border: 1px solid #444; }
+        .tomato { color: #ff3208; }
+        .popcorn { color: #ffca28; }
+
         .play-btn {
             background-color: white;
             color: black;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
+            padding: 16px 50px;
+            font-size: 1.4rem;
             font-weight: bold;
             border-radius: 4px;
-            margin-top: 30px;
+            margin-top: 40px;
             cursor: pointer;
+            transition: 0.2s;
         }
-        .play-btn:hover { background-color: rgba(255,255,255,0.8); }
+        .play-btn:hover { background-color: rgba(255,255,255,0.8); transform: scale(1.05); }
+        
+        .back-link { display: block; color: #ccc; margin-top: 30px; text-decoration: none; font-size: 1rem; }
+        .back-link:hover { color: white; text-decoration: underline; }
     </style>
 </head>
 <body>
+    
     <div class="background-image"></div>
+
     <div class="navbar">
         <a href="index.html" class="logo">LUCASFLIX</a>
     </div>
+
     <div class="info-container">
-        <h1>SPIDER-MAN</h1>
-        <div class="meta">98% Match &nbsp; 2002 &nbsp; PG-13</div>
-        <div class="description">
-            After being bitten by a genetically-altered spider, Peter Parker gains superhuman strength and the ability to cling to any surface. He vows to use his abilities to fight crime.
-        </div>
-        <button class="play-btn" onclick="alert('Starting Movie...')">▶ Play</button>
-    </div>
-</body>
-</html>
+        <div class="series-tag">A
