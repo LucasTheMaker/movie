@@ -3,87 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goat Films - Home</title>
+    <title>Goat Films & Audio</title>
     <style>
-        :root { --bg: #000; --red: #e50914; --card-bg: #1a1a1a; }
-        body { background: var(--bg); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
+        :root { --red: #e50914; --accent: #fa243c; --bg: #000; --gray: #888; }
+        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 150px; overflow-x: hidden; }
 
-        /* Header */
-        .header { padding: 40px 20px 10px; display: flex; align-items: center; justify-content: space-between; }
+        /* Navigation Logic - Hides sections not in use */
+        .page { display: none; }
+        .active-page { display: block; }
+
+        /* Headers */
+        .header { padding: 40px 20px 10px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to bottom, #111, #000); }
         .logo-text { font-size: 26px; font-weight: bold; color: var(--red); letter-spacing: 1px; }
-        .icon-group { display: flex; gap: 20px; font-size: 20px; }
 
-        /* Pills */
-        .pills { display: flex; gap: 10px; padding: 10px 20px; overflow-x: auto; }
-        .pill { background: rgba(255,255,255,0.1); border: 1px solid #444; padding: 8px 18px; border-radius: 20px; font-size: 14px; white-space: nowrap; }
-
-        /* Rows */
-        .section-title { font-size: 18px; font-weight: bold; padding: 25px 20px 12px; text-transform: capitalize; }
-        .row { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; }
+        /* Movie Styles */
+        .section-title { font-size: 18px; font-weight: bold; padding: 25px 20px 12px; }
+        .row { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
         .row::-webkit-scrollbar { display: none; }
+        .card { min-width: 130px; height: 195px; border-radius: 6px; background-size: cover; background-position: center; border: 1px solid #222; }
 
-        /* Cards */
-        .card { 
-            min-width: 130px; height: 195px; border-radius: 6px; 
-            background-size: cover; background-position: center; 
-            position: relative; cursor: pointer; transition: 0.2s;
-            border: 1px solid #222;
-        }
-        .card:hover { transform: scale(1.05); border-color: #555; }
-        .badge { 
-            position: absolute; bottom: 0; width: 100%; background: var(--red); 
-            color: white; font-size: 10px; text-align: center; padding: 4px 0; 
-            border-radius: 0 0 6px 6px; font-weight: bold;
+        /* Music Styles */
+        .album-list { padding: 0 20px; }
+        .album-row { display: flex; gap: 15px; align-items: center; padding: 15px 0; border-bottom: 1px solid #111; cursor: pointer; }
+        .art-thumb { width: 70px; height: 70px; border-radius: 6px; background-size: cover; background-position: center; flex-shrink: 0; border: 1px solid #333; }
+        .info { flex-grow: 1; }
+        .features { font-size: 10px; color: var(--accent); font-weight: bold; }
+
+        /* Floating Player Bar */
+        .player-bar {
+            position: fixed; bottom: 85px; left: 10px; right: 10px;
+            height: 60px; background: rgba(25,25,25,0.98); backdrop-filter: blur(15px);
+            border-radius: 12px; display: flex; align-items: center; padding: 0 15px;
+            justify-content: space-between; border: 1px solid #444; z-index: 1000;
         }
 
         /* Bottom Nav */
-        .bottom-nav { 
-            position: fixed; bottom: 0; width: 100%; height: 70px;
-            background: rgba(0,0,0,0.95); display: flex; justify-content: space-around;
-            align-items: center; border-top: 1px solid #222; z-index: 100;
-        }
-        .nav-item { text-align: center; font-size: 10px; color: #777; cursor: pointer; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 1001; }
+        .nav-item { text-align: center; font-size: 10px; color: #666; cursor: pointer; }
         .nav-item.active { color: white; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo-text">GOAT FILMS</div>
-        <div class="icon-group"><span>📥</span> <span>🔍</span></div>
-    </div>
+    <audio id="audio-tcd" src="tcd.mp3"></audio>
+    <audio id="audio-lr" src="lr.mp3"></audio>
+    <audio id="audio-grad" src="graduation.mp3"></audio>
+    <audio id="audio-mbdtf" src="mbdtf.mp3"></audio>
+    <audio id="audio-tlop" src="pablo.mp3"></audio>
+    <audio id="audio-ye" src="ye.mp3"></audio>
+    <audio id="audio-vultures" src="vultures.mp3"></audio>
+    <audio id="audio-bully" src="bully.mp3"></audio>
 
-    <div class="pills">
-        <div class="pill">Shows</div>
-        <div class="pill">Movies</div>
-        <div class="pill">Categories ⌵</div>
-    </div>
-
-    <p class="section-title">Superheroes</p>
-    <div class="row">
-        <div class="card" onclick="window.location.href='spiderman-2002.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg');">
-            <div class="badge">Recently Added</div>
+    <div id="home-page" class="page active-page">
+        <div class="header">
+            <div class="logo-text">GOAT FILMS</div>
         </div>
-        <div class="card" style="background-image: url('images (7).jfif');"></div>
-        <div class="card" style="background-image: url('https://m.media-amazon.com/images/I/51X57o4KqHL._AC_UF894,1000_QL80_.jpg');"></div>
         
-        <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
-        <div class="card" style="background-image: url('images (6).jfif');"></div>
-        <div class="card" style="background-image: url('s-l1200.jpg');"></div>
+        <p class="section-title">Superheroes</p>
+        <div class="row">
+            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg');"></div>
+            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
+            <div class="card" style="background-image: url('https://m.media-amazon.com/images/I/51X57o4KqHL._AC_UF894,1000_QL80_.jpg');"></div>
+        </div>
+
+        <p class="section-title">From the Big Screen to Your Screen</p>
+        <div class="row">
+            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BNjM0NTc0NzItM2FlYS00YzEwLWE0YmUtNTA2ZWIzODc2OTgxXkEyXkFqcGdeQXVyNTgwNzIyNjM@._V1_.jpg');"></div>
+            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BNzA1Njg4NzYxOV5BMl5BanBnXkFtZTcwODk5NjU3Mg@@._V1_.jpg');"></div>
+        </div>
     </div>
 
-    <p class="section-title">From the Big Screen to Your Screen</p>
-    <div class="row">
-        <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BNjM0NTc0NzItM2FlYS00YzEwLWE0YmUtNTA2ZWIzODc2OTgxXkEyXkFqcGdeQXVyNTgwNzIyNjM@._V1_.jpg');"></div>
-        <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BNzA1Njg4NzYxOV5BMl5BanBnXkFtZTcwODk5NjU3Mg@@._V1_.jpg');"></div>
-    </div>
+    <div id="music-page" class="page">
+        <div class="header">
+            <div class="logo-text" style="color: white;">GOAT AUDIO</div>
+        </div>
 
-    <div class="bottom-nav">
-        <div class="nav-item active">🏠<br>Home</div>
-        <div class="nav-item">🔍<br>Search</div>
-        <div class="nav-item">🎬<br>Verts</div>
-        <div class="nav-item">👤<br>Lucas</div>
-    </div>
-
-</body>
-</html>
+        <p class="section-title">Full Discography</p>
+        <div class="album-list">
+            <div class="album-row" onclick="playSong('audio-bully', 'New Energy', 'Bully')">
+                <div class="art-thumb" style="background-image: url('https://i.redd.it/v07f3shm04sd1.png');"></div>
+                <div class="info">
+                    <span class="name">Bully (2026)</span>
+                    <div class="features">FT: TBD</div>
+                </div>
+            </div>
+            <div class="album-row" onclick="playSong('audio-vultures', 'CARNIVAL', 'Vultures 1')">
+                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b8/Vultures_1_cover.jpg');"></div>
+                <div class="info">
+                    <span class="name">Vultures
