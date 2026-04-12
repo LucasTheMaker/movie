@@ -6,67 +6,46 @@
     <title>Goat Films & Audio</title>
     <style>
         :root { --red: #e50914; --accent: #fa243c; --bg: #000; --gray: #888; }
-        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 150px; overflow-x: hidden; }
+        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 160px; overflow-x: hidden; }
 
-        /* Navigation Logic - Hides sections not in use */
+        /* Navigation Logic */
         .page { display: none; }
         .active-page { display: block; }
 
-        /* Headers */
-        .header { padding: 40px 20px 10px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(to bottom, #111, #000); }
+        /* Header */
+        .header { padding: 40px 20px 10px; display: flex; align-items: center; justify-content: space-between; background: #000; position: sticky; top: 0; z-index: 2000; }
         .logo-text { font-size: 26px; font-weight: bold; color: var(--red); letter-spacing: 1px; }
 
-        /* Movie Styles */
+        /* Content Sections */
         .section-title { font-size: 18px; font-weight: bold; padding: 25px 20px 12px; }
         .row { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
-        .row::-webkit-scrollbar { display: none; }
-        .card { min-width: 130px; height: 195px; border-radius: 6px; background-size: cover; background-position: center; border: 1px solid #222; }
+        .card { min-width: 130px; height: 195px; border-radius: 6px; background-size: cover; background-position: center; border: 1px solid #222; flex-shrink: 0; }
 
-        /* Music Styles */
+        /* Music List */
         .album-list { padding: 0 20px; }
         .album-row { display: flex; gap: 15px; align-items: center; padding: 15px 0; border-bottom: 1px solid #111; cursor: pointer; }
-        .art-thumb { width: 70px; height: 70px; border-radius: 6px; background-size: cover; background-position: center; flex-shrink: 0; border: 1px solid #333; }
-        .info { flex-grow: 1; }
-        .features { font-size: 10px; color: var(--accent); font-weight: bold; }
+        .art-thumb { width: 65px; height: 65px; border-radius: 6px; background-size: cover; background-position: center; flex-shrink: 0; border: 1px solid #333; }
+        .name { font-size: 15px; font-weight: 600; display: block; }
+        .features { font-size: 10px; color: var(--accent); font-weight: bold; margin-top: 2px; }
 
-        /* Floating Player Bar */
-        .player-bar {
-            position: fixed; bottom: 85px; left: 10px; right: 10px;
-            height: 60px; background: rgba(25,25,25,0.98); backdrop-filter: blur(15px);
-            border-radius: 12px; display: flex; align-items: center; padding: 0 15px;
-            justify-content: space-between; border: 1px solid #444; z-index: 1000;
-        }
-
-        /* Bottom Nav */
+        /* Fixed Player & Nav */
+        .player-bar { position: fixed; bottom: 85px; left: 10px; right: 10px; height: 60px; background: rgba(25,25,25,0.98); backdrop-filter: blur(15px); border-radius: 12px; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; border: 1px solid #444; z-index: 1000; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 1001; }
-        .nav-item { text-align: center; font-size: 10px; color: #666; cursor: pointer; }
+        .nav-item { text-align: center; font-size: 10px; color: #666; cursor: pointer; width: 25%; }
         .nav-item.active { color: white; }
     </style>
 </head>
 <body>
 
-    <audio id="audio-tcd" src="tcd.mp3"></audio>
-    <audio id="audio-lr" src="lr.mp3"></audio>
-    <audio id="audio-grad" src="graduation.mp3"></audio>
-    <audio id="audio-mbdtf" src="mbdtf.mp3"></audio>
-    <audio id="audio-tlop" src="pablo.mp3"></audio>
-    <audio id="audio-ye" src="ye.mp3"></audio>
-    <audio id="audio-vultures" src="vultures.mp3"></audio>
-    <audio id="audio-bully" src="bully.mp3"></audio>
-
     <div id="home-page" class="page active-page">
-        <div class="header">
-            <div class="logo-text">GOAT FILMS</div>
-        </div>
-        
-        <p class="section-title">Superheroes</p>
+        <div class="header"><div class="logo-text">GOAT FILMS</div></div>
+        <p class="section-title">Superhero Collection</p>
         <div class="row">
             <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg');"></div>
             <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
             <div class="card" style="background-image: url('https://m.media-amazon.com/images/I/51X57o4KqHL._AC_UF894,1000_QL80_.jpg');"></div>
         </div>
-
-        <p class="section-title">From the Big Screen to Your Screen</p>
+        <p class="section-title">Trending Movies</p>
         <div class="row">
             <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BNjM0NTc0NzItM2FlYS00YzEwLWE0YmUtNTA2ZWIzODc2OTgxXkEyXkFqcGdeQXVyNTgwNzIyNjM@._V1_.jpg');"></div>
             <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BNzA1Njg4NzYxOV5BMl5BanBnXkFtZTcwODk5NjU3Mg@@._V1_.jpg');"></div>
@@ -74,20 +53,120 @@
     </div>
 
     <div id="music-page" class="page">
-        <div class="header">
-            <div class="logo-text" style="color: white;">GOAT AUDIO</div>
-        </div>
-
-        <p class="section-title">Full Discography</p>
+        <div class="header"><div class="logo-text" style="color:white">GOAT AUDIO</div></div>
+        <p class="section-title">The Complete Discography</p>
         <div class="album-list">
-            <div class="album-row" onclick="playSong('audio-bully', 'New Energy', 'Bully')">
+            <div class="album-row" onclick="playSong('bully', 'New Tracks', 'Bully')">
                 <div class="art-thumb" style="background-image: url('https://i.redd.it/v07f3shm04sd1.png');"></div>
-                <div class="info">
-                    <span class="name">Bully (2026)</span>
-                    <div class="features">FT: TBD</div>
-                </div>
+                <div class="info"><span class="name">Bully (2026)</span><div class="features">LATEST RELEASE</div></div>
             </div>
-            <div class="album-row" onclick="playSong('audio-vultures', 'CARNIVAL', 'Vultures 1')">
+            <div class="album-row" onclick="playSong('vultures1', 'CARNIVAL', 'Vultures 1')">
                 <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b8/Vultures_1_cover.jpg');"></div>
-                <div class="info">
-                    <span class="name">Vultures
+                <div class="info"><span class="name">Vultures 1 & 2 (2024)</span><div class="features">FT: Ty Dolla $ign, Playboi Carti</div></div>
+            </div>
+            <div class="album-row" onclick="playSong('donda', 'Hurricane', 'Donda')">
+                <div class="art-thumb" style="background-color:#000; border:1px solid #222;"></div>
+                <div class="info"><span class="name">Donda (2021)</span><div class="features">FT: The Weeknd, Travis Scott</div></div>
+            </div>
+            <div class="album-row" onclick="playSong('ye', 'Ghost Town', 'Ye')">
+                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg');"></div>
+                <div class="info"><span class="name">Ye (2018)</span><div class="features">FT: Kid Cudi, 070 Shake</div></div>
+            </div>
+            <div class="album-row" onclick="playSong('tlop', 'Famous', 'The Life of Pablo')">
+                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/4/4d/The_Life_of_Pablo.jpg');"></div>
+                <div class="info"><span class="name">The Life of Pablo (2016)</span><div class="features">FT: Rihanna, Kendrick Lamar</div></div>
+            </div>
+            <div class="album-row" onclick="playSong('yeezus', 'Black Skinhead', 'Yeezus')">
+                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/0/03/Yeezus_album_cover.png');"></div>
+                <div class="info"><span class="name">Yeezus (2013)</span><div class="features">FT: Daft Punk</div></div>
+            </div>
+            <div class="album-row" onclick="playSong('mbdtf', 'Runaway', 'MBDTF')">
+                <div class="art-thumb" style="background-image: url('https://m.media-amazon.com/images/I/A18S35XlSFL._SL1500_.jpg');"></div>
+                <div class="info"><span class="name">MBDTF (2010)</span><div class="features">FT: Rick Ross, Nicki Minaj</div></div>
+            </div>
+            <div class="album-row" onclick="playSong('grad', 'Stronger', 'Graduation')">
+                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/70/Graduation_%28album%29_cover.jpg');"></div>
+                <div class="info"><span class="name">Graduation (2007)</span><div class="features">FT: T-Pain, Lil Wayne</div></div>
+            </div>
+            <div class="album-row" onclick="playSong('lr', 'Gold Digger', 'Late Registration')">
+                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/f/f4/Late_registration_cd_cover.jpg');"></div>
+                <div class="info"><span class="name">Late Registration (2005)</span><div class="features">FT: Jamie Foxx, Adam Levine</div></div>
+            </div>
+            <div class="album-row" onclick="playSong('tcd', 'All Falls Down', 'The College Dropout')">
+                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/a/a3/Kanyewest_collegedropout.jpg');"></div>
+                <div class="info"><span class="name">The College Dropout (2004)</span><div class="features">THE DEBUT</div></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="player-bar">
+        <div style="display:flex; align-items:center; gap:10px;">
+            <div id="p-art" style="width:40px; height:40px; border-radius:4px; background:#222; background-size:cover;"></div>
+            <div>
+                <span id="p-title" style="font-size:13px; font-weight:bold; display:block;">Select a Song</span>
+                <span id="p-album" style="font-size:11px; color:var(--gray);">Kanye West</span>
+            </div>
+        </div>
+        <div id="play-icon" style="font-size:24px;">▶</div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+            <span style="display:block; font-size:22px;">🏠</span>Home
+        </div>
+        <div class="nav-item">
+            <span style="display:block; font-size:22px;">🔍</span>Search
+        </div>
+        <div class="nav-item" id="nav-music" onclick="switchTab('music')">
+            <span style="display:block; font-size:22px;">🎵</span>Music
+        </div>
+        <div class="nav-item">
+            <span style="display:block; font-size:22px;">👤</span>Lucas
+        </div>
+    </div>
+
+    <div id="audio-container" style="display:none;">
+        <audio id="bully" src="bully.mp3"></audio>
+        <audio id="vultures1" src="vultures1.mp3"></audio>
+        <audio id="donda" src="donda.mp3"></audio>
+        <audio id="ye" src="ye.mp3"></audio>
+        <audio id="tlop" src="pablo.mp3"></audio>
+        <audio id="yeezus" src="yeezus.mp3"></audio>
+        <audio id="mbdtf" src="mbdtf.mp3"></audio>
+        <audio id="grad" src="graduation.mp3"></audio>
+        <audio id="lr" src="lr.mp3"></audio>
+        <audio id="tcd" src="tcd.mp3"></audio>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            if(tab === 'home') {
+                document.getElementById('home-page').classList.add('active-page');
+                document.getElementById('nav-home').classList.add('active');
+            } else {
+                document.getElementById('music-page').classList.add('active-page');
+                document.getElementById('nav-music').classList.add('active');
+            }
+        }
+
+        let currentAudio = null;
+        function playSong(id, title, album) {
+            const audio = document.getElementById(id);
+            if (currentAudio && currentAudio !== audio) { currentAudio.pause(); }
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('play-icon').innerText = '⏸';
+                document.getElementById('p-title').innerText = title;
+                document.getElementById('p-album').innerText = album;
+                currentAudio = audio;
+            } else {
+                audio.pause();
+                document.getElementById('play-icon').innerText = '▶';
+            }
+        }
+    </script>
+</body>
+</html>
