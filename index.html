@@ -2,156 +2,131 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LucasFlix - Home</title>
     <style>
         :root {
-            --netflix-red: #e50914;
-            --dark-bg: #141414;
+            --bg-color: #000;
+            --text-color: #fff;
+            --accent-red: #e50914;
         }
 
         body {
-            background-color: var(--dark-bg);
-            color: white;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
         }
 
-        /* Interactive Navbar */
+        /* Top Navigation Overlay */
         .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 70px;
             display: flex;
             align-items: center;
-            padding: 0 4%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, rgba(0,0,0,0));
-            z-index: 100;
-            transition: background 0.3s;
+            justify-content: space-between;
+            padding: 20px 50px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
         }
 
-        .logo { color: var(--netflix-red); font-size: 28px; font-weight: bold; text-decoration: none; margin-right: 25px; }
-        .nav-links { display: flex; gap: 20px; font-size: 14px; }
-        .nav-links span { cursor: pointer; transition: color 0.3s; }
-        .nav-links span:hover { color: #b3b3b3; }
+        .nav-left { display: flex; align-items: center; gap: 30px; }
+        .logo { color: var(--accent-red); font-size: 26px; font-weight: bold; text-decoration: none; }
+        .nav-links { display: flex; gap: 20px; font-size: 15px; font-weight: 500; cursor: pointer; }
+        .my-netflix { background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; }
 
-        /* Hero Banner Section */
-        .hero {
-            height: 80vh;
-            background-image: linear-gradient(to top, var(--dark-bg) 5%, rgba(0,0,0,0) 50%), 
-                              url('https://image.tmdb.org/t/p/original/a4wW508oN4b5A6lS897mU86E0Yq.jpg');
-            background-size: cover;
-            background-position: center 20%;
+        /* Movie List Section */
+        .main-container { padding: 40px 50px; }
+        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; }
+
+        /* The row holding the cards */
+        .movie-row {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding-left: 4%;
+            gap: 15px;
         }
 
-        .hero-title { font-size: 4rem; margin: 0; font-weight: bold; text-transform: uppercase; }
-        .hero-desc { max-width: 500px; font-size: 1.2rem; margin: 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-        
-        .hero-btns { display: flex; gap: 15px; }
-        .btn { padding: 12px 30px; border-radius: 4px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 10px; }
-        .play { background-color: white; color: black; }
-        .info { background-color: rgba(109, 109, 110, 0.7); color: white; }
-        .btn:hover { opacity: 0.8; }
-
-        /* Movie Rows */
-        .row { padding: 20px 4%; }
-        .row-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 15px; }
-        .card-container { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-        .card-container::-webkit-scrollbar { display: none; }
-
-        /* The Animated Movie Card */
-        .movie-card {
-            min-width: 240px;
-            height: 135px;
-            background-color: #333;
-            border-radius: 4px;
+        /* The main container for the card (this handles the overall size) */
+        .card-container {
+            width: 200px;  /* Vertical card width like Griselda */
+            height: 300px; /* Vertical card height */
+            border-radius: 8px;
+            overflow: hidden; /* Crucial: This hides the zoom-in images */
             cursor: pointer;
-            transition: transform 0.4s ease, box-shadow 0.4s;
-            position: relative;
-            text-decoration: none;
-            overflow: hidden;
+            position: relative; /* Base for layering images */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            transition: box-shadow 0.3s ease;
         }
 
-        .movie-card img { width: 100%; height: 100%; object-fit: cover; }
-
-        .movie-card:hover {
-            transform: scale(1.3);
-            z-index: 10;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-        }
-
-        /* Specifically for your Spider-Man hover swap */
-        .spidey-card:hover img {
-            content: url('https://w.wallhaven.cc/full/8o/wallhaven-8owmxj.jpg');
-        }
-
-        .card-title {
+        /* Image 1: Normal View (The crouching Spidey) */
+        .normal-poster {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             position: absolute;
-            bottom: 10px;
-            left: 10px;
-            font-size: 12px;
-            font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.3s;
+            top: 0;
+            left: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1; /* Layer 1 */
         }
-        .movie-card:hover .card-title { opacity: 1; }
+
+        /* Image 2: Hover View (The close-up Eye/Green Goblin reflection) */
+        .zoom-poster {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0; /* Hidden by default */
+            transform: scale(0.6); /* Start smaller */
+            transition: transform 0.4s ease-out, opacity 0.3s ease;
+            z-index: 2; /* Layer 2 (Above normal) */
+        }
+
+        /* ----- The Hover Magic ----- */
+
+        .card-container:hover {
+            box-shadow: 0 0 25px var(--accent-red);
+        }
+
+        /* Hide the normal image on hover */
+        .card-container:hover .normal-poster {
+            opacity: 0;
+        }
+
+        /* Show and zoom the interactive close-up image on hover */
+        .card-container:hover .zoom-poster {
+            opacity: 1;
+            transform: scale(1.0); /* Grow to fill the card completely */
+        }
+
     </style>
 </head>
 <body>
 
-    <nav class="navbar" id="nav">
-        <a href="index.html" class="logo">LUCASFLIX</a>
-        <div class="nav-links">
-            <span>Home</span>
-            <span>TV Shows</span>
-            <span>Movies</span>
-            <span>New & Popular</span>
-            <span>My List</span>
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="#" class="logo">LUCASFLIX</a>
+            <div class="nav-links">
+                <span>Home</span>
+                <span>Shows</span>
+                <span>Movies</span>
+                <span class="my-netflix">My LucasFlix</span>
+            </div>
         </div>
     </nav>
 
-    <header class="hero">
-        <h1 class="hero-title">Spider-Man</h1>
-        <p class="hero-desc">With great power comes great responsibility. Peter Parker balances high school life with his secret identity as a web-slinging hero.</p>
-        <div class="hero-btns">
-            <button class="btn play" onclick="window.location.href='spiderman-2002.html'">▶ Play</button>
-            <button class="btn info" onclick="window.location.href='spiderman-2002.html'">ⓘ More Info</button>
-        </div>
-    </header>
+    <div class="main-container">
+        <p class="section-title">My Superhero List</p>
 
-    <div class="row">
-        <p class="row-title">My List</p>
-        <div class="card-container">
-            <a href="spiderman-2002.html" class="movie-card spidey-card">
-                <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/b2a370e5-79a8-4856-9762-b918731d7e2e/dg8f9d0-c977926e-6be4-472e-8e81-2b0e89f8a32a.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" alt="Spider-Man">
-                <div class="card-title">Spider-Man (2002)</div>
+        <div class="movie-row">
+            <a href="spiderman-2002.html" class="card-container">
+                <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/dg9x0yl-b166299b-4303-49d7-83de-be760773d2a7.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" class="normal-poster" alt="Spider-Man Not Hovering">
+                
+                <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/df6200l-d08e82a3-764f-4d4f-9e66-6b66a836858e.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" class="zoom-poster" alt="Spider-Man Hovering Zoom">
             </a>
 
-            <div class="movie-card"><img src="https://via.placeholder.com/240x135/222/fff?text=Coming+Soon" alt="Placeholder"></div>
-            <div class="movie-card"><img src="https://via.placeholder.com/240x135/222/fff?text=Coming+Soon" alt="Placeholder"></div>
-            <div class="movie-card"><img src="https://via.placeholder.com/240x135/222/fff?text=Coming+Soon" alt="Placeholder"></div>
-            <div class="movie-card"><img src="https://via.placeholder.com/240x135/222/fff?text=Coming+Soon" alt="Placeholder"></div>
+            <div class="card-container" style="background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold;">[ Placeholder ]</div>
+            <div class="card-container" style="background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold;">[ Placeholder ]</div>
         </div>
     </div>
-
-    <script>
-        // Make navbar background appear when scrolling
-        const nav = document.getElementById('nav');
-        window.onscroll = function() {
-            if (window.scrollY > 100) {
-                nav.style.backgroundColor = "#141414";
-            } else {
-                nav.style.backgroundColor = "transparent";
-            }
-        };
-    </script>
 
 </body>
 </html>
