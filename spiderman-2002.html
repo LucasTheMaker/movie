@@ -4,114 +4,46 @@
     <meta charset="UTF-8">
     <title>Goat Movies - Spider-Man (2002)</title>
     <style>
-        body { 
-            background-color: #000; 
-            color: #e5e5e5; 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-            margin: 0; 
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            overflow: hidden; 
-        }
-
+        body { background: #000; color: #fff; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; display: flex; align-items: center; height: 100vh; overflow: hidden; }
         .background-image {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            /* Reliable landscape image of Spider-Man 2002 */
-            background-image: url('https://images.alphacoders.com/131/1319767.jpeg'); 
-            background-size: cover;
-            background-position: center 20%;
-            z-index: -1;
-            /* Gradient to make text pop against the image */
-            background-image: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%);
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 100%), url('https://images.alphacoders.com/131/1319767.jpeg');
+            background-size: cover; background-position: center 20%; z-index: -1;
         }
-
-        .navbar {
-            height: 68px;
-            display: flex;
-            align-items: center;
-            padding: 0 4%;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 10;
-        }
-        /* Updated Branding */
-        .logo { color: #e50914; font-weight: bold; font-size: 25px; text-decoration: none; text-transform: uppercase;}
-
-        .info-container {
-            max-width: 600px;
-            text-align: left;
-            padding: 0 4%;
-            z-index: 2;
-        }
+        .navbar { position: fixed; top: 0; padding: 20px 50px; width: 100%; z-index: 10; }
+        .logo { color: #e50914; font-size: 25px; font-weight: bold; text-decoration: none; text-transform: uppercase; }
+        .info-container { max-width: 800px; padding: 0 50px; z-index: 5; }
+        h1 { font-size: 4rem; margin: 0; text-transform: uppercase; }
+        .description { font-size: 1.1rem; margin: 20px 0; color: #ccc; max-width: 550px; line-height: 1.5; }
+        .play-btn { background: #fff; color: #000; border: none; padding: 15px 40px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 4px; transition: 0.3s; }
+        .play-btn:hover { background: #e5e5e5; transform: scale(1.05); }
         
-        .series-tag { color: #e50914; font-weight: bold; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase;}
-        
-        h1 { font-size: 4rem; margin: 0 0 15px 0; font-weight: 900; line-height: 1; text-transform: uppercase; }
-        
-        .meta-data { margin-bottom: 20px; font-weight: bold; color: #46d369; font-size: 1.1rem;} 
-        
-        .description { font-size: 1.15rem; line-height: 1.6; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-
-        .btn-group { display: flex; gap: 15px; margin-top: 35px; }
-
-        .play-btn {
-            background-color: white;
-            color: black;
-            border: none;
-            padding: 12px 35px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .collection-title { margin-top: 40px; color: #aaa; font-size: 0.8rem; font-weight: bold; letter-spacing: 2px; text-transform: uppercase; }
+        .collection-row { display: flex; gap: 15px; margin-top: 15px; }
+        .poster-card { 
+            width: 140px; height: 210px; border: 2px solid #333; cursor: pointer; 
+            border-radius: 4px; background-size: cover; background-position: center; transition: 0.3s; 
         }
-        .play-btn:hover { background-color: rgba(255,255,255,0.8); }
-
-        .back-link { 
-            display: inline-block; 
-            color: #aaa; 
-            text-decoration: none; 
-            font-size: 1rem;
-            margin-top: 25px;
-            transition: 0.3s;
-        }
-        .back-link:hover { color: white; }
+        .poster-card:hover { border-color: #fff; transform: scale(1.05); }
+        .current { border-color: #e50914; box-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
     </style>
 </head>
 <body>
-    
     <div class="background-image"></div>
-
-    <nav class="navbar">
-        <a href="index.html" class="logo">GOAT MOVIES</a>
-    </nav>
-
+    <div class="navbar"><a href="index.html" class="logo">GOAT MOVIES</a></div>
     <div class="info-container">
-        <div class="series-tag">A Sony Pictures Movie</div>
+        <p style="color: #e50914; font-weight: bold; margin-bottom: 5px;">MARVEL ENTERTAINMENT</p>
         <h1>SPIDER-MAN</h1>
+        <p class="description">After being bitten by a genetically-altered spider, Peter Parker gains superhuman strength and the spider-like ability to cling to any surface.</p>
+        <button class="play-btn">▶ Watch Now</button>
         
-        <div class="meta-data">98% Match &nbsp; 2002 &nbsp; PG-13 &nbsp; 2h 1m</div>
-        
-        <div class="description">
-            After being bitten by a genetically-altered spider, Peter Parker gains superhuman strength and the spider-like ability to cling to any surface. He vows to use his abilities to fight crime, coming to understand the words of his beloved Uncle Ben: "With great power comes great responsibility."
+        <p class="collection-title">The Spider-Man Trilogy</p>
+        <div class="collection-row">
+            <div class="poster-card current" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg');"></div>
+            <div class="poster-card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
+            <div class="poster-card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BYTNjYWE0ZDAtZDM1NS00ZTI0LTgwYjktYzE1OTFhY2E3N2FkXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_.jpg');"></div>
         </div>
-
-        <div class="btn-group">
-            <button class="play-btn">▶ Watch Now</button>
-        </div>
-        
-        <a href="index.html" class="back-link">← Back to Home Page</a>
+        <br><a href="index.html" style="color: #aaa; text-decoration: none; font-size: 0.9rem;">← Back to Home Page</a>
     </div>
-
 </body>
 </html>
