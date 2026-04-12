@@ -1,132 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>LucasFlix - Home</title>
-    <style>
-        :root {
-            --bg-color: #000;
-            --text-color: #fff;
-            --accent-red: #e50914;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Top Navigation Overlay */
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 50px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-        }
-
-        .nav-left { display: flex; align-items: center; gap: 30px; }
-        .logo { color: var(--accent-red); font-size: 26px; font-weight: bold; text-decoration: none; }
-        .nav-links { display: flex; gap: 20px; font-size: 15px; font-weight: 500; cursor: pointer; }
-        .my-netflix { background: rgba(255,255,255,0.2); padding: 8px 15px; border-radius: 20px; }
-
-        /* Movie List Section */
-        .main-container { padding: 40px 50px; }
-        .section-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; }
-
-        /* The row holding the cards */
-        .movie-row {
-            display: flex;
-            gap: 15px;
-        }
-
-        /* The main container for the card (this handles the overall size) */
-        .card-container {
-            width: 200px;  /* Vertical card width like Griselda */
-            height: 300px; /* Vertical card height */
-            border-radius: 8px;
-            overflow: hidden; /* Crucial: This hides the zoom-in images */
-            cursor: pointer;
-            position: relative; /* Base for layering images */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            transition: box-shadow 0.3s ease;
-        }
-
-        /* Image 1: Normal View (The crouching Spidey) */
-        .normal-poster {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            transition: opacity 0.3s ease;
-            z-index: 1; /* Layer 1 */
-        }
-
-        /* Image 2: Hover View (The close-up Eye/Green Goblin reflection) */
-        .zoom-poster {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0; /* Hidden by default */
-            transform: scale(0.6); /* Start smaller */
-            transition: transform 0.4s ease-out, opacity 0.3s ease;
-            z-index: 2; /* Layer 2 (Above normal) */
-        }
-
-        /* ----- The Hover Magic ----- */
-
-        .card-container:hover {
-            box-shadow: 0 0 25px var(--accent-red);
-        }
-
-        /* Hide the normal image on hover */
-        .card-container:hover .normal-poster {
-            opacity: 0;
-        }
-
-        /* Show and zoom the interactive close-up image on hover */
-        .card-container:hover .zoom-poster {
-            opacity: 1;
-            transform: scale(1.0); /* Grow to fill the card completely */
-        }
-
-    </style>
-</head>
-<body>
-
-    <nav class="navbar">
-        <div class="nav-left">
-            <a href="#" class="logo">LUCASFLIX</a>
-            <div class="nav-links">
-                <span>Home</span>
-                <span>Shows</span>
-                <span>Movies</span>
-                <span class="my-netflix">My LucasFlix</span>
-            </div>
+<a href="spiderman-2002.html" class="hero-container">
+    <div class="image-box">
+        <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/dg9x0yl-b166299b-4303-49d7-83de-be760773d2a7.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" class="normal-img">
+        <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/df6200l-d08e82a3-764f-4d4f-9e66-6b66a836858e.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" class="zoom-img">
+    </div>
+    
+    <div class="hero-details">
+        <div class="meta">Superheroes • 2002 • Movie • PG-13</div>
+        <div class="description">
+            After being bitten by a genetically-altered spider, Peter Parker gains superhuman strength and the spider-like ability to cling to any surface.
         </div>
-    </nav>
-
-    <div class="main-container">
-        <p class="section-title">My Superhero List</p>
-
-        <div class="movie-row">
-            <a href="spiderman-2002.html" class="card-container">
-                <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/dg9x0yl-b166299b-4303-49d7-83de-be760773d2a7.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" class="normal-poster" alt="Spider-Man Not Hovering">
-                
-                <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/df6200l-d08e82a3-764f-4d4f-9e66-6b66a836858e.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" class="zoom-poster" alt="Spider-Man Hovering Zoom">
-            </a>
-
-            <div class="card-container" style="background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold;">[ Placeholder ]</div>
-            <div class="card-container" style="background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #333; font-weight: bold;">[ Placeholder ]</div>
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button style="padding: 10px 25px; font-weight: bold; cursor: pointer; background: white; border: none; border-radius: 4px;">▶ Play</button>
+            <button style="padding: 10px 25px; font-weight: bold; cursor: pointer; background: rgba(109, 109, 110, 0.7); color: white; border: none; border-radius: 4px;">ⓘ More Info</button>
         </div>
     </div>
-
-</body>
-</html>
+</a>
+        .meta { color: var(--gray-text); font-weight: bold; margin-
