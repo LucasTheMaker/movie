@@ -5,142 +5,147 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Goat App</title>
     <style>
-        :root { --accent: #fa243c; --bg: #000; --card: #1c1c1e; --gray: #8e8e93; }
-        body { background: var(--bg); color: white; font-family: -apple-system, sans-serif; margin: 0; padding-bottom: 160px; overflow-x: hidden; }
+        :root { --spotify-green: #1db954; --bg: #121212; --card: #181818; --text-gray: #b3b3b3; }
+        body { background: var(--bg); color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding-bottom: 160px; overflow-x: hidden; }
 
-        /* Navigation Logic */
+        /* Navigation Pages */
         .page { display: none; }
         .active-page { display: block; }
 
-        /* Full Screen Player */
-        #expanded-player {
-            position: fixed; top: 100%; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, #444, #000);
-            z-index: 5000; transition: top 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;
-        }
+        /* Album/Tracklist Detail View */
+        #album-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, #222, #121212 40%); z-index: 5000; overflow-y: auto; display: none; transition: 0.3s; }
+        .album-header-bar { display: flex; align-items: center; padding: 40px 20px 10px; position: sticky; top: 0; z-index: 10; }
+        .back-btn { font-size: 24px; cursor: pointer; margin-right: 20px; }
+        
+        .album-info-section { padding: 20px; }
+        .big-play-btn { width: 56px; height: 56px; background: var(--spotify-green); border-radius: 50%; display: flex; align-items: center; justify-content: center; float: right; margin-top: -30px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+
+        /* Track Styles */
+        .track-row { display: flex; align-items: center; padding: 12px 20px; gap: 15px; cursor: pointer; }
+        .track-thumb { width: 45px; height: 45px; border-radius: 4px; background-size: cover; }
+        .track-meta { flex: 1; }
+        .track-name { font-size: 16px; font-weight: 500; display: block; }
+        .track-artist { font-size: 13px; color: var(--text-gray); display: flex; align-items: center; gap: 5px; }
+        .download-icon { color: var(--spotify-green); font-size: 12px; }
+
+        /* Mini & Full Player */
+        .mini-player { position: fixed; bottom: 85px; left: 10px; right: 10px; height: 56px; background: #282828; border-radius: 8px; display: flex; align-items: center; padding: 0 12px; z-index: 4000; justify-content: space-between; }
+        #expanded-player { position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: #121212; z-index: 6000; transition: 0.4s; padding: 40px 20px; box-sizing: border-box; }
         #expanded-player.open { top: 0; }
-        .close-player { align-self: flex-start; font-size: 30px; margin-bottom: 20px; cursor: pointer; }
-        .player-art-big { width: 85%; aspect-ratio: 1/1; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); margin: 20px 0; }
-        
-        /* Album Detail View */
-        #album-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; overflow-y: auto; display: none; }
 
-        /* UI Elements */
-        .header { padding: 50px 20px 10px; font-size: 28px; font-weight: 800; background: #000; }
-        .section-title { padding: 20px; font-size: 20px; font-weight: 700; }
-        .row { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
-        .movie-card { min-width: 140px; height: 210px; border-radius: 8px; background-size: cover; border: 1px solid #222; }
-        
-        .album-list { padding: 0 20px; }
-        .album-row { display: flex; gap: 15px; align-items: center; padding: 12px 0; border-bottom: 0.5px solid #222; }
-        .thumb { width: 60px; height: 60px; border-radius: 4px; background-size: cover; }
-
-        /* Floating Mini Player */
-        .mini-player {
-            position: fixed; bottom: 85px; left: 10px; right: 10px;
-            height: 60px; background: rgba(30,30,30,0.95); backdrop-filter: blur(20px);
-            border-radius: 12px; display: flex; align-items: center; padding: 0 12px;
-            justify-content: space-between; border: 1px solid #444; z-index: 4000;
-        }
-
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 4500; }
-        .nav-item { text-align: center; font-size: 11px; color: var(--gray); cursor: pointer; }
+        /* Tabs */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: rgba(0,0,0,0.9); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 4500; }
+        .nav-item { text-align: center; font-size: 11px; color: var(--text-gray); cursor: pointer; }
         .nav-item.active { color: white; }
     </style>
 </head>
 <body>
 
     <div id="movies-page" class="page active-page">
-        <div class="header">Movies</div>
-        <p class="section-title">Superhero Collection</p>
-        <div class="row">
-            <div class="movie-card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg');"></div>
-            <div class="movie-card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
-        </div>
+        <h1 style="padding: 40px 20px 0;">Movies</h1>
+        <div style="padding: 20px; color: var(--text-gray);">Your Goat Films collection...</div>
     </div>
 
     <div id="music-page" class="page">
-        <div class="header">Music</div>
-        <div class="album-list">
-            <div class="album-row" onclick="openAlbum('Vultures 2', 'Kanye West', 'https://upload.wikimedia.org/wikipedia/commons/d/df/Vultures_2_cover.jpg')">
-                <div class="thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/df/Vultures_2_cover.jpg');"></div>
-                <div class="info"><b>Vultures 2</b><br><small>Kanye West & Ty Dolla $ign</small></div>
-            </div>
-            <div class="album-row" onclick="openAlbum('Vultures 1', 'Kanye West', 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Vultures_1_cover.jpg')">
-                <div class="thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b8/Vultures_1_cover.jpg');"></div>
-                <div class="info"><b>Vultures 1</b><br><small>Kanye West & Ty Dolla $ign</small></div>
-            </div>
-            <div class="album-row" onclick="openAlbum('Donda', 'Kanye West', 'https://upload.wikimedia.org/wikipedia/commons/a/a0/Donda_Kanye_West.jpg')">
-                <div class="thumb" style="background-color: #000;"></div>
-                <div class="info"><b>Donda</b><br><small>Kanye West</small></div>
-            </div>
-            <div class="album-row" onclick="openAlbum('MBDTF', 'Kanye West', 'https://m.media-amazon.com/images/I/A18S35XlSFL._SL1500_.jpg')">
-                <div class="thumb" style="background-image: url('https://m.media-amazon.com/images/I/A18S35XlSFL._SL1500_.jpg');"></div>
-                <div class="info"><b>MBDTF</b><br><small>Kanye West</small></div>
-            </div>
-            <div class="album-row" onclick="openAlbum('808s & Heartbreak', 'Kanye West', 'https://upload.wikimedia.org/wikipedia/en/f/f1/808s_%26_Heartbreak.png')">
-                <div class="thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/f/f1/808s_%26_Heartbreak.png');"></div>
-                <div class="info"><b>808s & Heartbreak</b><br><small>Kanye West</small></div>
+        <h1 style="padding: 40px 20px 0;">Music</h1>
+        <div class="track-row" onclick="openAlbum('808s & Heartbreak (Demo Tape)', 'Kanye West', 'https://upload.wikimedia.org/wikipedia/en/f/f1/808s_%26_Heartbreak.png')">
+            <div class="track-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/f/f1/808s_%26_Heartbreak.png');"></div>
+            <div class="track-meta">
+                <span class="track-name">808s & Heartbreak</span>
+                <span class="track-artist">Kanye West</span>
             </div>
         </div>
     </div>
 
-    <div class="mini-player" id="mini-player" onclick="toggleFullPlayer(true)">
+    <div id="album-view">
+        <div class="album-header-bar">
+            <span class="back-btn" onclick="closeAlbum()">←</span>
+            <span id="view-album-title" style="font-weight:bold; font-size:14px;"></span>
+        </div>
+        
+        <div class="album-info-section">
+            <div class="big-play-btn">
+                <span style="color:black; font-size:20px;">▶</span>
+            </div>
+            <h2 id="hero-album-name"></h2>
+        </div>
+
+        <div id="track-list-container">
+            </div>
+    </div>
+
+    <div class="mini-player" onclick="toggleFullPlayer(true)">
         <div style="display:flex; align-items:center; gap:10px;">
-            <div id="m-art" style="width:40px; height:40px; border-radius:4px; background:#222; background-size:cover;"></div>
+            <div id="m-art" style="width:40px; height:40px; border-radius:4px; background-size:cover;"></div>
             <div>
                 <b id="m-title" style="font-size:13px; display:block;">Select Music</b>
-                <small id="m-artist" style="color:var(--gray);">Kanye West</small>
+                <small id="m-artist" style="color:var(--text-gray);">Kanye West</small>
             </div>
         </div>
-        <div style="font-size:24px;">▶</div>
+        <div style="display:flex; gap:20px; font-size:20px;"><span>+</span><span>▶</span></div>
     </div>
 
     <div id="expanded-player">
-        <div class="close-player" onclick="toggleFullPlayer(false); event.stopPropagation();">⌄</div>
-        <img id="big-art" class="player-art-big" src="">
-        <h2 id="big-title" style="margin-bottom: 5px;">Song Title</h2>
-        <p id="big-artist" style="color:var(--gray); margin-top:0;">Kanye West</p>
-        
-        <div style="width:100%; display:flex; justify-content:space-around; align-items:center; margin-top:40px;">
-            <span style="font-size:30px;">⏮</span>
-            <span style="font-size:60px;">▶</span>
-            <span style="font-size:30px;">⏭</span>
-        </div>
+        <span style="font-size:30px;" onclick="toggleFullPlayer(false)">⌄</span>
+        <img id="big-art" style="width:100%; border-radius:12px; margin-top:40px;" src="">
+        <h2 id="big-title" style="margin-top:40px; margin-bottom:5px;"></h2>
+        <p id="big-artist" style="color:var(--text-gray);"></p>
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item active" id="n-movies" onclick="switchTab('movies')">🎬<br>Movies</div>
-        <div class="nav-item" id="n-music" onclick="switchTab('music')">🎵<br>Music</div>
-        <div class="nav-item">👤<br>Lucas</div>
+        <div class="nav-item active" id="n-movies" onclick="switchTab('movies')">🏠<br>Home</div>
+        <div class="nav-item">🔍<br>Search</div>
+        <div class="nav-item" id="n-music" onclick="switchTab('music')">📚<br>Your Library</div>
     </div>
 
     <script>
+        const songs = [
+            { name: "Welcome To Heartbreak", artist: "Kanye West" },
+            { name: "Heartless", artist: "Kanye West" },
+            { name: "Love Lockdown", artist: "Kanye West" },
+            { name: "Anyway", artist: "Kanye West" },
+            { name: "Streetlights", artist: "Kanye West" },
+            { name: "Tell Everybody That You Know", artist: "Kanye West/Lil Wayne" }
+        ];
+
         function switchTab(t) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if(t==='movies') { document.getElementById('movies-page').classList.add('active-page'); document.getElementById('n-movies').classList.add('active'); }
-            else { document.getElementById('music-page').classList.add('active-page'); document.getElementById('n-music').classList.add('active'); }
-        }
-
-        function toggleFullPlayer(open) {
-            const p = document.getElementById('expanded-player');
-            if(open) p.classList.add('open');
-            else p.classList.remove('open');
+            if(t==='movies'){ document.getElementById('movies-page').classList.add('active-page'); document.getElementById('n-movies').classList.add('active');}
+            else { document.getElementById('music-page').classList.add('active-page'); document.getElementById('n-music').classList.add('active');}
         }
 
         function openAlbum(title, artist, art) {
-            // Logic to play music and update players
-            document.getElementById('m-title').innerText = title;
+            document.getElementById('view-album-title').innerText = title;
+            document.getElementById('hero-album-name').innerText = title;
+            const container = document.getElementById('track-list-container');
+            container.innerHTML = '';
+            
+            songs.forEach(song => {
+                container.innerHTML += `
+                    <div class="track-row" onclick="playSong('${song.name}', '${song.artist}', '${art}')">
+                        <div class="track-thumb" style="background-image: url('${art}')"></div>
+                        <div class="track-meta">
+                            <span class="track-name">${song.name}</span>
+                            <span class="track-artist"><span class="download-icon">⇩</span> ${song.artist}</span>
+                        </div>
+                        <div style="color:var(--text-gray);">⋮</div>
+                    </div>`;
+            });
+            document.getElementById('album-view').style.display = 'block';
+        }
+
+        function playSong(name, artist, art) {
+            document.getElementById('m-title').innerText = name;
+            document.getElementById('m-artist').innerText = artist;
             document.getElementById('m-art').style.backgroundImage = `url(${art})`;
-            document.getElementById('big-title').innerText = title;
+            document.getElementById('big-title').innerText = name;
             document.getElementById('big-artist').innerText = artist;
             document.getElementById('big-art').src = art;
-            
-            // Auto-open full player like Spotify does when you tap a song
-            toggleFullPlayer(true);
         }
+
+        function closeAlbum() { document.getElementById('album-view').style.display = 'none'; }
+        function toggleFullPlayer(open) { document.getElementById('expanded-player').classList.toggle('open', open); }
     </script>
 </body>
 </html>
