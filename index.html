@@ -14,13 +14,13 @@
         .section-title { font-size: 22px; font-weight: bold; margin: 40px 0 20px 0; }
 
         /* Featured Section */
-        .featured-row { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 50px; }
+        .featured-row { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 50px; }
 
         /* The Main Landscape Spider-Man Card */
         .hero-container { width: 700px; flex-shrink: 0; cursor: pointer; text-decoration: none; color: white; }
         .hero-box { 
             width: 100%; 
-            height: 400px; 
+            height: 400px; /* Base height we are matching */
             border-radius: 6px; 
             overflow: hidden; 
             border: 2px solid #333;
@@ -29,17 +29,17 @@
         .hero-img { width: 100%; height: 100%; object-fit: cover; }
         .hero-container:hover .hero-box { border-color: white; transform: scale(1.01); }
 
-        /* Vertical "Standing Tall" Cards */
+        /* Vertical Cards - NOW MATCHING HERO HEIGHT */
         .poster-grid { display: flex; gap: 15px; flex-wrap: wrap; }
         .vertical-card { 
-            width: 200px; /* Thinner for vertical look */
-            height: 300px; /* Taller for standing look */
+            width: 280px;  /* Slightly wider to keep the ratio nice */
+            height: 400px; /* MATCHES SPIDER-MAN HEIGHT */
             border-radius: 6px; 
             background-size: cover; 
             background-position: center; 
             cursor: pointer; 
             transition: 0.3s;
-            border: 2px solid transparent;
+            border: 2px solid #333;
             flex-shrink: 0;
         }
         .vertical-card:hover { transform: scale(1.05); border-color: white; z-index: 10; }
