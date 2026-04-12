@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goat Audio - Kanye West Full Discography</title>
+    <title>Goat Audio - Full Discography</title>
     <style>
         :root { --accent: #fa243c; --bg: #000; --card: #121212; --gray: #888; }
-        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 120px; overflow-x: hidden; }
+        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 120px; }
 
-        .header { padding: 50px 20px 20px; background: linear-gradient(to bottom, #1a1a1a, #000); sticky: top; z-index: 100; }
+        .header { padding: 50px 20px 20px; background: linear-gradient(to bottom, #1a1a1a, #000); }
         h1 { font-size: 34px; font-weight: 800; margin: 0; }
         .subtitle { color: var(--gray); font-size: 14px; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
 
@@ -22,21 +22,18 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.5); border: 1px solid #222;
         }
 
-        /* Discography Section */
-        .section-title { padding: 25px 20px 10px; font-size: 22px; font-weight: bold; border-bottom: 1px solid #222; margin-bottom: 15px; }
+        .section-title { padding: 25px 20px 10px; font-size: 22px; font-weight: bold; border-bottom: 1px solid #222; }
         
         .album-list { padding: 0 20px; }
         .album-row { display: flex; gap: 15px; align-items: center; padding: 15px 0; border-bottom: 1px solid #111; cursor: pointer; }
-        .album-row:hover { background: #080808; }
         
-        .art-thumb { width: 80px; height: 80px; border-radius: 6px; background-size: cover; flex-shrink: 0; border: 1px solid #333; }
+        .art-thumb { width: 70px; height: 70px; border-radius: 6px; background-size: cover; flex-shrink: 0; border: 1px solid #333; background-position: center; }
         
         .info { flex-grow: 1; }
-        .name { font-size: 16px; font-weight: 600; display: block; margin-bottom: 2px; }
-        .desc { font-size: 12px; color: var(--gray); line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .features { font-size: 11px; color: var(--accent); margin-top: 4px; font-weight: bold; }
+        .name { font-size: 15px; font-weight: 600; display: block; }
+        .desc { font-size: 11px; color: var(--gray); line-height: 1.3; margin: 2px 0; }
+        .features { font-size: 10px; color: var(--accent); font-weight: bold; }
 
-        /* Player bar */
         .player-bar {
             position: fixed; bottom: 85px; left: 10px; right: 10px;
             height: 60px; background: rgba(25,25,25,0.98); backdrop-filter: blur(15px);
@@ -56,148 +53,4 @@
     <audio id="audio-grad" src="graduation.mp3"></audio>
     <audio id="audio-808" src="808s.mp3"></audio>
     <audio id="audio-mbdtf" src="mbdtf.mp3"></audio>
-    <audio id="audio-yeezus" src="yeezus.mp3"></audio>
-    <audio id="audio-tlop" src="pablo.mp3"></audio>
-    <audio id="audio-ye" src="ye.mp3"></audio>
-    <audio id="audio-jiik" src="jiik.mp3"></audio>
-    <audio id="audio-donda" src="donda.mp3"></audio>
-    <audio id="audio-vultures" src="vultures.mp3"></audio>
-    <audio id="audio-bully" src="bully.mp3"></audio>
-    <audio id="audio-yandhi" src="yandhi.mp3"></audio>
-
-    <div class="header">
-        <h1>Goat Audio</h1>
-        <div class="subtitle">The Complete Discography</div>
-    </div>
-
-    <div class="featured-card" onclick="playSong('audio-tlop', 'Famous', 'The Life of Pablo')">
-        <div style="color: var(--accent); font-weight: bold; font-size: 11px;">CURRENTLY FEATURED</div>
-        <div style="font-size: 26px; font-weight: 800;">The Life of Pablo</div>
-        <div style="font-size: 12px; color: #ccc; margin-top: 5px;">"Which one? Which one?" The chaotic masterpiece of 2016.</div>
-    </div>
-
-    <p class="section-title">Studio Albums</p>
-    <div class="album-list">
-
-        <div class="album-row" onclick="playSong('audio-vultures', 'CARNIVAL', 'Vultures 1')">
-            <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b8/Vultures_1_cover.jpg');"></div>
-            <div class="info">
-                <span class="name">Vultures 1 (2024)</span>
-                <span class="desc">A dark, heavy collaboration exploring new industrial sounds.</span>
-                <div class="features">FT: Ty Dolla $ign, Playboi Carti, Travis Scott</div>
-            </div>
-        </div>
-
-        <div class="album-row" onclick="playSong('audio-donda', 'Hurricane', 'Donda')">
-            <div class="art-thumb" style="background-color: #000; border: 1px solid #222;"></div>
-            <div class="info">
-                <span class="name">Donda (2021)</span>
-                <span class="desc">A massive tribute to his mother, blending gospel and minimal rap.</span>
-                <div class="features">FT: The Weeknd, Lil Baby, Jay-Z</div>
-            </div>
-        </div>
-
-        <div class="album-row" onclick="playSong('audio-ye', 'Ghost Town', 'Ye')">
-            <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg');"></div>
-            <div class="info">
-                <span class="name">Ye (2018)</span>
-                <span class="desc">An intimate 7-track look into mental health and family in Wyoming.</span>
-                <div class="features">FT: Kid Cudi, 070 Shake, Ty Dolla $ign</div>
-            </div>
-        </div>
-
-        <div class="album-row" onclick="playSong('audio-yeezus', 'Black Skinhead', 'Yeezus')">
-            <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/0/03/Yeezus_album_cover.png');"></div>
-            <div class="info">
-                <span class="name">Yeezus (2013)</span>
-                <span class="desc">Industrial, aggressive, and revolutionary. Minimalist art.</span>
-                <div class="features">FT: Daft Punk, Chief Keef, Justin Vernon</div>
-            </div>
-        </div>
-
-        <div class="album-row" onclick="playSong('audio-mbdtf', 'Runaway', 'MBDTF')">
-            <div class="art-thumb" style="background-image: url('https://m.media-amazon.com/images/I/A18S35XlSFL._SL1500_.jpg');"></div>
-            <div class="info">
-                <span class="name">My Beautiful Dark Twisted Fantasy (2010)</span>
-                <span class="desc">The maximalist peak of hip-hop. Grandiose and perfect.</span>
-                <div class="features">FT: Rihanna, Nicki Minaj, Bon Iver, Rick Ross</div>
-            </div>
-        </div>
-
-        <div class="album-row" onclick="playSong('audio-grad', 'Stronger', 'Graduation')">
-            <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/70/Graduation_%28album%29_cover.jpg');"></div>
-            <div class="info">
-                <span class="name">Graduation (2007)</span>
-                <span class="desc">The stadium-status era. Blending synth-pop with rap.</span>
-                <div class="features">FT: T-Pain, Daft Punk, Lil Wayne</div>
-            </div>
-        </div>
-
-    </div>
-
-    <p class="section-title">Vault & Upcoming</p>
-    <div class="album-list">
-        <div class="album-row" onclick="playSong('audio-bully', 'New Energy', 'Bully')">
-            <div class="art-thumb" style="background-image: url('https://i.redd.it/v07f3shm04sd1.png');"></div>
-            <div class="info">
-                <span class="name">Bully (Upcoming)</span>
-                <span class="desc">The highly anticipated new era. Concepts of growth and friction.</span>
-                <div class="features">FT: TBD</div>
-            </div>
-        </div>
-
-        <div class="album-row" onclick="playSong('audio-yandhi', 'Hurricane (OG)', 'Yandhi')">
-            <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/a/a2/Yandhi_Cover_Art.png');"></div>
-            <div class="info">
-                <span class="name">Yandhi (Unreleased)</span>
-                <span class="desc">The legendary 2018 project that lives in the vault.</span>
-                <div class="features">FT: Ant Clemons, Young Thug, XXXTentacion</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="player-bar">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <div id="p-art" style="width:40px; height:40px; border-radius:4px; background: #222; background-size:cover;"></div>
-            <div>
-                <span id="p-title" style="font-size:13px; font-weight:bold; display:block;">Not Playing</span>
-                <span id="p-album" style="font-size:11px; color:var(--gray);">Select an album</span>
-            </div>
-        </div>
-        <div id="play-icon" style="font-size:24px; cursor:pointer;">▶</div>
-    </div>
-
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item">🏠<br>Home</a>
-        <div class="nav-item">🔍<br>Search</div>
-        <a href="music.html" class="nav-item active">🎵<br>Music</a>
-        <div class="nav-item">👤<br>Lucas</div>
-    </div>
-
-    <script>
-        let currentAudio = null;
-
-        function playSong(audioId, title, album) {
-            const audio = document.getElementById(audioId);
-            const playIcon = document.getElementById('play-icon');
-            
-            if (currentAudio && currentAudio !== audio) {
-                currentAudio.pause();
-                currentAudio.currentTime = 0;
-            }
-
-            if (audio.paused) {
-                audio.play();
-                playIcon.innerText = '⏸';
-                document.getElementById('p-title').innerText = title;
-                document.getElementById('p-album').innerText = album;
-                currentAudio = audio;
-            } else {
-                audio.pause();
-                playIcon.innerText = '▶';
-            }
-        }
-    </script>
-
-</body>
-</html>
+    <audio id="
