@@ -2,63 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lucas's Movie Collection</title>
+    <title>Lucas's Movie Vault - Spider-Man</title>
     <style>
-        body {
-            background-color: #0a0c10;
-            color: #f9f9f9;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 40px;
+        body { 
+            background-color: #0b0b0b; 
+            color: white; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 40px; 
         }
-        h1 {
-            color: #fff;
-            text-shadow: 0 0 15px rgba(0, 114, 210, 0.6);
+        /* This creates the side-by-side layout */
+        .movie-container {
+            display: flex;
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            align-items: center;
+            gap: 40px;
         }
-        .category-title {
-            font-size: 1.4rem;
+        .poster-image {
+            width: 350px;
+            border-radius: 10px;
+            border: 2px solid #e50914;
+        }
+        .movie-details {
+            text-align: left;
+        }
+        h1 { color: #e50914; margin-top: 0; font-size: 2.5rem; }
+        p { line-height: 1.6; font-size: 1.1rem; color: #ccc; }
+        
+        /* Ratings Section */
+        .ratings {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .rating-item {
+            background: #252525;
+            padding: 10px 15px;
+            border-radius: 8px;
             font-weight: bold;
-            border-left: 5px solid #e50914;
-            padding-left: 15px;
-            margin-top: 40px;
         }
-        .movie-card {
-            width: 280px;
-            height: 400px; /* Taller for a movie poster look */
-            background-color: #1a1d29;
-            border-radius: 12px;
-            border: 2px solid #31343e;
-            overflow: hidden; /* Keeps the image inside the rounded corners */
-            margin-top: 15px;
-            transition: transform 0.3s, border-color 0.3s;
-            cursor: pointer;
-        }
-        .movie-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Makes the poster fit the box perfectly */
-        }
-        .movie-card:hover {
-            transform: scale(1.05);
-            border-color: #0072d2;
-        }
+        .rt-score { color: #fa320a; } /* Rotten Tomatoes Red */
+        .aud-score { color: #2ecc71; } /* Audience Green */
     </style>
 </head>
 <body>
 
-    <h1>Lucas's Premiere Theater 🎬</h1>
-    
-    <div class="category-title">Marvel Classics 🕷️</div>
+    <div class="movie-container">
+        <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/df6200l-d08e82a3-764f-4d4f-9e66-6b66a836858e.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" class="poster-image" alt="Spider-Man 2002">
 
-    <div class="movie-card" onclick="showDescription()">
-        <img src="https://m.media-amazon.com/images/M/MV5BMzY2OTgwODY5NV5BMl5BanBnXkFtZTcwMDQ4MTM2Mw@@._V1_.jpg" alt="Spider-Man 2002">
+        <div class="movie-details">
+            <h1>Spider-Man (2002)</h1>
+            <p>"Spider-Man" centers on student Peter Parker (Tobey Maguire) who, after being bitten by a genetically-altered spider, gains superhuman strength and the spider-like ability to cling to any surface. He vows to use his abilities to fight crime, coming to understand the words of his beloved Uncle Ben: "With great power comes great responsibility."</p>
+            
+            <div class="ratings">
+                <div class="rating-item">🍅 <span class="rt-score">Rotten Tomatoes: 90%</span></div>
+                <div class="rating-item">🍿 <span class="aud-score">Audience: 67%</span></div>
+            </div>
+        </div>
     </div>
-
-    <script>
-        function showDescription() {
-            alert("Spider-Man (2002):\n\nAfter being bitten by a genetically altered spider, awkward teenager Peter Parker maintains a double life as an agile superhero and faces off against the Green Goblin.");
-        }
-    </script>
 
 </body>
 </html>
