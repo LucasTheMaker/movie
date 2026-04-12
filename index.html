@@ -3,169 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goat Films & Audio</title>
+    <title>Goat Audio - Premium</title>
     <style>
-        :root { --red: #e50914; --accent: #fa243c; --bg: #000; --gray: #888; }
-        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 160px; overflow-x: hidden; }
+        :root { --accent: #fa243c; --bg: #000; --card: #1c1c1e; --gray: #8e8e93; }
+        body { background: var(--bg); color: white; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto; margin: 0; padding-bottom: 160px; overflow-x: hidden; }
 
-        /* Navigation Logic */
+        /* Navigation & Pages */
         .page { display: none; }
         .active-page { display: block; }
+        
+        /* Transition for Album View */
+        #album-detail-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; overflow-y: auto; display: none; }
 
         /* Header */
-        .header { padding: 40px 20px 10px; display: flex; align-items: center; justify-content: space-between; background: #000; position: sticky; top: 0; z-index: 2000; }
-        .logo-text { font-size: 26px; font-weight: bold; color: var(--red); letter-spacing: 1px; }
+        .header { padding: 40px 20px 10px; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); sticky: top; z-index: 100; }
+        .logo-text { font-size: 28px; font-weight: 800; }
 
-        /* Content Sections */
-        .section-title { font-size: 18px; font-weight: bold; padding: 25px 20px 12px; }
-        .row { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
-        .card { min-width: 130px; height: 195px; border-radius: 6px; background-size: cover; background-position: center; border: 1px solid #222; flex-shrink: 0; }
+        /* Featured Section */
+        .featured-hero { 
+            margin: 20px; height: 300px; border-radius: 12px;
+            background: linear-gradient(to top, rgba(0,0,0,1), transparent), url('https://upload.wikimedia.org/wikipedia/en/4/4d/The_Life_of_Pablo.jpg');
+            background-size: cover; background-position: center;
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
+            cursor: pointer;
+        }
 
-        /* Music List */
-        .album-list { padding: 0 20px; }
-        .album-row { display: flex; gap: 15px; align-items: center; padding: 15px 0; border-bottom: 1px solid #111; cursor: pointer; }
-        .art-thumb { width: 65px; height: 65px; border-radius: 6px; background-size: cover; background-position: center; flex-shrink: 0; border: 1px solid #333; }
-        .name { font-size: 15px; font-weight: 600; display: block; }
-        .features { font-size: 10px; color: var(--accent); font-weight: bold; margin-top: 2px; }
+        /* Album View Styles */
+        .back-btn { padding: 20px; color: var(--accent); font-weight: 600; cursor: pointer; }
+        .album-header { text-align: center; padding: 20px; }
+        .big-art { width: 220px; height: 220px; border-radius: 8px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        .album-title { font-size: 24px; font-weight: 700; margin: 0; }
+        .album-maker { color: var(--gray); font-size: 18px; margin-top: 5px; }
+        
+        .play-bar-main { 
+            display: flex; justify-content: center; gap: 20px; margin: 25px 0; 
+        }
+        .apple-play-btn { 
+            background: #2c2c2e; color: var(--accent); border: none; 
+            padding: 12px 60px; border-radius: 8px; font-size: 18px; font-weight: bold; 
+        }
 
-        /* Fixed Player & Nav */
-        .player-bar { position: fixed; bottom: 85px; left: 10px; right: 10px; height: 60px; background: rgba(25,25,25,0.98); backdrop-filter: blur(15px); border-radius: 12px; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; border: 1px solid #444; z-index: 1000; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 1001; }
-        .nav-item { text-align: center; font-size: 10px; color: #666; cursor: pointer; width: 25%; }
+        /* Tracklist */
+        .track-list { padding: 0 20px; }
+        .track-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid #222; }
+        .track-num { width: 30px; color: var(--gray); font-size: 14px; }
+        .track-info { flex-grow: 1; }
+        .track-name { font-size: 16px; font-weight: 500; display: block; }
+        .track-artists { font-size: 13px; color: var(--gray); }
+
+        /* Shared Components */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: rgba(20,20,20,0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; border-top: 0.5px solid #333; z-index: 4000; }
+        .nav-item { text-align: center; font-size: 11px; color: var(--gray); cursor: pointer; }
         .nav-item.active { color: white; }
     </style>
 </head>
 <body>
 
     <div id="home-page" class="page active-page">
-        <div class="header"><div class="logo-text">GOAT FILMS</div></div>
-        <p class="section-title">Superhero Collection</p>
-        <div class="row">
-            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg');"></div>
-            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
-            <div class="card" style="background-image: url('https://m.media-amazon.com/images/I/51X57o4KqHL._AC_UF894,1000_QL80_.jpg');"></div>
+        <div class="header"><div class="logo-text">Listen Now</div></div>
+        
+        <div class="featured-hero" onclick="openAlbum('The Life of Pablo', 'Kanye West', 'https://upload.wikimedia.org/wikipedia/en/4/4d/The_Life_of_Pablo.jpg')">
+            <div style="color: var(--accent); font-weight: bold; font-size: 12px; margin-bottom: 5px;">FEATURED ALBUM</div>
+            <div class="album-title">The Life of Pablo</div>
+            <div style="color: #ccc;">Kanye West • Album Maker</div>
         </div>
-        <p class="section-title">Trending Movies</p>
-        <div class="row">
-            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BNjM0NTc0NzItM2FlYS00YzEwLWE0YmUtNTA2ZWIzODc2OTgxXkEyXkFqcGdeQXVyNTgwNzIyNjM@._V1_.jpg');"></div>
-            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BNzA1Njg4NzYxOV5BMl5BanBnXkFtZTcwODk5NjU3Mg@@._V1_.jpg');"></div>
-        </div>
+
+        <p style="padding: 0 20px; font-size: 22px; font-weight: 700;">Recently Added</p>
+        <div style="padding: 0 20px; color: var(--gray);">Tap the featured album to see the tracklist.</div>
     </div>
 
-    <div id="music-page" class="page">
-        <div class="header"><div class="logo-text" style="color:white">GOAT AUDIO</div></div>
-        <p class="section-title">The Complete Discography</p>
-        <div class="album-list">
-            <div class="album-row" onclick="playSong('bully', 'New Tracks', 'Bully')">
-                <div class="art-thumb" style="background-image: url('https://i.redd.it/v07f3shm04sd1.png');"></div>
-                <div class="info"><span class="name">Bully (2026)</span><div class="features">LATEST RELEASE</div></div>
-            </div>
-            <div class="album-row" onclick="playSong('vultures1', 'CARNIVAL', 'Vultures 1')">
-                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b8/Vultures_1_cover.jpg');"></div>
-                <div class="info"><span class="name">Vultures 1 & 2 (2024)</span><div class="features">FT: Ty Dolla $ign, Playboi Carti</div></div>
-            </div>
-            <div class="album-row" onclick="playSong('donda', 'Hurricane', 'Donda')">
-                <div class="art-thumb" style="background-color:#000; border:1px solid #222;"></div>
-                <div class="info"><span class="name">Donda (2021)</span><div class="features">FT: The Weeknd, Travis Scott</div></div>
-            </div>
-            <div class="album-row" onclick="playSong('ye', 'Ghost Town', 'Ye')">
-                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg');"></div>
-                <div class="info"><span class="name">Ye (2018)</span><div class="features">FT: Kid Cudi, 070 Shake</div></div>
-            </div>
-            <div class="album-row" onclick="playSong('tlop', 'Famous', 'The Life of Pablo')">
-                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/4/4d/The_Life_of_Pablo.jpg');"></div>
-                <div class="info"><span class="name">The Life of Pablo (2016)</span><div class="features">FT: Rihanna, Kendrick Lamar</div></div>
-            </div>
-            <div class="album-row" onclick="playSong('yeezus', 'Black Skinhead', 'Yeezus')">
-                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/0/03/Yeezus_album_cover.png');"></div>
-                <div class="info"><span class="name">Yeezus (2013)</span><div class="features">FT: Daft Punk</div></div>
-            </div>
-            <div class="album-row" onclick="playSong('mbdtf', 'Runaway', 'MBDTF')">
-                <div class="art-thumb" style="background-image: url('https://m.media-amazon.com/images/I/A18S35XlSFL._SL1500_.jpg');"></div>
-                <div class="info"><span class="name">MBDTF (2010)</span><div class="features">FT: Rick Ross, Nicki Minaj</div></div>
-            </div>
-            <div class="album-row" onclick="playSong('grad', 'Stronger', 'Graduation')">
-                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/70/Graduation_%28album%29_cover.jpg');"></div>
-                <div class="info"><span class="name">Graduation (2007)</span><div class="features">FT: T-Pain, Lil Wayne</div></div>
-            </div>
-            <div class="album-row" onclick="playSong('lr', 'Gold Digger', 'Late Registration')">
-                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/f/f4/Late_registration_cd_cover.jpg');"></div>
-                <div class="info"><span class="name">Late Registration (2005)</span><div class="features">FT: Jamie Foxx, Adam Levine</div></div>
-            </div>
-            <div class="album-row" onclick="playSong('tcd', 'All Falls Down', 'The College Dropout')">
-                <div class="art-thumb" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/a/a3/Kanyewest_collegedropout.jpg');"></div>
-                <div class="info"><span class="name">The College Dropout (2004)</span><div class="features">THE DEBUT</div></div>
+    <div id="album-detail-view">
+        <div class="back-btn" onclick="closeAlbum()">❮ Library</div>
+        
+        <div class="album-header">
+            <img id="detail-art" class="big-art" src="">
+            <h1 id="detail-title" class="album-title"></h1>
+            <div id="detail-maker" class="album-maker"></div>
+            
+            <div class="play-bar-main">
+                <button class="apple-play-btn" onclick="alert('Playing Album...')">▶ Play</button>
             </div>
         </div>
-    </div>
 
-    <div class="player-bar">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <div id="p-art" style="width:40px; height:40px; border-radius:4px; background:#222; background-size:cover;"></div>
-            <div>
-                <span id="p-title" style="font-size:13px; font-weight:bold; display:block;">Select a Song</span>
-                <span id="p-album" style="font-size:11px; color:var(--gray);">Kanye West</span>
+        <div class="track-list" id="tracklist-container">
             </div>
-        </div>
-        <div id="play-icon" style="font-size:24px;">▶</div>
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
-            <span style="display:block; font-size:22px;">🏠</span>Home
-        </div>
-        <div class="nav-item">
-            <span style="display:block; font-size:22px;">🔍</span>Search
-        </div>
-        <div class="nav-item" id="nav-music" onclick="switchTab('music')">
-            <span style="display:block; font-size:22px;">🎵</span>Music
-        </div>
-        <div class="nav-item">
-            <span style="display:block; font-size:22px;">👤</span>Lucas
-        </div>
-    </div>
-
-    <div id="audio-container" style="display:none;">
-        <audio id="bully" src="bully.mp3"></audio>
-        <audio id="vultures1" src="vultures1.mp3"></audio>
-        <audio id="donda" src="donda.mp3"></audio>
-        <audio id="ye" src="ye.mp3"></audio>
-        <audio id="tlop" src="pablo.mp3"></audio>
-        <audio id="yeezus" src="yeezus.mp3"></audio>
-        <audio id="mbdtf" src="mbdtf.mp3"></audio>
-        <audio id="grad" src="graduation.mp3"></audio>
-        <audio id="lr" src="lr.mp3"></audio>
-        <audio id="tcd" src="tcd.mp3"></audio>
+        <div class="nav-item active" onclick="location.reload()">🏠<br>Home</div>
+        <div class="nav-item">🔍<br>Search</div>
+        <div class="nav-item">🎵<br>Library</div>
+        <div class="nav-item">👤<br>Lucas</div>
     </div>
 
     <script>
-        function switchTab(tab) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        // Album Data
+        const trackData = {
+            "The Life of Pablo": [
+                { num: 1, name: "Ultralight Beam", artists: "Kanye West, Chance the Rapper, Kirk Franklin" },
+                { num: 2, name: "Father Stretch My Hands Pt. 1", artists: "Kanye West, Kid Cudi" },
+                { num: 3, name: "Pt. 2", artists: "Kanye West, Desiigner" },
+                { num: 4, name: "Famous", artists: "Kanye West, Rihanna, Swizz Beatz" },
+                { num: 5, name: "Feedback", artists: "Kanye West" },
+                { num: 6, name: "Wolves", artists: "Kanye West, Sia, Vic Mensa" }
+            ]
+        };
 
-            if(tab === 'home') {
-                document.getElementById('home-page').classList.add('active-page');
-                document.getElementById('nav-home').classList.add('active');
-            } else {
-                document.getElementById('music-page').classList.add('active-page');
-                document.getElementById('nav-music').classList.add('active');
+        function openAlbum(title, maker, art) {
+            document.getElementById('detail-title').innerText = title;
+            document.getElementById('detail-maker').innerText = maker + " • Album Maker";
+            document.getElementById('detail-art').src = art;
+            
+            const container = document.getElementById('tracklist-container');
+            container.innerHTML = ""; // Clear old tracks
+
+            if (trackData[title]) {
+                trackData[title].forEach(track => {
+                    container.innerHTML += `
+                        <div class="track-item" onclick="alert('Playing ${track.name}')">
+                            <div class="track-num">${track.num}</div>
+                            <div class="track-info">
+                                <span class="track-name">${track.name}</span>
+                                <span class="track-artists">${track.artists}</span>
+                            </div>
+                            <div style="color: var(--accent); font-size: 20px;">+</div>
+                        </div>
+                    `;
+                });
             }
+
+            document.getElementById('album-detail-view').style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Stop background scrolling
         }
 
-        let currentAudio = null;
-        function playSong(id, title, album) {
-            const audio = document.getElementById(id);
-            if (currentAudio && currentAudio !== audio) { currentAudio.pause(); }
-            if (audio.paused) {
-                audio.play();
-                document.getElementById('play-icon').innerText = '⏸';
-                document.getElementById('p-title').innerText = title;
-                document.getElementById('p-album').innerText = album;
-                currentAudio = audio;
-            } else {
-                audio.pause();
-                document.getElementById('play-icon').innerText = '▶';
-            }
+        function closeAlbum() {
+            document.getElementById('album-detail-view').style.display = 'none';
+            document.body.style.overflow = 'auto';
         }
     </script>
 </body>
