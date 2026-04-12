@@ -5,7 +5,7 @@
     <title>Lucas's Movie Collection</title>
     <style>
         body {
-            background-color: #0a0c10; /* Disney+ Dark Blue */
+            background-color: #0a0c10;
             color: #f9f9f9;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             margin: 0;
@@ -18,21 +18,25 @@
         .category-title {
             font-size: 1.4rem;
             font-weight: bold;
-            border-left: 5px solid #e50914; /* Netflix Red Accent */
+            border-left: 5px solid #e50914;
             padding-left: 15px;
             margin-top: 40px;
         }
         .movie-card {
             width: 280px;
-            height: 160px;
+            height: 400px; /* Taller for a movie poster look */
             background-color: #1a1d29;
             border-radius: 12px;
             border: 2px solid #31343e;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden; /* Keeps the image inside the rounded corners */
             margin-top: 15px;
-            transition: transform 0.3s;
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: pointer;
+        }
+        .movie-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Makes the poster fit the box perfectly */
         }
         .movie-card:hover {
             transform: scale(1.05);
@@ -41,8 +45,20 @@
     </style>
 </head>
 <body>
+
     <h1>Lucas's Premiere Theater 🎬</h1>
+    
     <div class="category-title">Marvel Classics 🕷️</div>
-    <div class="movie-card">Spider-Man (2002) - Coming Soon</div>
+
+    <div class="movie-card" onclick="showDescription()">
+        <img src="https://m.media-amazon.com/images/M/MV5BMzY2OTgwODY5NV5BMl5BanBnXkFtZTcwMDQ4MTM2Mw@@._V1_.jpg" alt="Spider-Man 2002">
+    </div>
+
+    <script>
+        function showDescription() {
+            alert("Spider-Man (2002):\n\nAfter being bitten by a genetically altered spider, awkward teenager Peter Parker maintains a double life as an agile superhero and faces off against the Green Goblin.");
+        }
+    </script>
+
 </body>
 </html>
