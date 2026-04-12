@@ -8,64 +8,48 @@
         body { background: var(--bg); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
         
         .navbar { display: flex; align-items: center; padding: 20px 50px; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); position: fixed; width: 100%; top: 0; z-index: 1000; }
-        .logo { color: var(--red); font-size: 26px; font-weight: bold; text-decoration: none; text-transform: uppercase; }
+        .logo { color: var(--red); font-size: 26px; font-weight: bold; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
 
         .main-container { padding: 100px 50px 50px; }
         .section-title { font-size: 22px; font-weight: bold; margin: 40px 0 20px 0; }
 
-        /* Featured Section */
-        .featured-row { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 50px; }
+        .featured-row { display: flex; gap: 15px; align-items: flex-start; }
 
-        /* The Main Landscape Spider-Man Card */
+        /* Featured Landscape Card */
         .hero-container { width: 700px; flex-shrink: 0; cursor: pointer; text-decoration: none; color: white; }
         .hero-box { 
-            width: 100%; 
-            height: 400px; /* Base height we are matching */
-            border-radius: 6px; 
-            overflow: hidden; 
-            border: 2px solid #333;
-            transition: 0.3s;
+            width: 100%; height: 400px; 
+            border-radius: 6px; overflow: hidden; border: 2px solid #333; transition: 0.3s;
         }
         .hero-img { width: 100%; height: 100%; object-fit: cover; }
         .hero-container:hover .hero-box { border-color: white; transform: scale(1.01); }
 
-        /* Vertical Cards - NOW MATCHING HERO HEIGHT */
-        .poster-grid { display: flex; gap: 15px; flex-wrap: wrap; }
+        /* Standing Tall Vertical Cards */
         .vertical-card { 
-            width: 280px;  /* Slightly wider to keep the ratio nice */
-            height: 400px; /* MATCHES SPIDER-MAN HEIGHT */
-            border-radius: 6px; 
-            background-size: cover; 
-            background-position: center; 
-            cursor: pointer; 
-            transition: 0.3s;
-            border: 2px solid #333;
-            flex-shrink: 0;
+            width: 280px; height: 400px; /* Matches Hero Height */
+            border-radius: 6px; background-size: cover; background-position: center; 
+            cursor: pointer; transition: 0.3s; border: 2px solid #333; flex-shrink: 0;
         }
         .vertical-card:hover { transform: scale(1.05); border-color: white; z-index: 10; }
 
         .hero-details { margin-top: 15px; }
         .description { font-size: 15px; color: #ccc; line-height: 1.4; max-width: 650px; }
-        .btn { padding: 10px 25px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        .btn { padding: 10px 25px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; margin-top: 15px; background: white; color: black; }
     </style>
 </head>
 <body>
-
     <nav class="navbar">
         <a href="index.html" class="logo">GOAT MOVIES</a>
     </nav>
 
     <div class="main-container">
-        
         <p class="section-title">My List</p>
         <div class="featured-row">
             <div class="hero-container" onclick="window.location.href='spiderman-2002.html'">
-                <div class="hero-box">
-                    <img src="https://i.ebayimg.com/images/g/Mf0AAOSwRfxmXaGY/s-l1200.jpg" class="hero-img">
-                </div>
+                <div class="hero-box"><img src="https://i.ebayimg.com/images/g/Mf0AAOSwRfxmXaGY/s-l1200.jpg" class="hero-img"></div>
                 <div class="hero-details">
                     <div class="description">After being bitten by a genetically-altered spider, Peter Parker gains superhuman strength and the ability to fight crime.</div>
-                    <button class="btn" style="background: white; color: black;">▶ Play</button>
+                    <button class="btn">▶ Play</button>
                 </div>
             </div>
 
@@ -73,15 +57,6 @@
             
             <div class="vertical-card" style="background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/df6200l-d08e82a3-764f-4d4f-9e66-6b66a836858e.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9');"></div>
         </div>
-
-        <p class="section-title">Continue Watching</p>
-        <div class="poster-grid">
-            <div class="vertical-card" style="background-image: url('https://image.tmdb.org/t/p/original/8G6678S1E8S1YCh6YI66Xy989.jpg');"></div>
-            <div class="vertical-card" style="background-image: url('https://image.tmdb.org/t/p/original/m99O9rK3X4T38787888S1E866.jpg');"></div>
-            <div class="vertical-card" style="background-image: url('https://image.tmdb.org/t/p/original/unmYpY4vC0O9G7VvFm7aR3Qk2mD.jpg');"></div>
-        </div>
-
     </div>
-
 </body>
 </html>
