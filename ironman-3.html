@@ -1,1 +1,44 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Goat Movies - Iron Man 3</title>
+    <style>
+        body { background: #000; color: #fff; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; display: flex; align-items: center; height: 100vh; overflow: hidden; }
+        .background-image {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 100%), url('https://images.alphacoders.com/433/433142.jpg');
+            background-size: cover; background-position: center; z-index: -1;
+        }
+        .navbar { position: fixed; top: 0; padding: 20px 50px; width: 100%; z-index: 10; }
+        .logo { color: #e50914; font-size: 25px; font-weight: bold; text-decoration: none; text-transform: uppercase; }
+        .info-container { max-width: 850px; padding: 0 50px; z-index: 5; }
+        h1 { font-size: 4rem; margin: 0; text-transform: uppercase; }
+        .description { font-size: 1.1rem; margin: 15px 0; color: #ccc; max-width: 550px; line-height: 1.4; }
+        .play-btn { background: #fff; color: #000; border: none; padding: 15px 40px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 4px; transition: 0.3s; }
+        .play-btn:hover { background: #e50914; color: white; box-shadow: 0 0 20px rgba(229, 9, 20, 0.7); transform: scale(1.05); }
+        .subtitle { color: #aaa; font-size: 0.8rem; font-weight: bold; letter-spacing: 2px; margin-top: 30px; text-transform: uppercase; }
+        .row { display: flex; gap: 15px; margin-top: 10px; }
+        .poster-card { width: 130px; height: 195px; border: 2px solid #333; cursor: pointer; border-radius: 4px; background-size: cover; background-position: center; transition: 0.3s; }
+        .poster-card:hover { border-color: #fff; transform: scale(1.05); }
+        .current { border-color: #e50914; box-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
+    </style>
+</head>
+<body>
+    <div class="background-image"></div>
+    <nav class="navbar"><a href="index.html" class="logo">GOAT MOVIES</a></nav>
+    <div class="info-container">
+        <p style="color: #e50914; font-weight: bold; margin-bottom: 5px;">MARVEL STUDIOS</p>
+        <h1>IRON MAN 3</h1>
+        <p class="description">When Tony Stark's world is torn apart by a formidable terrorist called the Mandarin, he starts an odyssey of rebuilding and retribution.</p>
+        <button class="play-btn" onclick="alert('House Party Protocol Engaged...')">▶ Watch Now</button>
+        <p class="subtitle">The Iron Man Trilogy</p>
+        <div class="row">
+            <div class="poster-card" onclick="window.location.href='IronMan-2008.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
+            <div class="poster-card" onclick="window.location.href='ironman-2.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTM0MDgwNjMyMl5BMl5BanBnXkFtZTcwNTg3NzAzMw@@._V1_.jpg');"></div>
+            <div class="poster-card current" onclick="window.location.href='ironman-3.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMjMzMzMwOTcxMV5BMl5BanBnXkFtZTcwNjcxOTgzOQ@@._V1_.jpg');"></div>
+        </div>
+        <br><a href="index.html" style="color: #888; text-decoration: none; font-size: 0.8rem;">← Back to Home</a>
+    </div>
+</body>
+</html>
