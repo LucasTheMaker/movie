@@ -3,98 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goat Films - Music</title>
+    <title>Goat Audio - Kanye West</title>
     <style>
-        :root { --red: #e50914; --bg: #000; --gray: #a9a9a9; }
-        body { background: var(--bg); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding-bottom: 90px; overflow-x: hidden; }
+        :root { --accent: #fa243c; --bg: #000; --card: #121212; }
+        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 110px; }
 
-        /* Header */
-        .music-header { padding: 40px 20px 10px; font-size: 24px; font-weight: bold; display: flex; justify-content: space-between; }
-        
-        /* Hero section for the latest/featured vibe */
-        .featured-hero {
-            height: 35vh; margin: 0 20px; border-radius: 12px;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent), 
+        .header { padding: 50px 20px 20px; background: linear-gradient(to bottom, #1a1a1a, #000); }
+        h1 { font-size: 34px; font-weight: 800; margin: 0; }
+        .subtitle { color: #888; font-size: 14px; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Featured Hero Card */
+        .featured-card {
+            margin: 20px; height: 260px; border-radius: 14px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent), 
                         url('https://upload.wikimedia.org/wikipedia/en/4/4d/The_Life_of_Pablo.jpg');
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+        }
+
+        /* Grid Layout */
+        .section-title { padding: 10px 20px; font-size: 20px; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
+        
+        .album-item { cursor: pointer; margin-bottom: 10px; }
+        .album-art { 
+            width: 100%; aspect-ratio: 1/1; border-radius: 10px; 
+            background-size: cover; background-position: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4); margin-bottom: 8px;
             border: 1px solid #222;
         }
+        .album-name { font-size: 14px; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .album-artist { font-size: 12px; color: #777; }
 
-        /* Section Styling */
-        .section-title { padding: 25px 20px 12px; font-size: 18px; font-weight: bold; letter-spacing: 0.5px; }
-        .album-row { display: flex; gap: 15px; padding: 0 20px; overflow-x: auto; scroll-behavior: smooth; }
-        .album-row::-webkit-scrollbar { display: none; }
-
-        /* Album Cards */
-        .album-card { 
-            min-width: 150px; width: 150px; cursor: pointer; transition: 0.3s; 
+        /* Floating Player Bar */
+        .player-bar {
+            position: fixed; bottom: 85px; left: 10px; right: 10px;
+            height: 56px; background: rgba(30,30,30,0.95); backdrop-filter: blur(10px);
+            border-radius: 8px; display: flex; align-items: center; padding: 0 12px;
+            justify-content: space-between; border: 1px solid #333; z-index: 100;
         }
-        .album-art { 
-            width: 150px; height: 150px; border-radius: 4px; background-size: cover; 
-            background-position: center; border: 1px solid #333;
-        }
-        .album-card:hover { transform: scale(1.05); }
-        .album-info { margin-top: 8px; }
-        .album-name { font-size: 14px; font-weight: bold; display: block; }
-        .album-year { font-size: 12px; color: var(--gray); }
 
-        /* Bottom Navigation */
+        .play-pause-btn { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+
+        /* Bottom Nav */
         .bottom-nav { 
-            position: fixed; bottom: 0; width: 100%; height: 70px;
-            background: rgba(10, 10, 10, 0.98); display: flex; justify-content: space-around;
-            align-items: center; border-top: 1px solid #222; backdrop-filter: blur(10px); z-index: 100;
-        }
-        .nav-item { text-align: center; font-size: 10px; color: #777; text-decoration: none; cursor: pointer; }
-        .nav-item.active { color: white; }
-    </style>
-</head>
-<body>
-
-    <div class="music-header">
-        <span>Goat Audio</span>
-        <span style="font-size: 18px;">🔍</span>
-    </div>
-
-    <div class="featured-hero">
-        <span style="color: var(--red); font-size: 12px; font-weight: bold;">FEATURED ALBUM</span>
-        <h2 style="margin: 5px 0;">The Life Of Pablo</h2>
-    </div>
-
-    <p class="section-title">Official Releases</p>
-    <div class="album-row">
-        <div class="album-card">
-            <div class="album-art" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b8/Vultures_1_cover.jpg');"></div>
-            <div class="album-info"><span class="album-name">Vultures 1</span><span class="album-year">2024</span></div>
-        </div>
-        <div class="album-card">
-            <div class="album-art" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg');"></div>
-            <div class="album-info"><span class="album-name">Ye</span><span class="album-year">2018</span></div>
-        </div>
-        <div class="album-card">
-            <div class="album-art" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/4/4d/The_Life_of_Pablo.jpg');"></div>
-            <div class="album-info"><span class="album-name">TLOP</span><span class="album-year">2016</span></div>
-        </div>
-    </div>
-
-    <p class="section-title">Rare & Upcoming</p>
-    <div class="album-row">
-        <div class="album-card">
-            <div class="album-art" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/a/a2/Yandhi_Cover_Art.png');"></div>
-            <div class="album-info"><span class="album-name">Yandhi</span><span class="album-year">Unreleased</span></div>
-        </div>
-        <div class="album-card">
-            <div class="album-art" style="background-color: #111; display: flex; align-items: center; justify-content: center; font-style: italic; font-size: 20px;">BULLY</div>
-            <div class="album-info"><span class="album-name">Bully</span><span class="album-year">Upcoming</span></div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <a href="index.html" class="nav-item">🏠<br>Home</a>
-        <a href="#" class="nav-item">🔍<br>Search</a>
-        <a href="music.html" class="nav-item active">🎵<br>Music</a>
-        <a href="#" class="nav-item">👤<br>Lucas</a>
-    </div>
-
-</body>
-</html>
+            position: fixed; bottom: 0; width: 100%; height: 75px;
+            background: #000; display
