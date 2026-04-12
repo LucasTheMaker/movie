@@ -1,1 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Goat Movies - Iron Man (2008)</title>
+    <style>
+        body { 
+            background-color: #000; 
+            color: #e5e5e5; 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            overflow: hidden; 
+        }
 
+        .background-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Cinematic Iron Man landscape image */
+            background-image: url('https://images.wallpapersden.com/image/download/iron-man-tony-stark-movie_a2psZ2aUmZqaraWkpJRmbmdlrWZnZWU.jpg'); 
+            background-size: cover;
+            background-position: center 20%;
+            z-index: -1;
+            /* Gradient fade for text readability */
+            background-image: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%);
+        }
+
+        .navbar {
+            height: 68px;
+            display: flex;
+            align-items: center;
+            padding: 0 4%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 10;
+        }
+        .logo { color: #e50914; font-weight: bold; font-size: 25px; text-decoration: none; text-transform: uppercase;}
+
+        .info-container {
+            max-width: 600px;
+            text-align: left;
+            padding: 0 4%;
+            z-index: 2;
+        }
+        
+        .series-tag { color: #e50914; font-weight: bold; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 5px; text-transform: uppercase;}
+        
+        h1 { font-size: 4rem; margin: 0 0 15px 0; font-weight: 900; line-height: 1; text-transform: uppercase; }
+        
+        .meta-data { margin-bottom: 20px; font-weight: bold; color: #46d369; font-size: 1.1rem;} 
+        
+        .description { font-size: 1.15rem; line-height: 1.6; color: #fff; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+
+        .btn-group { display: flex; gap: 15px; margin-top: 35px; }
+
+        .play-btn {
+            background-color: white;
+            color: black;
+            border: none;
+            padding: 12px 35px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .play-btn:hover { background-color: rgba(255,255,255,0.8); }
+
+        .back-link { 
+            display: inline-block; 
+            color: #aaa; 
+            text-decoration: none; 
+            font-size: 1rem;
+            margin-top: 25px;
+            transition: 0.3s;
+        }
+        .back-link:hover { color: white; }
+    </style>
+</head>
+<body>
+    
+    <div class="background-image"></div>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">GOAT MOVIES</a>
+    </nav>
+
+    <div class="info-container">
+        <div class="series-tag">A Marvel Studios Movie</div>
+        <h1>IRON MAN</h1>
+        
+        <div class="meta-data">99% Match &nbsp; 2008 &nbsp; PG-13 &nbsp; 2h 6m</div>
+        
+        <div class="description">
+            After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil. As he refines the technology, he must protect his invention from those who want to use it for destruction.
+        </div>
+
+        <div class="btn-group">
+            <button class="play-btn">▶ Watch Now</button>
+        </div>
+        
+        <a href="index.html" class="back-link">← Back to Home Page</a>
+    </div>
+
+</body>
+</html>
