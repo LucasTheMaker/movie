@@ -14,43 +14,41 @@
         .main-container { padding: 100px 50px 50px; }
         .section-title { font-size: 22px; font-weight: bold; margin: 40px 0 20px 0; }
 
-        /* Row Layout */
-        .focus-row { display: flex; gap: 15px; align-items: flex-start; }
-
-        /* Large Focus Card Styling */
-        .hero-container { width: 750px; flex-shrink: 0; cursor: pointer; text-decoration: none; color: white; display: block; }
-        .image-box { 
+        /* Featured Section (Landscape) */
+        .featured-row { display: flex; gap: 15px; align-items: flex-start; margin-bottom: 50px; }
+        .hero-container { width: 750px; flex-shrink: 0; cursor: pointer; text-decoration: none; color: white; }
+        .hero-box { 
             width: 100%; 
             height: 420px; 
             border-radius: 6px; 
             overflow: hidden; 
             border: 2px solid #333;
-            transition: 0.3s ease-in-out;
+            transition: 0.3s ease;
         }
         .hero-img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-container:hover .image-box { border-color: white; transform: scale(1.01); }
+        .hero-container:hover .hero-box { border-color: white; transform: scale(1.01); }
 
         .hero-details { margin-top: 15px; }
         .meta { color: var(--gray); font-weight: bold; font-size: 14px; margin-bottom: 10px; }
         .description { font-size: 16px; line-height: 1.4; color: #ccc; max-width: 700px; }
 
-        .btn-row { display: flex; gap: 12px; margin-top: 20px; }
-        .btn { padding: 12px 28px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; }
-        .btn-play { background: white; color: black; }
-        .btn-info { background: rgba(109, 109, 110, 0.7); color: white; }
-
-        /* Small Cards for the side */
-        .small-card { 
-            width: 280px; 
-            height: 420px; 
+        /* Poster Grid (Standing Tall) */
+        .poster-grid { display: flex; gap: 15px; flex-wrap: wrap; }
+        .poster-card { 
+            width: 220px; /* Thinner width for "Standing Tall" look */
+            height: 330px; /* Taller height */
             border-radius: 6px; 
             background-size: cover; 
             background-position: center; 
             cursor: pointer; 
             transition: 0.3s;
             border: 2px solid transparent;
+            flex-shrink: 0;
         }
-        .small-card:hover { transform: scale(1.05); border-color: white; }
+        .poster-card:hover { transform: scale(1.05); border-color: white; z-index: 5; }
+
+        .btn { padding: 12px 28px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 15px; }
+        .btn-play { background: white; color: black; }
     </style>
 </head>
 <body>
@@ -66,47 +64,17 @@
 
     <div class="main-container">
         
-        <p class="section-title">My List</p>
-        <div class="focus-row">
+        <p class="section-title">Featured Today</p>
+        <div class="featured-row">
             <div class="hero-container" onclick="window.location.href='spiderman-2002.html'">
-                <div class="image-box">
+                <div class="hero-box">
                     <img src="https://i.ebayimg.com/images/g/Mf0AAOSwRfxmXaGY/s-l1200.jpg" class="hero-img">
                 </div>
                 <div class="hero-details">
                     <div class="meta">Superheroes • 2002 • Movie • PG-13</div>
                     <div class="description">After being bitten by a genetically-altered spider, Peter Parker gains superhuman strength and the ability to fight crime.</div>
-                    <div class="btn-row">
-                        <button class="btn btn-play">▶ Play</button>
-                        <button class="btn btn-info">ⓘ More Info</button>
-                    </div>
+                    <button class="btn btn-play">▶ Play</button>
                 </div>
             </div>
 
-            <div class="small-card" style="background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/df6200l-d08e82a3-764f-4d4f-9e66-6b66a836858e.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9');">
-            </div>
-        </div>
-
-        <p class="section-title">The Avengers Initiative</p>
-        <div class="focus-row">
-            <div class="hero-container" onclick="window.location.href='ironman-2008.html'">
-                <div class="image-box">
-                    <img src="https://images.wallpapersden.com/image/download/iron-man-tony-stark-movie_a2psZ2aUmZqaraWkpJRmbmdlrWZnZWU.jpg" class="hero-img">
-                </div>
-                <div class="hero-details">
-                    <div class="meta">Superheroes • 2008 • Movie • PG-13</div>
-                    <div class="description">After being held captive, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.</div>
-                    <div class="btn-row">
-                        <button class="btn btn-play">▶ Play</button>
-                        <button class="btn btn-info">ⓘ More Info</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="small-card" style="background-image: url('https://image.tmdb.org/t/p/original/8G6678S1E8S1YCh6YI66Xy989.jpg');">
-            </div>
-        </div>
-
-    </div>
-
-</body>
-</html>
+            <div class="poster-card" style="background-image: url('
