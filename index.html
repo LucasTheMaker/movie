@@ -2,69 +2,156 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lucas's Movie Vault - Spider-Man</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LucasFlix - Home</title>
     <style>
-        body { 
-            background-color: #0b0b0b; 
-            color: white; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            padding: 40px; 
+        :root {
+            --netflix-red: #e50914;
+            --dark-bg: #141414;
         }
-        /* This creates the side-by-side layout */
-        .movie-container {
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Interactive Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
             display: flex;
-            max-width: 1000px;
-            margin: 0 auto;
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
             align-items: center;
-            gap: 40px;
+            padding: 0 4%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, rgba(0,0,0,0));
+            z-index: 100;
+            transition: background 0.3s;
         }
-        .poster-image {
-            width: 350px;
-            border-radius: 10px;
-            border: 2px solid #e50914;
-        }
-        .movie-details {
-            text-align: left;
-        }
-        h1 { color: #e50914; margin-top: 0; font-size: 2.5rem; }
-        p { line-height: 1.6; font-size: 1.1rem; color: #ccc; }
-        
-        /* Ratings Section */
-        .ratings {
-            margin-top: 20px;
+
+        .logo { color: var(--netflix-red); font-size: 28px; font-weight: bold; text-decoration: none; margin-right: 25px; }
+        .nav-links { display: flex; gap: 20px; font-size: 14px; }
+        .nav-links span { cursor: pointer; transition: color 0.3s; }
+        .nav-links span:hover { color: #b3b3b3; }
+
+        /* Hero Banner Section */
+        .hero {
+            height: 80vh;
+            background-image: linear-gradient(to top, var(--dark-bg) 5%, rgba(0,0,0,0) 50%), 
+                              url('https://image.tmdb.org/t/p/original/a4wW508oN4b5A6lS897mU86E0Yq.jpg');
+            background-size: cover;
+            background-position: center 20%;
             display: flex;
-            gap: 20px;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 4%;
         }
-        .rating-item {
-            background: #252525;
-            padding: 10px 15px;
-            border-radius: 8px;
+
+        .hero-title { font-size: 4rem; margin: 0; font-weight: bold; text-transform: uppercase; }
+        .hero-desc { max-width: 500px; font-size: 1.2rem; margin: 20px 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        
+        .hero-btns { display: flex; gap: 15px; }
+        .btn { padding: 12px 30px; border-radius: 4px; border: none; font-weight: bold; font-size: 1rem; cursor: pointer; display: flex; align-items: center; gap: 10px; }
+        .play { background-color: white; color: black; }
+        .info { background-color: rgba(109, 109, 110, 0.7); color: white; }
+        .btn:hover { opacity: 0.8; }
+
+        /* Movie Rows */
+        .row { padding: 20px 4%; }
+        .row-title { font-size: 1.4rem; font-weight: bold; margin-bottom: 15px; }
+        .card-container { display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
+        .card-container::-webkit-scrollbar { display: none; }
+
+        /* The Animated Movie Card */
+        .movie-card {
+            min-width: 240px;
+            height: 135px;
+            background-color: #333;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.4s ease, box-shadow 0.4s;
+            position: relative;
+            text-decoration: none;
+            overflow: hidden;
+        }
+
+        .movie-card img { width: 100%; height: 100%; object-fit: cover; }
+
+        .movie-card:hover {
+            transform: scale(1.3);
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        /* Specifically for your Spider-Man hover swap */
+        .spidey-card:hover img {
+            content: url('https://w.wallhaven.cc/full/8o/wallhaven-8owmxj.jpg');
+        }
+
+        .card-title {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 12px;
             font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
         }
-        .rt-score { color: #fa320a; } /* Rotten Tomatoes Red */
-        .aud-score { color: #2ecc71; } /* Audience Green */
+        .movie-card:hover .card-title { opacity: 1; }
     </style>
 </head>
 <body>
 
-    <div class="movie-container">
-        <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/df6200l-d08e82a3-764f-4d4f-9e66-6b66a836858e.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" class="poster-image" alt="Spider-Man 2002">
+    <nav class="navbar" id="nav">
+        <a href="index.html" class="logo">LUCASFLIX</a>
+        <div class="nav-links">
+            <span>Home</span>
+            <span>TV Shows</span>
+            <span>Movies</span>
+            <span>New & Popular</span>
+            <span>My List</span>
+        </div>
+    </nav>
 
-        <div class="movie-details">
-            <h1>Spider-Man (2002)</h1>
-            <p>"Spider-Man" centers on student Peter Parker (Tobey Maguire) who, after being bitten by a genetically-altered spider, gains superhuman strength and the spider-like ability to cling to any surface. He vows to use his abilities to fight crime, coming to understand the words of his beloved Uncle Ben: "With great power comes great responsibility."</p>
-            
-            <div class="ratings">
-                <div class="rating-item">🍅 <span class="rt-score">Rotten Tomatoes: 90%</span></div>
-                <div class="rating-item">🍿 <span class="aud-score">Audience: 67%</span></div>
-            </div>
+    <header class="hero">
+        <h1 class="hero-title">Spider-Man</h1>
+        <p class="hero-desc">With great power comes great responsibility. Peter Parker balances high school life with his secret identity as a web-slinging hero.</p>
+        <div class="hero-btns">
+            <button class="btn play" onclick="window.location.href='spiderman-2002.html'">▶ Play</button>
+            <button class="btn info" onclick="window.location.href='spiderman-2002.html'">ⓘ More Info</button>
+        </div>
+    </header>
+
+    <div class="row">
+        <p class="row-title">My List</p>
+        <div class="card-container">
+            <a href="spiderman-2002.html" class="movie-card spidey-card">
+                <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/b2a370e5-79a8-4856-9762-b918731d7e2e/dg8f9d0-c977926e-6be4-472e-8e81-2b0e89f8a32a.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" alt="Spider-Man">
+                <div class="card-title">Spider-Man (2002)</div>
+            </a>
+
+            <div class="movie-card"><img src="https://via.placeholder.com/240x135/222/fff?text=Coming+Soon" alt="Placeholder"></div>
+            <div class="movie-card"><img src="https://via.placeholder.com/240x135/222/fff?text=Coming+Soon" alt="Placeholder"></div>
+            <div class="movie-card"><img src="https://via.placeholder.com/240x135/222/fff?text=Coming+Soon" alt="Placeholder"></div>
+            <div class="movie-card"><img src="https://via.placeholder.com/240x135/222/fff?text=Coming+Soon" alt="Placeholder"></div>
         </div>
     </div>
+
+    <script>
+        // Make navbar background appear when scrolling
+        const nav = document.getElementById('nav');
+        window.onscroll = function() {
+            if (window.scrollY > 100) {
+                nav.style.backgroundColor = "#141414";
+            } else {
+                nav.style.backgroundColor = "transparent";
+            }
+        };
+    </script>
 
 </body>
 </html>
