@@ -2,33 +2,108 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spider-Man (2002)</title>
     <style>
-        body { background: #000; color: #fff; font-family: Arial, sans-serif; margin: 0; display: flex; align-items: center; height: 100vh; overflow: hidden; }
-        .bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(90deg, #000 20%, transparent 100%), url('https://images.alphacoders.com/131/1319767.jpeg'); background-size: cover; z-index: -1; }
-        .content { padding: 0 50px; z-index: 5; }
-        h1 { font-size: 4rem; margin: 0; }
-        .play-btn { background: #fff; padding: 15px 40px; font-weight: bold; cursor: pointer; border: none; border-radius: 4px; transition: 0.3s; }
-        .play-btn:hover { background: #e5e5e5; transform: scale(1.05); }
-        .row { display: flex; gap: 15px; margin-top: 20px; }
-        .card { width: 120px; height: 180px; border: 2px solid #333; cursor: pointer; background-size: cover; border-radius: 4px; transition: 0.3s; }
-        .card:hover { border-color: white; transform: scale(1.1); }
+        body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            margin: 0; 
+            display: flex; 
+            align-items: center; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+        
+        /* Fixed Background: Corrected to Spider-Man */
+        .bg { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: linear-gradient(90deg, rgba(0,0,0,0.9) 20%, transparent 100%), 
+                        url('https://images.alphacoders.com/131/1319767.jpeg'); 
+            background-size: cover; 
+            background-position: center;
+            z-index: -1; 
+        }
+
+        .content { padding: 0 5%; z-index: 5; }
+        
+        h1 { font-size: 3.5rem; margin: 0; text-transform: uppercase; letter-spacing: -2px; }
+        
+        .description { max-width: 450px; color: #ccc; line-height: 1.5; margin: 15px 0; font-size: 1rem; }
+        
+        .play-btn { 
+            background: #fff; 
+            color: #000;
+            padding: 12px 35px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 4px; 
+            font-size: 1rem;
+        }
+
+        .subtitle { 
+            margin-top: 40px; 
+            font-size: 0.75rem; 
+            color: #888; 
+            letter-spacing: 2px; 
+            text-transform: uppercase;
+        }
+
+        .row { display: flex; gap: 12px; margin-top: 15px; }
+
+        /* Movie Covers */
+        .card { 
+            width: 110px; 
+            height: 165px; 
+            border: 2px solid #333; 
+            cursor: pointer; 
+            background-size: cover; 
+            background-position: center;
+            border-radius: 6px; 
+            transition: 0.3s; 
+        }
+
+        .card:hover { border-color: #fff; transform: scale(1.05); }
+        .current { border-color: #e50914; box-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
+
+        .back-link { 
+            display: inline-block;
+            margin-top: 30px;
+            color: #666; 
+            text-decoration: none; 
+            font-size: 0.8rem; 
+        }
     </style>
 </head>
 <body>
     <div class="bg"></div>
+    
     <div class="content">
+        <p style="color: #e50914; font-weight: bold; margin-bottom: 5px;">MARVEL</p>
         <h1>SPIDER-MAN</h1>
-        <p style="max-width: 500px; color: #ccc;">Average teenager Peter Parker is transformed into an extraordinary super hero after he is accidentally bitten by a radioactive spider.</p>
+        <p class="description">Average teenager Peter Parker is transformed into an extraordinary super hero after he is accidentally bitten by a radioactive spider.</p>
+        
         <button class="play-btn">▶ Watch Now</button>
         
-        <p style="margin-top: 40px; font-size: 0.8rem; color: #888; letter-spacing: 2px;">THE TRILOGY</p>
+        <p class="subtitle">The Trilogy</p>
         <div class="row">
-            <div class="card" onclick="window.location.href='spiderman-2002.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg'); border-color: #e50914;"></div>
-            <div class="card" onclick="window.location.href='spiderman-2.html'" style="background-image: url('https://m.media-amazon.com/images/I/51B6-Yc6RGL._AC_UF894,1000_QL80_.jpg');"></div>
-            <div class="card" onclick="window.location.href='spiderman-3.html'" style="background-image: url('https://m.media-amazon.com/images/I/51X57o4KqHL._AC_UF894,1000_QL80_.jpg');"></div>
+            <div class="card current" onclick="window.location.href='spiderman-2002.html'" 
+                 style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg');"></div>
+            
+            <div class="card" onclick="window.location.href='spiderman-2.html'" 
+                 style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
+            
+            <div class="card" onclick="window.location.href='spiderman-3.html'" 
+                 style="background-image: url('https://m.media-amazon.com/images/M/MV5BYTNjYWE0ZDAtZDM1NS00ZTI0LTgwYjktYzE1OTFhY2E3N2FkXkEyXkFqcGdeQXVyMTEyMjM2NDc2._V1_.jpg');"></div>
         </div>
-        <br><a href="index.html" style="color: #666; text-decoration: none; font-size: 0.8rem;">← Home</a>
+        
+        <a href="index.html" class="back-link">← Home</a>
     </div>
 </body>
 </html>
