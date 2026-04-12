@@ -2,42 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Goat Movies - Home</title>
+    <title>Goat Movies - Iron Man (2008)</title>
     <style>
-        :root { --bg: #000; --red: #e50914; }
-        body { background: var(--bg); color: white; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
-        .navbar { display: flex; align-items: center; padding: 20px 50px; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent); position: fixed; width: 100%; top: 0; z-index: 1000; }
-        .logo { color: var(--red); font-size: 26px; font-weight: bold; text-decoration: none; text-transform: uppercase; }
-        .main-container { padding: 100px 50px 50px; }
-        .section-title { font-size: 22px; font-weight: bold; margin: 40px 0 20px 0; }
-        .featured-row { display: flex; gap: 15px; align-items: flex-start; }
-        .hero-container { width: 700px; flex-shrink: 0; cursor: pointer; color: white; text-decoration: none; }
-        .hero-box { width: 100%; height: 400px; border-radius: 6px; overflow: hidden; border: 2px solid #333; transition: 0.3s; }
-        .hero-img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-container:hover .hero-box { border-color: white; transform: scale(1.01); }
-        .vertical-card { width: 280px; height: 400px; border-radius: 6px; background-size: cover; background-position: center; cursor: pointer; transition: 0.3s; border: 2px solid #333; flex-shrink: 0; }
-        .vertical-card:hover { transform: scale(1.05); border-color: white; z-index: 10; }
-        .hero-details { margin-top: 15px; }
-        .btn { padding: 10px 25px; border-radius: 4px; border: none; font-weight: bold; cursor: pointer; margin-top: 15px; background: white; color: black; }
+        body { background: #000; color: #fff; font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0; display: flex; align-items: center; height: 100vh; overflow: hidden; }
+        .background-image {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 100%), url('https://images.wallpapersden.com/image/download/iron-man-tony-stark-movie_a2psZ2aUmZqaraWkpJRmbmdlrWZnZWU.jpg');
+            background-size: cover; background-position: center 20%; z-index: -1;
+        }
+        .navbar { position: fixed; top: 0; padding: 20px 50px; width: 100%; z-index: 10; }
+        .logo { color: #e50914; font-size: 25px; font-weight: bold; text-decoration: none; text-transform: uppercase; }
+        .info-container { max-width: 850px; padding: 0 50px; z-index: 5; }
+        h1 { font-size: 4rem; margin: 0; text-transform: uppercase; }
+        .description { font-size: 1.1rem; margin: 15px 0; color: #ccc; max-width: 550px; line-height: 1.4; }
+        
+        /* Interactive Iron Man HUD Button */
+        .play-btn { background: #fff; color: #000; border: none; padding: 15px 40px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border-radius: 4px; transition: 0.3s; }
+        .play-btn:hover { background: #e50914; color: white; box-shadow: 0 0 20px rgba(229, 9, 20, 0.7); transform: scale(1.05); }
+        
+        .subtitle { color: #aaa; font-size: 0.8rem; font-weight: bold; letter-spacing: 2px; margin-top: 30px; text-transform: uppercase; }
+        .row { display: flex; gap: 15px; margin-top: 10px; }
+        .poster-card { width: 130px; height: 195px; border: 2px solid #333; cursor: pointer; border-radius: 4px; background-size: cover; background-position: center; transition: 0.3s; }
+        .poster-card:hover { border-color: #fff; transform: scale(1.05); }
+        .current { border-color: #e50914; box-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
     </style>
 </head>
 <body>
+    <div class="background-image"></div>
     <nav class="navbar"><a href="index.html" class="logo">GOAT MOVIES</a></nav>
-    <div class="main-container">
-        <p class="section-title">My List</p>
-        <div class="featured-row">
-            <div class="hero-container" onclick="window.location.href='spiderman-1.html'">
-                <div class="hero-box"><img src="https://i.ebayimg.com/images/g/Mf0AAOSwRfxmXaGY/s-l1200.jpg" class="hero-img"></div>
-                <div class="hero-details">
-                    <p>After being bitten by a genetically-altered spider, Peter Parker gains superhuman strength.</p>
-                    <button class="btn">▶ Play</button>
-                </div>
-            </div>
-
-            <div class="vertical-card" onclick="window.location.href='IronMan-2008.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
-            
-            <div class="vertical-card" style="background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e7602058-294c-474c-8975-571d701d596e/df6200l-d08e82a3-764f-4d4f-9e66-6b66a836858e.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9');"></div>
+    <div class="info-container">
+        <p style="color: #e50914; font-weight: bold; margin-bottom: 5px;">MARVEL STUDIOS</p>
+        <h1>IRON MAN</h1>
+        <p class="description">After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil and protect the world from his own technology.</p>
+        <button class="play-btn" onclick="alert('System Initialized: Playing Iron Man...')">▶ Watch Now</button>
+        
+        <p class="subtitle">The Iron Man Trilogy</p>
+        <div class="row">
+            <div class="poster-card current" onclick="window.location.href='IronMan-2008.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
+            <div class="poster-card" onclick="window.location.href='ironman-2.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTM0MDgwNjMyMl5BMl5BanBnXkFtZTcwNTg3NzAzMw@@._V1_.jpg');"></div>
+            <div class="poster-card" onclick="window.location.href='ironman-3.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMjMzMzMwOTcxMV5BMl5BanBnXkFtZTcwNjcxOTgzOQ@@._V1_.jpg');"></div>
         </div>
+
+        <p class="subtitle">More Like This</p>
+        <div class="row">
+            <div class="poster-card" onclick="window.location.href='spiderman-1.html'" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg');"></div>
+        </div>
+        <br><a href="index.html" style="color: #888; text-decoration: none; font-size: 0.8rem;">← Back to Home</a>
     </div>
 </body>
 </html>
