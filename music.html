@@ -3,54 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goat Audio - Full Discography</title>
+    <title>Goat Audio - Kanye West</title>
     <style>
         :root { --accent: #fa243c; --bg: #000; --card: #121212; --gray: #888; }
-        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 120px; }
-
-        .header { padding: 50px 20px 20px; background: linear-gradient(to bottom, #1a1a1a, #000); }
-        h1 { font-size: 34px; font-weight: 800; margin: 0; }
-        .subtitle { color: var(--gray); font-size: 14px; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Featured Hero */
-        .featured-card {
-            margin: 20px; height: 280px; border-radius: 14px;
-            background: linear-gradient(to top, rgba(0,0,0,0.95), transparent), 
-                        url('https://upload.wikimedia.org/wikipedia/en/4/4d/The_Life_of_Pablo.jpg');
+        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 100px; }
+        
+        /* Header Section */
+        .artist-header {
+            height: 300px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9)), url('https://images.alphacoders.com/134/1348128.png');
             background-size: cover; background-position: center;
-            display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5); border: 1px solid #222;
+            display: flex; align-items: flex-end; padding: 20px;
+        }
+        
+        .artist-name { font-size: 60px; font-weight: 900; margin: 0; }
+
+        /* Interface Section */
+        .content { padding: 20px; }
+        select { 
+            width: 100%; padding: 15px; border-radius: 8px; background: #222; 
+            color: white; border: 1px solid #333; font-size: 16px; margin-bottom: 20px;
         }
 
-        .section-title { padding: 25px 20px 10px; font-size: 22px; font-weight: bold; border-bottom: 1px solid #222; }
-        
-        .album-list { padding: 0 20px; }
-        .album-row { display: flex; gap: 15px; align-items: center; padding: 15px 0; border-bottom: 1px solid #111; cursor: pointer; }
-        
-        .art-thumb { width: 70px; height: 70px; border-radius: 6px; background-size: cover; flex-shrink: 0; border: 1px solid #333; background-position: center; }
-        
-        .info { flex-grow: 1; }
-        .name { font-size: 15px; font-weight: 600; display: block; }
-        .desc { font-size: 11px; color: var(--gray); line-height: 1.3; margin: 2px 0; }
-        .features { font-size: 10px; color: var(--accent); font-weight: bold; }
-
-        .player-bar {
-            position: fixed; bottom: 85px; left: 10px; right: 10px;
-            height: 60px; background: rgba(25,25,25,0.98); backdrop-filter: blur(15px);
-            border-radius: 12px; display: flex; align-items: center; padding: 0 15px;
-            justify-content: space-between; border: 1px solid #444; z-index: 1000;
+        .track-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 10px; border-bottom: 1px solid #1a1a1a;
         }
+        .track-name { font-weight: 500; color: #fff; }
+        .explicit-tag { background: #555; font-size: 10px; padding: 2px 4px; border-radius: 2px; margin-left: 8px; }
 
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 75px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; }
-        .nav-item { text-align: center; font-size: 10px; color: #666; cursor: pointer; text-decoration: none; }
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; height: 70px;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid #222;
+        }
+        .nav-item { color: var(--gray); text-decoration: none; font-size: 12px; text-align: center; }
         .nav-item.active { color: white; }
     </style>
 </head>
 <body>
 
-    <audio id="audio-tcd" src="tcd.mp3"></audio>
-    <audio id="audio-lr" src="lr.mp3"></audio>
-    <audio id="audio-grad" src="graduation.mp3"></audio>
-    <audio id="audio-808" src="808s.mp3"></audio>
-    <audio id="audio-mbdtf" src="mbdtf.mp3"></audio>
-    <audio id="
+    <div class="artist-header">
+        <h1 class="artist-name">Kanye West</h1>
+    </div>
+
+    <div class="content">
+        <p style="color: var(--gray);">Choose an album to explore tracks:</p>
+        <select id="albumSelect" onchange="loadAlbum()">
+            <option value="">-- Browse Discography --</option>
+        </select>
+
+        <div id="track-container">
+            <h2 id="albumTitle" style="color: var(--accent);"></h2>
+            <div id="trackList"></div>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="index.html" class="nav-item">🏠<br>Movies</a>
+        <a href="music.html" class="nav-item active">🎵<br>Music</a>
+        <a href="#" class="nav-item">📚<br>Library</a>
+    </div>
+
+    <script src="kanye_data.js"></script>
+    <script>
+        const select = document.getElementById('albumSelect');
+        const list = document.getElementById('trackList');
+        const title = document.getElementById('albumTitle');
+
+        // Load albums into dropdown
+        Object.keys(KANYE_DATABASE).forEach(album => {
+            let opt = document.createElement('option');
+            opt.value = album;
+            opt.textContent = album.replace(/_/g, ' ');
+            select.appendChild(opt);
+        });
+
+        function loadAlbum() {
+            const key = select.value;
+            list.innerHTML = "";
+            if (!key) return;
+
+            const album = KANYE_DATABASE[key];
+            title.textContent = key.replace(/_/g, ' ');
+            
+            album.tracks.forEach((track, index) => {
+                let isExplicit = track.includes('[E]');
+                let cleanName = track.replace('[E]', '');
+                
+                list.innerHTML += `
+                    <div class="track-row">
+                        <div>
+                            <span style="color: #666; margin-right: 15px;">${index + 1}</span>
+                            <span class="track-name">${cleanName}</span>
+                            ${isExplicit ? '<span class="explicit-tag">E</span>' : ''}
+                        </div>
+                        <span style="color: #666;">▶</span>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
