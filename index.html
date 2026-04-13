@@ -9,46 +9,35 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
+        /* Artist Banner */
+        .hero { 
+            width: 100%; height: 45vh; 
+            background: linear-gradient(to bottom, transparent 0%, #000 100%), 
+                        url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg');
+            background-size: cover; background-position: center 20%; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px; 
+        }
+
         /* Sidebar (PC) */
         .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #333; padding: 60px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
         .nav-link { padding: 12px; color: #888; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: 500; }
         .nav-link.active { color: #fff; background: #222; border-left: 3px solid var(--apple-red); }
 
-        /* Main View */
-        .main-view { flex: 1; overflow-y: scroll; padding-bottom: 140px; position: relative; }
-        
-        /* FIXED ARTIST BANNER */
-        .hero { 
-            width: 100%; 
-            height: 45vh; 
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 100%), 
-                        url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg');
-            background-size: cover;
-            background-position: center 20%;
-            background-repeat: no-repeat;
-            background-color: #111; /* Fallback color */
-            display: flex; 
-            flex-direction: column;
-            justify-content: flex-end; 
-            padding: 40px; 
-        }
-
+        /* Scroller & Grid */
+        .main-view { flex: 1; overflow-y: scroll; padding-bottom: 140px; }
         .section-label { padding: 30px 40px 15px; font-size: 22px; font-weight: 800; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 0 40px; }
-        .album-card { cursor: pointer; text-align: center; transition: 0.3s; }
-        .album-card:hover { transform: translateY(-5px); }
+        .album-card { cursor: pointer; text-align: center; }
         .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
 
-        /* Overlay & Player */
+        /* Overlay Tracklist */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; overflow-y: auto; padding: 40px 20px; }
+        .track-row { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #222; cursor: pointer; }
+
+        /* Fixed Player Bar */
         .player-bar { position: fixed; bottom: 0; width: 100%; background: #111; border-top: 1px solid #222; padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; z-index: 6000; }
         audio { flex: 1; max-width: 500px; filter: invert(100%); margin-left: 20px; }
         
-        @media (max-width: 768px) { 
-            .sidebar { display: none; } 
-            .hero { height: 35vh; padding: 20px; background-position: center; }
-            .grid { padding: 0 20px; }
-        }
+        @media (max-width: 768px) { .sidebar { display: none; } .hero { height: 35vh; padding: 20px; } .grid { padding: 0 20px; } }
     </style>
 </head>
 <body>
@@ -61,10 +50,8 @@
 
     <main class="main-view">
         <div class="hero">
-            <div style="background:var(--apple-red); width:fit-content; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:bold; margin-bottom:15px;">ARTIST PAGE</div>
             <h1 style="font-size: clamp(38px, 6vw, 72px); margin: 0; font-weight: 900;">Kanye West</h1>
         </div>
-
         <div class="section-label">Your Library</div>
         <div class="grid" id="album-grid"></div>
     </main>
@@ -75,18 +62,27 @@
     </div>
 
     <div class="player-bar">
-        <div id="p-info" style="font-size: 14px; font-weight: bold;">Ready to Play</div>
+        <div id="p-info" style="font-size: 14px; font-weight: bold; width: 200px;">Ready to Play</div>
         <audio id="main-audio" controls></audio>
     </div>
 
     <script>
-        const GITHUB_RAW = "https://raw.githubusercontent.com/LucasTheMaker/movie/main/music/";
+        // POINTING DIRECTLY TO YOUR GITHUB REPO MUSIC FOLDER
+        const GITHUB_BASE = "https://raw.githubusercontent.com/LucasTheMaker/movie/main/music/";
 
         const albums = [
             {
-                title: "Ye",
-                year: 2018,
-                img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
+                title: "BULLY", year: 2026, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png",
+                tracks: [
+                    { name: "PREACHER MAN", file: "PREACHER_MAN.mp3" },
+                    { name: "BEAUTY AND THE BEAST", file: "BEAUTY_AND_THE_BEAST.mp3" },
+                    { name: "FATHER (feat. Travis Scott)", file: "FATHER_feat._Travis_Scott_spotdown.org.mp3" },
+                    { name: "WHITE LINES", file: "WHITE_LINES.mp3" },
+                    { name: "BULLY (feat. CeeLo Green)", file: "BULLY_spotdown.org.mp3" }
+                ]
+            },
+            {
+                title: "Ye", year: 2018, img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
                 tracks: [
                     { name: "I Thought About Killing You", file: "1._I_Thought_About_Killing_You.mp3" },
                     { name: "Yikes", file: "2._Yikes.mp3" },
@@ -94,12 +90,11 @@
                 ]
             },
             {
-                title: "Vultures 1",
-                year: 2024,
-                img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Vultures_1_cover.jpg/640px-Vultures_1_cover.jpg",
+                title: "Vultures 1", year: 2024, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Vultures_1_cover.jpg/640px-Vultures_1_cover.jpg",
                 tracks: [
                     { name: "BURN", file: "BURN_spotdown.org.mp3" },
-                    { name: "CARNIVAL", file: "CARNIVAL_spotdown.org.mp3" }
+                    { name: "CARNIVAL", file: "CARNIVAL_spotdown.org.mp3" },
+                    { name: "STARS", file: "STARS_spotdown.org.mp3" }
                 ]
             }
         ];
@@ -116,7 +111,7 @@
             document.getElementById('album-content').innerHTML = `
                 <div style="text-align:center;"><img src="${alb.img}" style="width:220px; border-radius:15px; margin-bottom:20px;"><h1>${alb.title}</h1></div>
                 <div style="max-width:600px; margin:auto; background:#111; padding:15px; border-radius:12px;">
-                    ${alb.tracks.map(t => `<div style="display:flex; justify-content:space-between; padding:15px; border-bottom:1px solid #222; cursor:pointer;" onclick="playSong('${GITHUB_RAW}${t.file}', '${t.name}')"><span>${t.name}</span><span>▶</span></div>`).join('')}
+                    ${alb.tracks.map(t => `<div class="track-row" onclick="playSong('${GITHUB_BASE}${t.file}', '${t.name}')"><span>${t.name}</span><span>▶</span></div>`).join('')}
                 </div>`;
             document.getElementById('album-view').style.display = 'block';
         }
@@ -125,7 +120,7 @@
             const audio = document.getElementById('main-audio');
             audio.src = url;
             document.getElementById('p-info').innerText = "Playing: " + name;
-            audio.play();
+            audio.play().catch(e => alert("Error: Make sure the file '" + url.split('/').pop() + "' exists in your GitHub music folder."));
         }
 
         function closeAlbum() { document.getElementById('album-view').style.display = 'none'; }
