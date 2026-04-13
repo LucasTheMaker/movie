@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanye West Discography | Music Hub</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #121212; color: white; text-align: center; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        select { width: 100%; padding: 12px; border-radius: 8px; border: none; background: #333; color: white; font-size: 16px; cursor: pointer; margin-bottom: 20px; }
+        h1 { color: #ff3b30; margin-bottom: 5px; }
+        .track-list { text-align: left; list-style: none; padding: 0; margin-top: 20px; }
+        .track-list li { padding: 10px; border-bottom: 1px solid #333; transition: background 0.3s; }
+        .track-list li:hover { background: #2a2a2a; }
+        .album-info { font-size: 0.9em; color: #888; margin-bottom: 20px; }
+        .back-btn { display: inline-block; margin-top: 20px; color: #888; text-decoration: none; font-size: 14px; }
+        .back-btn:hover { color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Kanye West</h1>
+        <p class="album-info">Official Discography Database</p>
+
+        <select id="albumSelect" onchange="updateDisplay()">
+            <option value="">-- Select an Album --</option>
+            </select>
+
+        <div id="content">
+            <h2 id="displayTitle"></h2>
+            <p id="displayYear" style="color: #ff3b30; font-weight: bold;"></p>
+            <ul id="trackList" class="track-list"></ul>
+        </div>
+
+        <a href="music.html" class="back-btn">← Back to Music Hub</a>
+    </div>
+
+    <script src="kanye_data.js"></script>
+
+    <script>
+        const select = document.getElementById('albumSelect');
+        const trackList = document.getElementById('trackList');
+        const displayTitle = document.getElementById('displayTitle');
+        const displayYear = document.getElementById('displayYear');
+
+        // Fill the dropdown menu with albums from your JS file
+        Object.keys(KANYE_DATABASE).forEach(album => {
+            let option = document.createElement('option');
+            option.value = album;
+            option.textContent = album.replace(/_/g, ' ').replace('[E]', 'Explicit');
+            select.appendChild(option);
+        });
+
+        function updateDisplay() {
+            const albumKey = select.value;
+            trackList.innerHTML = ""; // Clear current list
+
+            if (albumKey) {
+                const album = KANYE_DATABASE[albumKey];
+                displayTitle.textContent = albumKey.replace(/_/g, ' ');
+                displayYear.textContent = `Released: ${album.year}`;
+                
+                album.tracks.forEach(track => {
+                    let li = document.createElement('li');
+                    li.textContent = track;
+                    trackList.appendChild(li);
+                });
+            } else {
+                displayTitle.textContent = "";
+                displayYear.textContent = "";
+            }
+        }
+    </script>
+</body>
+</html>
