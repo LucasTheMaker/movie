@@ -5,136 +5,171 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lucas Hub | 2026</title>
     <style>
-        :root { --apple-red: #fa2d48; --bg: #000; --sidebar: #111; --nav-bg: rgba(18, 18, 18, 0.98); }
+        :root { --apple-red: #fa2d48; --bg: #000; --sidebar: #111; --nav-bg: rgba(15, 15, 15, 0.96); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- SHARED STYLES --- */
-        .explicit { background: #888; color: #000; font-size: 9px; padding: 1px 3px; border-radius: 2px; margin-left: 4px; vertical-align: middle; font-weight: bold; }
-        img { object-fit: cover; }
+        .explicit { background: #888; color: #000; font-size: 9px; padding: 1px 3px; border-radius: 2px; margin-left: 4px; font-weight: bold; }
+        .clickable { cursor: pointer; transition: 0.2s; position: relative; z-index: 10; }
+        .clickable:active { transform: scale(0.97); }
 
-        /* --- DESKTOP SIDEBAR (Hidden on Mobile) --- */
-        .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #333; padding: 60px 20px; display: flex; flex-direction: column; flex-shrink: 0; z-index: 100; }
-        .nav-btn { padding: 12px; color: #888; cursor: pointer; border-radius: 8px; margin-bottom: 8px; transition: 0.2s; }
-        .nav-btn.active { color: #fff; background: #333; border-left: 3px solid var(--apple-red); border-radius: 0 8px 8px 0; }
+        /* PC SIDEBAR */
+        .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #333; padding: 60px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .nav-link { padding: 12px; color: #888; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: 500; }
+        .nav-link.active { color: #fff; background: #222; border-left: 3px solid var(--apple-red); }
 
-        /* --- MAIN VIEWPORT --- */
-        .main-view { flex: 1; overflow-y: auto; position: relative; scroll-behavior: smooth; }
+        /* MAIN VIEWPORT */
+        .main-view { flex: 1; overflow-y: scroll; position: relative; -webkit-overflow-scrolling: touch; padding-bottom: 120px; }
 
-        /* --- HERO SECTION --- */
+        /* HERO ARTIST BANNER */
         .hero { 
-            width: 100%; height: 45vh; 
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 20%, #000 100%), 
+            width: 100%; height: 42vh; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 100%), 
                         url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg');
             background-size: cover; background-position: center 20%;
             display: flex; flex-direction: column; justify-content: flex-end; padding: 40px;
         }
-        .concert-tag { background: rgba(255,255,255,0.15); width: fit-content; padding: 4px 10px; border-radius: 6px; font-size: 11px; margin-bottom: 12px; }
 
-        /* --- MOBILE SPECIFIC (Auto-Switches) --- */
-        .mobile-nav { position: fixed; bottom: 0; width: 100%; background: var(--nav-bg); backdrop-filter: blur(25px); border-top: 1px solid #222; display: none; justify-content: space-around; padding: 10px 0 30px; z-index: 2000; }
-        .scroller { display: none; overflow-x: auto; gap: 15px; padding: 0 20px 20px; scrollbar-width: none; }
-        
-        /* --- PC SPECIFIC (Auto-Switches) --- */
-        .pc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; padding: 40px; }
-
-        /* --- RESPONSIVE ENGINE --- */
+        /* RESPONSIVE LAYOUT LOGIC */
         @media (max-width: 768px) {
             body { flex-direction: column; }
             .sidebar { display: none; }
-            .mobile-nav { display: flex; }
-            .hero { height: 35vh; padding: 20px; background-position: center; }
-            .pc-grid { display: none; } /* Hide PC grid on mobile */
-            .scroller { display: flex; } /* Show horizontal scroll on mobile */
+            .hero { height: 32vh; padding: 20px; }
+            .pc-grid { display: none; }
+            .mobile-only { display: block; }
+            .scroller { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .scroller::-webkit-scrollbar { display: none; }
             .section-label { padding: 20px; font-size: 22px; font-weight: 700; }
-            .latest-card { display: flex; align-items: center; gap: 15px; padding: 0 20px; margin-bottom: 20px; }
+            .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--nav-bg); backdrop-filter: blur(20px); border-top: 1px solid #222; display: flex; justify-content: space-around; padding: 12px 0 35px; z-index: 2000; }
         }
 
         @media (min-width: 769px) {
+            .mobile-only { display: none; }
+            .bottom-nav { display: none; }
+            .pc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 25px; padding: 40px; }
             .section-label { padding: 40px 40px 0; font-size: 28px; font-weight: 800; }
-            .latest-card { display: none; } /* On PC, Bully is just part of the grid */
         }
 
-        /* --- ALBUM STYLING --- */
-        .album-item { cursor: pointer; transition: 0.3s; }
-        .album-item:hover { transform: translateY(-5px); }
-        .album-item img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-        .album-title { font-weight: 600; font-size: 14px; }
-        .album-sub { color: #666; font-size: 12px; margin-top: 4px; }
+        /* ALBUM CARDS */
+        .album-card { min-width: 160px; }
+        .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 8px 15px rgba(0,0,0,0.5); }
+        .album-title { font-weight: 600; font-size: 14px; margin: 0; line-height: 1.2; }
+
+        /* OVERLAYS */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; overflow-y: auto; padding: 40px 20px; }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
         <h2 style="font-size:11px; color:#444; letter-spacing:2px; margin-bottom:40px;">LIBRARY</h2>
-        <div class="nav-btn active">🎵 Music</div>
-        <div class="nav-btn">🎬 Movies</div>
-        <div class="nav-btn">🔍 Search</div>
+        <div class="nav-link active" onclick="showTab('music')">🎵 Home</div>
+        <div class="nav-link" onclick="showTab('search')">🔍 Search</div>
     </nav>
 
     <main class="main-view">
         <div class="hero">
-            <div class="concert-tag">🏟️ Upcoming Concerts</div>
-            <h1 style="font-size: clamp(38px, 6vw, 72px); margin: 0; font-weight: 900;">Kanye West</h1>
+            <div style="background:rgba(255,255,255,0.1); width:fit-content; padding:4px 10px; border-radius:6px; font-size:11px; margin-bottom:10px;">🏟️ Upcoming Concerts</div>
+            <h1 style="font-size: clamp(34px, 5vw, 60px); margin: 0;">Kanye West</h1>
         </div>
 
-        <div class="section-label">Latest Release</div>
-        <div class="latest-card">
-            <img src="https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png" style="width:110px; height:110px; border-radius:12px;">
-            <div>
-                <p style="color: #888; font-size: 11px; font-weight: bold; margin: 0;">MAR 28, 2026</p>
-                <h3 style="margin: 5px 0;">BULLY <span class="explicit">E</span></h3>
-                <p style="color: #888; margin: 0; font-size: 14px;">18 songs</p>
-                <div style="background:var(--apple-red); width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-top:8px; font-size:12px;">✓</div>
+        <div class="mobile-only">
+            <div class="section-label">Latest Release</div>
+            <div class="clickable" style="display:flex; gap:15px; padding:0 20px;" onclick="openAlbum('BULLY')">
+                <img src="https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png" style="width:110px; height:110px; border-radius:12px;">
+                <div>
+                    <p style="color:#888; font-size:11px; font-weight:bold; margin:0;">MAR 28, 2026</p>
+                    <h3 style="margin:5px 0;">BULLY <span class="explicit">E</span></h3>
+                    <p style="color:#888; margin:0; font-size:14px;">18 songs</p>
+                    <div style="background:var(--apple-red); width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; margin-top:10px; font-size:10px;">✓</div>
+                </div>
             </div>
         </div>
 
         <div class="section-label">Essential Albums</div>
+        <div class="mobile-only scroller" id="essentials-mobile"></div>
         
-        <div class="scroller">
-            <div class="album-item" style="min-width: 160px;">
-                <img src="https://m.media-amazon.com/images/I/61q3K-o1E6L.jpg">
-                <div class="album-title">The Life of Pablo <span class="explicit">E</span></div>
-            </div>
-            <div class="album-item" style="min-width: 160px;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/0/03/Yeezus_album_cover.png">
-                <div class="album-title">Yeezus <span class="explicit">E</span></div>
-            </div>
-            <div class="album-item" style="min-width: 160px;">
-                <img src="https://m.media-amazon.com/images/I/91M9pUeHbeL._AC_SL1500_.png">
-                <div class="album-title">MBDTF <span class="explicit">E</span></div>
-            </div>
-        </div>
-
-        <div class="pc-grid">
-            <div class="album-item">
-                <img src="https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png">
-                <div class="album-title">BULLY (2026)</div>
-                <div class="album-sub">Latest Release</div>
-            </div>
-            <div class="album-item">
-                <img src="https://m.media-amazon.com/images/I/61q3K-o1E6L.jpg">
-                <div class="album-title">The Life of Pablo</div>
-                <div class="album-sub">Essential</div>
-            </div>
-            <div class="album-item">
-                <img src="https://upload.wikimedia.org/wikipedia/en/0/03/Yeezus_album_cover.png">
-                <div class="album-title">Yeezus</div>
-                <div class="album-sub">Essential</div>
-            </div>
-            <div class="album-item">
-                <img src="https://m.media-amazon.com/images/I/91M9pUeHbeL._AC_SL1500_.png">
-                <div class="album-title">MBDTF</div>
-                <div class="album-sub">Essential</div>
-            </div>
-        </div>
+        <div class="section-label">Full Discography</div>
+        <div class="mobile-only scroller" id="full-mobile"></div>
+        <div class="pc-grid" id="pc-albums"></div>
     </main>
 
-    <nav class="mobile-nav">
-        <div class="nav-item active" style="text-align:center; font-size:10px;">🏠<br>Home</div>
-        <div class="nav-item" style="text-align:center; font-size:10px; color:#888;">🎬<br>Movies</div>
-        <div class="nav-item" style="text-align:center; font-size:10px; color:#888;">🔍<br>Search</div>
+    <nav class="bottom-nav">
+        <div class="clickable" onclick="showTab('music')" style="text-align:center; font-size:10px;">🏠<br>Home</div>
+        <div class="clickable" onclick="showTab('search')" style="text-align:center; font-size:10px; color:#888;">🔍<br>Search</div>
     </nav>
 
+    <div id="search-view" class="overlay">
+        <div onclick="closeSearch()" style="color:var(--apple-red); font-weight:bold; cursor:pointer;">Cancel</div>
+        <input type="text" id="search-bar" placeholder="Search albums..." style="width:100%; background:#222; border:none; padding:18px; border-radius:12px; color:#fff; margin-top:20px;" onkeyup="runSearch()">
+        <div id="search-results" style="margin-top:20px;"></div>
+    </div>
+
+    <div id="album-view" class="overlay">
+        <div onclick="document.getElementById('album-view').style.display='none'" style="color:var(--apple-red); cursor:pointer; font-weight:bold; margin-bottom:20px;">‹ Back</div>
+        <div id="album-content" style="text-align:center;"></div>
+    </div>
+
+    <script>
+        const albums = [
+            { title: "BULLY", year: 2026, ess: false, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png" },
+            { title: "VULTURES 2", year: 2024, ess: false, img: "http://googleusercontent.com/image_collection/image_retrieval/13813876063469094038_0" },
+            { title: "VULTURES 1", year: 2024, ess: false, img: "http://googleusercontent.com/image_collection/image_retrieval/15982631557008892706_0" },
+            { title: "Donda", year: 2021, ess: true, img: "http://googleusercontent.com/image_collection/image_retrieval/13532450508753239556_0" },
+            { title: "Jesus Is King", year: 2019, ess: false, img: "http://googleusercontent.com/image_collection/image_retrieval/9692167032336223750_0" },
+            { title: "ye", year: 2018, ess: true, img: "http://googleusercontent.com/image_collection/image_retrieval/12116628663094171996_0" },
+            { title: "The Life of Pablo", year: 2016, ess: true, img: "http://googleusercontent.com/image_collection/image_retrieval/17067901531106653423_0" },
+            { title: "Yeezus", year: 2013, ess: true, img: "http://googleusercontent.com/image_collection/image_retrieval/4633006120299387977_0" },
+            { title: "MBDTF", year: 2010, ess: true, img: "http://googleusercontent.com/image_collection/image_retrieval/7519300536720267571_0" },
+            { title: "808s & Heartbreak", year: 2008, ess: true, img: "http://googleusercontent.com/image_collection/image_retrieval/13445133826186259273_0" },
+            { title: "Graduation", year: 2007, ess: true, img: "http://googleusercontent.com/image_collection/image_retrieval/12458015099171033467_0" },
+            { title: "Late Registration", year: 2005, ess: true, img: "http://googleusercontent.com/image_collection/image_retrieval/17365478209832282603_0" },
+            { title: "The College Dropout", year: 2004, ess: true, img: "http://googleusercontent.com/image_collection/image_retrieval/980667563360050571_0" }
+        ];
+
+        function init() {
+            const em = document.getElementById('essentials-mobile');
+            const fm = document.getElementById('full-mobile');
+            const pc = document.getElementById('pc-albums');
+
+            albums.forEach(alb => {
+                const card = `<div class="album-card clickable" onclick="openAlbum('${alb.title}')"><img src="${alb.img}"><p class="album-title">${alb.title}</p><p style="font-size:12px; color:#666;">${alb.year}</p></div>`;
+                fm.innerHTML += card;
+                pc.innerHTML += card;
+                if(alb.ess) em.innerHTML += card;
+            });
+        }
+
+        function openAlbum(title) {
+            const alb = albums.find(a => a.title === title);
+            document.getElementById('album-content').innerHTML = `
+                <img src="${alb.img}" style="width:280px; border-radius:15px; margin-bottom:20px;">
+                <h1>${alb.title}</h1>
+                <p style="color:#888;">${alb.year}</p>`;
+            document.getElementById('album-view').style.display = 'block';
+        }
+
+        function showTab(id) {
+            if(id === 'search') document.getElementById('search-view').style.display = 'block';
+            else {
+                document.getElementById('search-view').style.display = 'none';
+                window.scrollTo(0,0);
+            }
+        }
+
+        function closeSearch() { document.getElementById('search-view').style.display = 'none'; }
+
+        function runSearch() {
+            const q = document.getElementById('search-bar').value.toLowerCase();
+            const res = document.getElementById('search-results');
+            res.innerHTML = albums.filter(a => a.title.toLowerCase().includes(q))
+                .map(a => `<div class="clickable" style="padding:15px; background:#111; border-radius:12px; margin-bottom:10px; display:flex; align-items:center;" onclick="openAlbum('${a.title}')">
+                    <img src="${a.img}" style="width:50px; height:50px; border-radius:6px; margin-right:15px;">
+                    <div><b>${a.title}</b><br><small style="color:#666;">${a.year}</small></div>
+                </div>`).join('');
+        }
+
+        init();
+    </script>
 </body>
 </html>
