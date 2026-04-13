@@ -103,10 +103,10 @@
                 title: "BULLY", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
                 tracks: [
                     { name: "King", file: "KING_spotdown.org bully.mp3" },
-                    { name: "Sisters and Brothers", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
+                    { name: "Sisters and brothers", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
                     { name: "Father", file: "FATHER (feat. Travis Scott)_spotdown.org.mp3" },
-                    { name: "Preacher Man", file: "PREACHER MAN.mp3" },
-                    { name: "Beauty and the Beast", file: "BEAUTY AND THE BEAST.mp3" },
+                    { name: "Preacher man", file: "PREACHER MAN.mp3" },
+                    { name: "Beauty and the beast", file: "BEAUTY AND THE BEAST.mp3" },
                     { name: "Damn", file: "DAMN.mp3" }
                 ]
             },
@@ -114,7 +114,7 @@
                 title: "Vultures 1", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/vultures1_cover.jpg",
                 tracks: [
                     { name: "Stars", file: "STARS_spotdown.org.mp3" },
-                    { name: "Back to Me", file: "BACK TO ME_spotdown.org.mp3" },
+                    { name: "Back to me", file: "BACK TO ME_spotdown.org.mp3" },
                     { name: "Burn", file: "BURN_spotdown.org.mp3" },
                     { name: "Carnival", file: "CARNIVAL_spotdown.org.mp3" },
                     { name: "King", file: "KING_spotdown.org.mp3" }
@@ -163,7 +163,7 @@
             document.getElementById('m-album').innerText = albums[curAlb].title;
             document.getElementById('f-art').src = albums[curAlb].img;
             document.getElementById('m-art').src = albums[curAlb].img;
-            audio.play().catch(() => alert("Error: File not found in GitHub 'Music' repo. Check the name: " + track.file));
+            audio.play();
             updateIcons(true);
         }
 
@@ -183,6 +183,9 @@
             audio.loop = isRepeating;
             document.getElementById('repeat-toggle').style.color = isRepeating ? "#fa2d48" : "#fff";
         }
+
+        function nextTrack() { if (curTrack < albums[curAlb].tracks.length - 1) playSong(curTrack + 1); }
+        function prevTrack() { if (curTrack > 0) playSong(curTrack - 1); }
 
         function togglePlayer() { document.getElementById('full-player').classList.toggle('active'); }
         function closeAlbum() { document.getElementById('album-overlay').style.display = 'none'; }
