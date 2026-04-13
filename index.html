@@ -7,27 +7,41 @@
     <style>
         body { font-family: -apple-system, system-ui, sans-serif; background: #000; color: #fff; margin: 0; padding-bottom: 80px; overflow: hidden; height: 100vh; }
         
+        /* Navigation & Tabs */
         .page { display: none; height: 100%; width: 100%; overflow-y: auto; animation: fadeIn 0.2s; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Navigation */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 0.5px solid #333; z-index: 1000; }
         .nav-item { background: none; border: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 10px; cursor: pointer; flex: 1; }
         .nav-item.active { color: #fa2d48; }
         .nav-icon { font-size: 22px; margin-bottom: 4px; }
 
-        /* Search Tab Styles */
-        .search-header { padding: 40px 20px 10px; position: sticky; top: 0; background: #000; z-index: 10; }
-        .search-input { width: 100%; padding: 15px; border-radius: 12px; border: none; background: #222; color: #fff; font-size: 16px; outline: none; box-sizing: border-box; }
-        .results-container { padding: 0 20px; }
-        .result-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 0.5px solid #222; cursor: pointer; }
-        .result-img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
-        .result-type { font-size: 10px; color: #fa2d48; text-transform: uppercase; font-weight: bold; }
+        /* Artist Header Section */
+        .artist-header { padding: 40px 20px 20px; text-align: left; background: linear-gradient(to bottom, #1a1a1a, #000); }
+        .upcoming-tag { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; font-weight: bold; margin-bottom: 12px; display: inline-block; border: 0.5px solid #444; }
+        .profile-row { display: flex; align-items: center; gap: 15px; }
+        .play-btn { background: #fa2d48; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
+        .artist-pfp { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #333; }
 
-        /* Existing Grid Styles */
-        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; padding: 20px; }
-        .album-card img { width: 100%; border-radius: 10px; aspect-ratio: 1/1; object-fit: cover; }
+        /* Screenshot Layout (Latest Release / Top Songs) */
+        .featured-layout { display: flex; flex-wrap: wrap; gap: 40px; padding: 20px; }
+        .latest-box { flex: 1; min-width: 280px; }
+        .latest-img { width: 100%; max-width: 300px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        .top-songs-list { flex: 1.5; min-width: 320px; }
+        .song-card { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid #222; cursor: pointer; }
+        .song-card img { width: 45px; height: 45px; border-radius: 6px; }
+        .song-details { flex: 1; }
+        .song-title { font-weight: 600; font-size: 14px; }
+        .song-album { font-size: 12px; color: #888; margin-top: 2px; }
+
+        /* Search Styles */
+        .search-container { padding: 20px; }
+        .search-bar { width: 100%; padding: 15px; border-radius: 12px; border: none; background: #222; color: #fff; font-size: 16px; outline: none; }
+        .result-row { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 0.5px solid #222; animation: fadeIn 0.3s; }
+        .result-img { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; }
+        .tag { font-size: 10px; background: #fa2d48; color: #fff; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+
         iframe { width: 100%; height: calc(100vh - 70px); border: none; }
     </style>
 </head>
@@ -38,101 +52,116 @@
     </div>
 
     <div id="musicTab" class="page">
-        <div style="padding: 20px;">
-            <h1 style="margin: 0;">Kanye West</h1>
-            <p style="color: #fa2d48; margin-top: 5px;">Artist • Verified 2026</p>
+        <div class="artist-header">
+            <div class="upcoming-tag">🎟️ Upcoming Concerts</div>
+            <div class="profile-row">
+                <div class="play-btn">▶</div>
+                <h1 style="margin: 0; font-size: 38px; flex: 1;">Kanye West</h1>
+                <img src="https://m.media-amazon.com/images/M/MV5BMjExOTY3NzExM15BMl5BanBnXkFtZTcwOTg4MzE2Mw@@._V1_.jpg" class="artist-pfp">
+            </div>
         </div>
-        <div class="music-grid" id="albumGrid"></div>
+
+        <div class="featured-layout">
+            <div class="latest-box">
+                <p style="color: #888; font-size: 13px; font-weight: 700; letter-spacing: 1px;">LATEST RELEASE</p>
+                <img src="https://images.genius.com/f047464654929851722650c7038e235e.1000x1000x1.jpg" class="latest-img">
+                <div style="margin-top: 15px;">
+                    <span style="color: #888; font-size: 12px; font-weight: 600;">MAR 28, 2026</span>
+                    <h2 style="margin: 5px 0;">BULLY [E]</h2>
+                    <p style="color: #888; margin: 0;">18 Songs</p>
+                </div>
+            </div>
+
+            <div class="top-songs-list">
+                <p style="color: #888; font-size: 13px; font-weight: 700; letter-spacing: 1px;">TOP SONGS ></p>
+                <div id="topSongsGrid"></div>
+            </div>
+        </div>
     </div>
 
     <div id="searchTab" class="page">
-        <div class="search-header">
-            <h1 style="margin-top: 0;">Search</h1>
-            <input type="text" id="searchInput" class="search-input" placeholder="Artists, Movies, or Songs...">
-        </div>
-        <div id="searchResults" class="results-container">
-            <p style="color: #555; text-align: center; margin-top: 40px;">Enter a title to search your library</p>
+        <div class="search-container">
+            <h1>Search</h1>
+            <input type="text" id="searchInput" class="search-bar" placeholder="Movies, Artists, Songs...">
+            <div id="searchResults" style="margin-top: 20px;"></div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-item active" onclick="showPage('moviesTab', this)"><span class="nav-icon">🎬</span><span>Movies</span></button>
-        <button class="nav-item" onclick="showPage('musicTab', this)"><span class="nav-icon">🎵</span><span>Music</span></button>
-        <button class="nav-item" onclick="showPage('searchTab', this)"><span class="nav-icon">🔍</span><span>Search</span></button>
+        <button class="nav-item active" onclick="showTab('moviesTab', this)"><span class="nav-icon">🎬</span><span>Movies</span></button>
+        <button class="nav-item" onclick="showTab('musicTab', this)"><span class="nav-icon">🎵</span><span>Music</span></button>
+        <button class="nav-item" onclick="showTab('searchTab', this)"><span class="nav-icon">🔍</span><span>Search</span></button>
     </div>
 
     <script>
-        // Data for Search Engine
-        const musicData = [
-            { title: "BULLY", type: "Album", year: 2026, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.jpg", songs: ["Preacher Man", "Father", "Beauty and the Beast"] },
-            { title: "Vultures 2", type: "Album", year: 2024, img: "https://upload.wikimedia.org/wikipedia/en/b/b3/Vultures_2_cover.jpg", songs: ["Slide", "Field Trip", "River"] },
-            { title: "Graduation", type: "Album", year: 2007, img: "https://m.media-amazon.com/images/I/8152D6J3N9L.jpg", songs: ["Stronger", "Flashing Lights"] }
-            // Add more albums here...
+        const libraryData = [
+            { title: "BULLY", type: "Album", year: 2026, img: "https://images.genius.com/f047464654929851722650c7038e235e.1000x1000x1.jpg", songs: ["PREACHER MAN", "FATHER", "ALL THE LOVE"] },
+            { title: "Vultures 2", type: "Album", year: 2024, img: "https://upload.wikimedia.org/wikipedia/en/b/b3/Vultures_2_cover.jpg", songs: ["SLIDE", "FIELD TRIP", "RIVER"] },
+            { title: "My Beautiful Dark Twisted Fantasy", type: "Album", year: 2010, img: "https://m.media-amazon.com/images/I/91M9pUeHbeL.jpg", songs: ["RUNAWAY", "POWER", "MONSTER"] },
+            { title: "Graduation", type: "Album", year: 2007, img: "https://m.media-amazon.com/images/I/8152D6J3N9L.jpg", songs: ["STRONGER", "FLASHING LIGHTS", "CAN'T TELL ME NOTHING"] },
+            { title: "Spider-Man: Across the Spider-Verse", type: "Movie", year: 2023, img: "https://m.media-amazon.com/images/I/71YvS-f76SL._AC_SL1500_.jpg" },
+            { title: "The Dark Knight", type: "Movie", year: 2008, img: "https://m.media-amazon.com/images/I/91Eb6vSthXL._AC_SL1500_.jpg" }
         ];
 
-        const movieData = [
-            { title: "Spider-Man: No Way Home", type: "Movie", img: "https://m.media-amazon.com/images/I/81Ni6s73rlL.jpg" },
-            { title: "The Batman", type: "Movie", img: "https://m.media-amazon.com/images/I/81dg68XUqzL.jpg" }
-            // Add your movie titles here...
-        ];
-
-        function showPage(id, btn) {
+        function showTab(id, btn) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
 
-        // Search Engine Logic
-        const searchInput = document.getElementById('searchInput');
-        const resultsBox = document.getElementById('searchResults');
-
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase();
-            resultsBox.innerHTML = "";
-
-            if (!query) {
-                resultsBox.innerHTML = '<p style="color: #555; text-align: center; margin-top: 40px;">Enter a title to search your library</p>';
-                return;
-            }
-
-            // Search Albums & Movies
-            const allItems = [...musicData, ...movieData];
-            const filtered = allItems.filter(item => item.title.toLowerCase().includes(query));
-
-            // Search Songs specifically
-            musicData.forEach(album => {
-                album.songs.forEach(song => {
-                    if (song.toLowerCase().includes(query)) {
-                        filtered.push({ title: song, type: "Song", img: album.img, sub: album.title });
-                    }
-                });
-            });
-
-            if (filtered.length === 0) {
-                resultsBox.innerHTML = '<p style="color: #555; text-align: center; margin-top: 40px;">No results found.</p>';
-            }
-
-            filtered.forEach(item => {
-                resultsBox.innerHTML += `
-                    <div class="result-item">
-                        <img src="${item.img}" class="result-img">
-                        <div>
-                            <div class="result-type">${item.type}</div>
-                            <div style="font-weight: bold;">${item.title}</div>
-                            <div style="font-size: 12px; color: #888;">${item.sub || item.year || ''}</div>
+        // Load Top Songs to Music Tab
+        const songsContainer = document.getElementById('topSongsGrid');
+        libraryData.slice(0, 4).forEach(alb => {
+            if(alb.songs) {
+                songsContainer.innerHTML += `
+                    <div class="song-card">
+                        <img src="${alb.img}">
+                        <div class="song-details">
+                            <div class="song-title">${alb.songs[0]} [E]</div>
+                            <div class="song-album">${alb.title} • ${alb.year}</div>
                         </div>
+                        <div style="color: #fa2d48;">▶</div>
                     </div>`;
-            });
+            }
         });
 
-        // Initialize Music Grid
-        window.onload = () => {
-            const grid = document.getElementById('albumGrid');
-            musicData.forEach(alb => {
-                grid.innerHTML += `<div class="album-card"><img src="${alb.img}"><h4>${alb.title}</h4><p>${alb.year}</p></div>`;
+        // Interactive Search Logic
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase();
+            const results = document.getElementById('searchResults');
+            results.innerHTML = "";
+            if(!query) return;
+
+            libraryData.forEach(item => {
+                if(item.title.toLowerCase().includes(query)) {
+                    results.innerHTML += `
+                        <div class="result-row">
+                            <img src="${item.img}" class="result-img">
+                            <div style="flex:1">
+                                <span class="tag">${item.type}</span>
+                                <div style="font-weight:bold; margin-top:4px;">${item.title}</div>
+                                <div style="font-size:12px; color:#888;">${item.year}</div>
+                            </div>
+                        </div>`;
+                }
+                if(item.songs) {
+                    item.songs.forEach(song => {
+                        if(song.toLowerCase().includes(query)) {
+                            results.innerHTML += `
+                                <div class="result-row">
+                                    <img src="${item.img}" class="result-img">
+                                    <div style="flex:1">
+                                        <span class="tag" style="background:#555">SONG</span>
+                                        <div style="font-weight:bold; margin-top:4px;">${song}</div>
+                                        <div style="font-size:12px; color:#888;">${item.title}</div>
+                                    </div>
+                                </div>`;
+                        }
+                    });
+                }
             });
-        };
+        });
     </script>
 </body>
 </html>
