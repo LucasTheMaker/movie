@@ -5,86 +5,122 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucas Hub | 2026</title>
     <style>
-        body { font-family: -apple-system, system-ui, sans-serif; background: #000; color: #fff; margin: 0; padding-bottom: 80px; overflow-x: hidden; }
+        /* Apple Music / Netflix Aesthetic */
+        body { font-family: -apple-system, system-ui, sans-serif; background: #000; color: #fff; margin: 0; padding-bottom: 80px; overflow: hidden; height: 100vh; }
         
-        .page { display: none; padding: 20px; animation: fadeIn 0.2s; }
+        .page { display: none; height: 100%; width: 100%; overflow-y: auto; animation: fadeIn 0.2s; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 0.5px solid #333; z-index: 1000; }
-        .nav-item { background: none; border: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 10px; cursor: pointer; }
-        .nav-item.active { color: #fa2d48; }
+        /* Bottom Nav - Danny Rico Style */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 0.5px solid #333; z-index: 1000; }
+        .nav-item { background: none; border: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 10px; cursor: pointer; flex: 1; }
+        .nav-item.active { color: #fa2d48; } /* Apple Red */
         .nav-icon { font-size: 22px; margin-bottom: 4px; }
 
-        /* Album Grid */
-        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; margin-top: 10px; }
-        .album-card { cursor: pointer; transition: transform 0.2s; }
-        .album-card:active { transform: scale(0.95); }
-        .album-card img { width: 100%; border-radius: 12px; aspect-ratio: 1/1; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .album-card h4 { font-size: 14px; margin: 8px 0 2px; text-align: left; }
+        /* Movie Container */
+        .iframe-container { width: 100%; height: calc(100vh - 70px); border: none; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* Music Grid */
+        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; padding: 20px; }
+        .album-card { cursor: pointer; text-align: left; }
+        .album-card img { width: 100%; border-radius: 10px; aspect-ratio: 1/1; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .album-card h4 { font-size: 14px; margin: 8px 0 2px; }
         .album-card p { font-size: 12px; color: #888; margin: 0; }
 
-        /* Modal (Tracklist Pop-up) */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; overflow-y: auto; padding: 40px 20px; }
-        .modal-content { max-width: 500px; margin: 0 auto; text-align: left; }
-        .close-btn { font-size: 30px; position: absolute; top: 20px; right: 20px; cursor: pointer; }
-        .track-list { list-style: none; padding: 0; margin-top: 20px; }
-        .track-item { padding: 12px 0; border-bottom: 0.5px solid #333; display: flex; justify-content: space-between; }
-
-        iframe { width: 100%; height: 90vh; border: none; }
+        /* Modal Tracklist */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; overflow-y: auto; padding: 40px 20px; }
+        .track-item { padding: 15px 0; border-bottom: 0.5px solid #333; display: flex; justify-content: space-between; }
+        .close-btn { font-size: 35px; position: fixed; top: 10px; right: 20px; cursor: pointer; color: #fa2d48; }
     </style>
 </head>
 <body>
 
-    <div id="home" class="page active">
-        <iframe src="https://lucasthemaker.github.io/movie/index.html"></iframe>
+    <div id="moviesPage" class="page active">
+        <div class="iframe-container">
+            <iframe src="https://lucasthemaker.github.io/movie/index.html"></iframe>
+        </div>
     </div>
 
-    <div id="music" class="page">
-        <h1 style="text-align: left; margin-bottom: 5px;">Library</h1>
-        <p style="color: #fa2d48; font-weight: bold; text-align: left; margin-top: 0;">Kanye West</p>
-        <div class="music-grid" id="albumGrid">
-            </div>
+    <div id="musicPage" class="page">
+        <div style="padding: 20px;">
+            <h1 style="margin-bottom: 0;">Library</h1>
+            <p style="color: #fa2d48; margin-top: 5px; font-weight: 600;">Kanye West</p>
+        </div>
+        <div class="music-grid" id="albumGrid"></div>
     </div>
 
-    <div id="search" class="page">
-        <h1>Search</h1>
-        <input type="text" style="width:100%; padding:12px; border-radius:10px; border:none; background:#222; color:#fff;" placeholder="Search tracks...">
+    <div id="searchPage" class="page">
+        <div style="padding: 40px 20px;">
+            <h1>Search</h1>
+            <input type="text" style="width:100%; padding:15px; border-radius:12px; border:none; background:#222; color:#fff; font-size: 16px;" placeholder="Artists, Songs, Lyrics...">
+        </div>
     </div>
 
     <div id="albumModal" class="modal">
         <span class="close-btn" onclick="closeModal()">&times;</span>
-        <div class="modal-content" id="modalContent"></div>
+        <div id="modalContent" style="max-width: 500px; margin: 0 auto;"></div>
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-item active" onclick="showPage('home', this)"><span class="nav-icon">🏠</span><span>Home</span></button>
-        <button class="nav-item" onclick="showPage('music', this)"><span class="nav-icon">🎵</span><span>Music</span></button>
-        <button class="nav-item" onclick="showPage('search', this)"><span class="nav-icon">🔍</span><span>Search</span></button>
+        <button class="nav-item active" onclick="switchPage('moviesPage', this)">
+            <span class="nav-icon">🎬</span><span>Movies</span>
+        </button>
+        <button class="nav-item" onclick="switchPage('musicPage', this)">
+            <span class="nav-icon">🎵</span><span>Music</span>
+        </button>
+        <button class="nav-item" onclick="switchPage('searchPage', this)">
+            <span class="nav-icon">🔍</span><span>Search</span>
+        </button>
     </div>
 
     <script>
         const albums = [
-            { title: "The College Dropout", year: 2004, img: "https://m.media-amazon.com/images/I/71R3OitAovL.jpg", tracks: ["Intro", "We Don't Care", "All Falls Down", "Jesus Walks"] },
-            { title: "Late Registration", year: 2005, img: "https://m.media-amazon.com/images/I/719hE1Z7FzL.jpg", tracks: ["Touch The Sky", "Gold Digger", "Drive Slow"] },
-            { title: "Graduation", year: 2007, img: "https://m.media-amazon.com/images/I/8152D6J3N9L.jpg", tracks: ["Stronger", "I Wonder", "Flashing Lights"] },
-            { title: "808s & Heartbreak", year: 2008, img: "https://m.media-amazon.com/images/I/61j8vI-X2YL.jpg", tracks: ["Heartless", "Amazing", "Love Lockdown"] },
-            { title: "MBDTF", year: 2010, img: "https://m.media-amazon.com/images/I/91M9pUeHbeL.jpg", tracks: ["Power", "Runaway", "Monster"] },
-            { title: "Watch The Throne", year: 2011, img: "https://m.media-amazon.com/images/I/619WofgBqFL.jpg", tracks: ["No Church In The Wild", "Ni**as In Paris"] },
-            { title: "Yeezus", year: 2013, img: "https://m.media-amazon.com/images/I/71-6Yy7l4DL.jpg", tracks: ["On Sight", "Black Skinhead", "Bound 2"] },
-            { title: "The Life of Pablo", year: 2016, img: "https://m.media-amazon.com/images/I/61q3K-o1E6L.jpg", tracks: ["Famous", "Waves", "Ultralight Beam"] },
-            { title: "ye", year: 2018, img: "https://m.media-amazon.com/images/I/71RkRjYp3TL.jpg", tracks: ["Ghost Town", "All Mine", "Yikes"] },
-            { title: "Kids See Ghosts", year: 2018, img: "https://m.media-amazon.com/images/I/71E3v1-E9jL.jpg", tracks: ["Reborn", "Feel The Love"] },
-            { title: "Jesus Is King", year: 2019, img: "https://m.media-amazon.com/images/I/61H7o+Gq8GL.jpg", tracks: ["Selah", "Follow God", "On God"] },
-            { title: "Donda", year: 2021, img: "https://m.media-amazon.com/images/I/41-lS09S2AL.jpg", tracks: ["Hurricane", "Off The Grid", "Moon"] },
-            { title: "Vultures 1", year: 2024, img: "https://m.media-amazon.com/images/I/71Tbe93S+YL.jpg", tracks: ["Stars", "Burn", "Carnival"] },
-            { title: "Vultures 2", year: 2024, img: "https://upload.wikimedia.org/wikipedia/en/b/b3/Vultures_2_cover.jpg", tracks: ["Slide", "Field Trip", "River"] },
-            { title: "BULLY", year: 2026, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.jpg", tracks: ["Preacher Man", "Beauty and the Beast", "Bully"] }
+            { title: "The College Dropout", year: 2004, img: "https://m.media-amazon.com/images/I/71R3OitAovL.jpg", tracks: ["We Don't Care", "All Falls Down", "Jesus Walks", "Through The Wire"] },
+            { title: "Graduation", year: 2007, img: "https://m.media-amazon.com/images/I/8152D6J3N9L.jpg", tracks: ["Stronger", "Good Life", "Flashing Lights", "Homecoming"] },
+            { title: "MBDTF", year: 2010, img: "https://m.media-amazon.com/images/I/91M9pUeHbeL.jpg", tracks: ["Power", "Monster", "Runaway", "All of the Lights"] },
+            { title: "Vultures 1", year: 2024, img: "https://m.media-amazon.com/images/I/71Tbe93S+YL.jpg", tracks: ["Stars", "Burn", "Carnival", "King"] },
+            { title: "BULLY", year: 2026, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.jpg", tracks: ["Preacher Man", "Beauty and the Beast", "Bully", "Father"] }
+            // Add more albums here as needed
         ];
 
-        function loadAlbums() {
+        function init() {
             const grid = document.getElementById('albumGrid');
-            albums.forEach((album, index) => {
+            albums.forEach((alb, i) => {
                 grid.innerHTML += `
-                    <div class="album-card" onclick="openAlbum(${index})">
+                    <div class="album-card" onclick="openAlbum(${i})">
+                        <img src="${alb.img}">
+                        <h4>${alb.title}</h4>
+                        <p>${alb.year}</p>
+                    </div>`;
+            });
+        }
+
+        function switchPage(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function openAlbum(i) {
+            const alb = albums[i];
+            const modal = document.getElementById('albumModal');
+            const content = document.getElementById('modalContent');
+            content.innerHTML = `
+                <img src="${alb.img}" style="width:100%; border-radius:15px; margin-bottom:20px;">
+                <h2>${alb.title}</h2>
+                <p style="color:#fa2d48;">Album • ${alb.year}</p>
+                <div style="margin-top:20px;">
+                    ${alb.tracks.map(t => `<div class="track-item">${t} <span>▶️</span></div>`).join('')}
+                </div>`;
+            modal.style.display = "block";
+        }
+
+        function closeModal() { document.getElementById('albumModal').style.display = "none"; }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
