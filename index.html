@@ -5,96 +5,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lucas Hub | 2026</title>
     <style>
-        :root { --apple-red: #fa2d48; --bg: #000; --card: #111; --nav-bg: rgba(15, 15, 15, 0.95); }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; padding-bottom: 140px; overflow-x: hidden; }
+        :root { --apple-red: #fa2d48; --bg: #000; --sidebar: #111; --card: #181818; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        /* Layout */
-        .hero { height: 35vh; background: linear-gradient(transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 20px; }
-        .section-label { padding: 20px; font-size: 22px; font-weight: 800; }
-        
-        /* Album Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; padding: 0 20px; }
-        .album-card { cursor: pointer; transition: 0.2s; }
-        .album-card:active { transform: scale(0.95); }
-        .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-        .album-title { font-weight: 700; font-size: 14px; margin: 0; }
-        .album-year { font-size: 12px; color: #666; margin: 0; }
+        /* Sidebar (PC Only) */
+        .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #333; padding: 60px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .nav-link { padding: 12px; color: #888; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: 500; transition: 0.2s; }
+        .nav-link.active { color: #fff; background: #222; border-left: 3px solid var(--apple-red); }
 
-        /* Tracklist Overlay */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; overflow-y: auto; padding: 40px 20px; }
-        .track-row { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #222; cursor: pointer; }
+        /* Main Content */
+        .main-view { flex: 1; overflow-y: scroll; position: relative; padding-bottom: 120px; scroll-behavior: smooth; }
+        .hero { width: 100%; height: 40vh; background: linear-gradient(to bottom, transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px; }
+        .section-label { padding: 30px 20px 10px; font-size: 22px; font-weight: 800; }
+
+        /* Album Grid & Scroller */
+        .scroller { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px; scrollbar-width: none; }
+        .scroller::-webkit-scrollbar { display: none; }
+        .album-card { min-width: 160px; cursor: pointer; transition: 0.2s; }
+        .album-card:active { transform: scale(0.95); }
+        .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+        .album-title { font-weight: 700; font-size: 14px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Overlay Tracklist */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; overflow-y: auto; padding-bottom: 100px; }
+        .track-row { display: flex; justify-content: space-between; padding: 15px 25px; border-bottom: 1px solid #111; cursor: pointer; font-size: 15px; }
         .track-row:active { background: #111; }
-        
+
         /* Fixed Player Bar */
-        .player-bar { position: fixed; bottom: 0; width: 100%; background: var(--nav-bg); backdrop-filter: blur(20px); border-top: 1px solid #333; padding: 15px; z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .now-playing { font-size: 13px; font-weight: 700; color: var(--apple-red); text-align: center; }
-        audio { width: 100%; filter: invert(100%); height: 35px; }
+        .player-bar { position: fixed; bottom: 0; width: 100%; background: rgba(15,15,15,0.98); backdrop-filter: blur(25px); border-top: 1px solid #333; padding: 15px; display: flex; align-items: center; justify-content: space-between; z-index: 6000; }
+        .track-info { display: flex; align-items: center; gap: 12px; width: 40%; }
+        .track-info img { width: 45px; height: 45px; border-radius: 6px; }
+        audio { flex: 1; filter: invert(100%); height: 35px; margin-left: 20px; }
+
+        @media (max-width: 768px) { .sidebar { display: none; } .hero { height: 32vh; padding: 20px; } }
     </style>
 </head>
 <body>
 
-    <div class="hero">
-        <h1 style="font-size: 42px; margin: 0;">Kanye West</h1>
-    </div>
+    <nav class="sidebar">
+        <h2 style="font-size:11px; color:#444; letter-spacing:2px; margin-bottom:40px;">LUCAS HUB</h2>
+        <div class="nav-link active" onclick="showTab('music')">🏠 Home</div>
+        <div class="nav-link" onclick="showTab('movies')">🎬 Movies</div>
+    </nav>
 
-    <div class="section-label">Your Albums</div>
-    <div class="grid" id="main-grid">
-        </div>
+    <main class="main-view">
+        <section id="music-tab">
+            <div class="hero">
+                <h1 style="font-size: clamp(38px, 6vw, 70px); margin: 0; font-weight: 900;">Kanye West</h1>
+            </div>
+            
+            <div class="section-label">Your Library</div>
+            <div class="scroller" id="album-list"></div>
+
+            <div class="section-label">Essential Albums</div>
+            <div class="scroller" id="essentials-list"></div>
+        </section>
+
+        <section id="movies-tab" style="display:none; padding: 40px;">
+            <h1>Movies</h1>
+            <div class="scroller">
+                <div class="album-card"><img src="https://m.media-amazon.com/images/I/91N9mX6K8HL._AC_SL1500_.jpg"><p>Iron Man (2008)</p></div>
+                <div class="album-card"><img src="https://m.media-amazon.com/images/I/61-6v-f9u9L._AC_SL1000_.jpg"><p>Spider-Man (2002)</p></div>
+            </div>
+        </section>
+    </main>
 
     <div id="album-view" class="overlay">
-        <div onclick="closeAlbum()" style="color:var(--apple-red); cursor:pointer; font-weight:bold; margin-bottom:20px; font-size:18px;">‹ Library</div>
-        <div id="album-header" style="text-align:center; margin-bottom:30px;"></div>
-        <div id="tracklist-container" style="max-width: 600px; margin: auto;"></div>
+        <div onclick="closeAlbum()" style="padding: 20px; color:var(--apple-red); cursor:pointer; font-weight:bold; font-size:18px;">‹ Back</div>
+        <div id="album-header" style="text-align:center; padding: 20px;"></div>
+        <div id="tracklist-container" style="max-width: 700px; margin: auto;"></div>
     </div>
 
     <div class="player-bar">
-        <div id="p-title" class="now-playing">Select a track to play</div>
+        <div class="track-info">
+            <img id="p-img" src="https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png">
+            <div style="overflow:hidden;">
+                <div id="p-title" style="font-weight:bold; font-size:14px; white-space:nowrap;">Select a track</div>
+                <div id="p-alb" style="font-size:11px; color:#666;">Kanye West</div>
+            </div>
+        </div>
         <audio id="main-audio" controls></audio>
     </div>
 
     <script>
         const albums = [
-            {
-                title: "BULLY",
-                year: "2026",
+            { 
+                title: "BULLY", year: 2026, label: "YZY", runtime: "42:10", ess: true,
                 img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png",
                 tracks: [
-                    { name: "KING", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1222878235211534346/KING_spotdown.org.mp3" },
-                    { name: "FATHER (feat. Travis Scott)", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1222878236163772537/FATHER_feat._Travis_Scott_spotdown.org.mp3" },
-                    { name: "BURN", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1207727196653133914/BURN_spotdown.org.mp3" }
+                    { name: "SISTERS AND BROTHERS", url: "https://cdn.discordapp.com/attachments/1428576769862271091/110/SISTERS_AND_BROTHERS_spotdown.org.mp3" },
+                    { name: "FATHER (feat. Travis Scott)", url: "https://cdn.discordapp.com/attachments/1428576769862271091/105/FATHER_spotdown.org.mp3" },
+                    { name: "BULLY (feat. CeeLo Green)", url: "https://cdn.discordapp.com/attachments/1428576769862271091/111/BULLY_spotdown.org.mp3" },
+                    { name: "PREACHER MAN", url: "https://cdn.discordapp.com/attachments/1428576769862271091/113/PREACHER_MAN_spotdown.org.mp3" }
                 ]
             },
-            {
-                title: "Ye",
-                year: "2018",
+            { 
+                title: "ye", year: 2018, label: "Def Jam", runtime: "23:41", ess: true,
                 img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
                 tracks: [
-                    { name: "I Thought About Killing You", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1226132845627904030/1._I_Thought_About_Killing_You.mp3" },
-                    { name: "Yikes", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1226132846181548132/2._Yikes.mp3" },
-                    { name: "Ghost Town", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1226132847255158866/6._Ghost_Town.mp3" }
+                    { name: "I Thought About Killing You", url: "https://cdn.discordapp.com/attachments/1428576769862271091/101/ye_01.mp3" },
+                    { name: "Ghost Town", url: "https://cdn.discordapp.com/attachments/1428576769862271091/102/ye_06.mp3" }
                 ]
+            },
+            { 
+                title: "Vultures 1", year: 2024, label: "YZY", runtime: "55:40", ess: false,
+                img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Vultures_1_cover.jpg/640px-Vultures_1_cover.jpg",
+                tracks: [ { name: "BURN", url: "https://cdn.discordapp.com/attachments/1428576769862271091/109/BURN_spotdown.org.mp3" } ]
             }
         ];
 
         function init() {
-            const grid = document.getElementById('main-grid');
+            const list = document.getElementById('album-list');
+            const essList = document.getElementById('essentials-list');
             albums.forEach((alb, i) => {
-                grid.innerHTML += `
-                    <div class="album-card" onclick="openAlbum(${i})">
-                        <img src="${alb.img}">
-                        <p class="album-title">${alb.title}</p>
-                        <p class="album-year">${alb.year}</p>
-                    </div>`;
+                const card = `<div class="album-card" onclick="openAlbum(${i})"><img src="${alb.img}"><p class="album-title">${alb.title}</p><p style="font-size:12px;color:#666;">${alb.year}</p></div>`;
+                list.innerHTML += card;
+                if(alb.ess) essList.innerHTML += card;
             });
         }
 
         function openAlbum(index) {
             const alb = albums[index];
-            document.getElementById('album-header').innerHTML = `
-                <img src="${alb.img}" style="width:200px; border-radius:15px; margin-bottom:15px;">
-                <h1 style="margin:0;">${alb.title}</h1>
-                <p style="color:#666;">${alb.year}</p>
-            `;
-            
-            const container = document.getElementById('tracklist-container');
-            container.innerHTML =
+            document.getElementById('album-header').innerHTML = `<img src="${alb.img}" style="width:220px; border-radius:15px; margin-bottom:15px;"><h1>${alb.title}</h1><p style="color:#666;">${alb.label} • ${alb.runtime}</p>`;
+            document.getElementById('tracklist-container').innerHTML = alb.tracks.map(t => `<div class="track-row" onclick="playSong('${t.url}', '${t.name.replace(/'/g, "\\'")}', '${alb.img}', '${alb.title}')"><span>${t.name}</span><span>▶</span></div>`).join('');
+            document.getElementById('album-view').style.display = 'block';
+        }
+
+        function playSong(url, title, img, albTitle) {
+            const audio = document.getElementById('main-audio');
+            audio.src = url;
+            document.getElementById('p-title').innerText = title;
+            document.getElementById('p-alb').innerText = albTitle;
+            document.getElementById('p-img').src = img;
+            audio.play();
+        }
+
+        function switchTab(tab) {
+            document.getElementById('music-tab').style.display = tab === 'music' ? 'block' : 'none';
+            document.getElementById('movies-tab').style.display = tab === 'movies' ? 'block' : 'none';
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.toggle('active', l.innerText.toLowerCase().includes(tab)));
+        }
+
+        function closeAlbum() { document.getElementById('album-view').style.display = 'none'; }
+        init();
+    </script>
+</body>
+</html>
