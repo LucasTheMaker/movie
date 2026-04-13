@@ -1,207 +1,101 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lucas Hub | Music</title>
-    <style>
-        :root { --apple-red: #fa233c; --bg: #000; --sidebar: #121212; --card-bg: #1c1c1e; --text-gray: #8e8e93; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+<style>
+    /* Sleek Apple Music Slider */
+    .progress-container { 
+        display: flex; 
+        align-items: center; 
+        gap: 12px; 
+        width: 100%; 
+        max-width: 500px; 
+        font-size: 12px; 
+        color: var(--text-gray); 
+        font-variant-numeric: tabular-nums; 
+    }
 
-        /* --- SIDEBAR --- */
-        .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #2c2c2e; padding: 30px 20px; flex-shrink: 0; }
-        .nav-item { padding: 12px; color: #fff; border-radius: 8px; margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 500; }
-        .nav-item.active { background: #2c2c2e; }
+    input[type="range"] {
+        flex: 1;
+        -webkit-appearance: none;
+        appearance: none;
+        background: #333;
+        height: 4px;
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+        transition: height 0.2s;
+    }
 
-        /* --- MAIN VIEW --- */
-        .main-view { flex: 1; overflow-y: auto; padding-bottom: 120px; }
-        .hero { height: 40vh; background: linear-gradient(to bottom, rgba(0,0,0,0), #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 40px; }
-        .scroller { display: flex; overflow-x: auto; gap: 20px; padding: 20px 40px; scrollbar-width: none; }
-        .card { min-width: 180px; cursor: pointer; transition: 0.3s; }
-        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    input[type="range"]:hover { height: 6px; }
 
-        /* --- PLAYER BAR --- */
-        .player-bar { position: fixed; bottom: 0; width: 100%; background: rgba(20,20,20,0.95); backdrop-filter: blur(20px); border-top: 1px solid #333; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; z-index: 3000; height: 90px; }
-        .track-info-box { display: flex; align-items: center; gap: 15px; width: 30%; cursor: pointer; }
-        .track-info-box img { width: 55px; height: 55px; border-radius: 6px; }
-        
-        .controls { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
-        .btn-group { display: flex; align-items: center; gap: 25px; }
-        .control-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; opacity: 0.8; }
-        .control-btn:hover { opacity: 1; }
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 12px;
+        width: 12px;
+        border-radius: 50%;
+        background: #fff;
+        box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        cursor: pointer;
+    }
 
-        /* Progress Bar */
-        .progress-container { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 500px; font-size: 11px; color: var(--text-gray); }
-        input[type="range"] { flex: 1; accent-color: var(--apple-red); cursor: pointer; height: 4px; }
+    /* Full Player Seek Bar */
+    #f-seek { width: 100%; height: 6px; margin-top: 20px; }
+</style>
 
-        /* --- FULL SCREEN PLAYER --- */
-        #full-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
-        #full-player img { width: 85vw; max-width: 400px; aspect-ratio: 1/1; border-radius: 20px; box-shadow: 0 20px 50px rgba(250,35,60,0.3); margin-bottom: 40px; }
-        .close-full { position: absolute; top: 20px; left: 20px; font-size: 30px; cursor: pointer; }
+<script>
+    const player = document.getElementById('audio-player');
+    const seekSlider = document.getElementById('seek-slider');
+    const fullSeek = document.getElementById('f-seek');
 
-        /* --- ALBUM OVERLAY --- */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; overflow-y: auto; padding-bottom: 100px; }
-        .track-row { display: flex; justify-content: space-between; padding: 15px 40px; cursor: pointer; border-radius: 10px; margin: 0 20px; }
-        .track-row:hover { background: #1c1c1e; }
-
-        @media (max-width: 768px) {
-            .sidebar { display: none; }
-            .track-info-box { width: 60%; }
-            .pc-only { display: none; }
-        }
-    </style>
-</head>
-<body>
-
-    <nav class="sidebar">
-        <h2 style="color: var(--apple-red); font-weight: 900; margin-left: 15px;">Lucas Hub</h2>
-        <div class="nav-item active">🏠 Music</div>
-        <div class="nav-item" onclick="window.location.href='movie.html'">🎬 Movies</div>
-    </nav>
-
-    <main class="main-view">
-        <div class="hero"><h1 style="font-size: 60px; font-weight: 900;">Kanye West</h1></div>
-        <div style="padding: 30px 40px 10px; font-weight: 700; font-size: 22px;">Discography</div>
-        <div class="scroller" id="album-row"></div>
-    </main>
-
-    <div id="overlay" class="overlay">
-        <div style="padding: 20px; position: sticky; top: 0; background: rgba(0,0,0,0.9); z-index: 10;">
-            <span onclick="closeOverlay()" style="cursor:pointer; font-weight:bold; color:var(--apple-red);">← Back</span>
-        </div>
-        <div id="overlay-header" style="text-align:center; padding: 20px;"></div>
-        <div id="track-list" style="max-width: 800px; margin: 0 auto;"></div>
-    </div>
-
-    <div id="full-player">
-        <span class="close-full" onclick="toggleFullPlayer()">⌄</span>
-        <img id="f-img" src="">
-        <h1 id="f-title" style="margin: 0; font-size: 28px;"></h1>
-        <p id="f-album" style="color: var(--text-gray); margin-top: 10px;"></p>
-        
-        <div class="progress-container" style="margin-top: 40px; width: 80%;">
-            <span id="f-current">0:00</span>
-            <input type="range" id="f-seek" value="0" max="100">
-            <span id="f-total">0:00</span>
-        </div>
-        
-        <div class="btn-group" style="margin-top: 40px; transform: scale(1.5);">
-            <button class="control-btn" onclick="prevTrack()">⏮</button>
-            <button class="control-btn" id="f-play-btn" onclick="togglePlay()" style="font-size: 40px;">⏸</button>
-            <button class="control-btn" onclick="nextTrack()">⏭</button>
-        </div>
-    </div>
-
-    <div class="player-bar">
-        <div class="track-info-box" onclick="toggleFullPlayer()">
-            <img id="p-img" src="">
-            <div style="overflow: hidden;">
-                <div id="p-title" style="font-weight:bold; font-size:14px; white-space:nowrap; text-overflow:ellipsis;">Select Track</div>
-                <div id="p-album" style="font-size:11px; color:var(--text-gray);">Lucas Hub</div>
-            </div>
-        </div>
-
-        <div class="controls">
-            <div class="btn-group">
-                <button class="control-btn pc-only" onclick="prevTrack()">⏮</button>
-                <button class="control-btn" id="play-btn" onclick="togglePlay()" style="font-size: 30px;">⏸</button>
-                <button class="control-btn" onclick="nextTrack()">⏭</button>
-            </div>
-            <div class="progress-container pc-only">
-                <span id="current-time">0:00</span>
-                <input type="range" id="seek-slider" value="0" max="100">
-                <span id="duration">0:00</span>
-            </div>
-        </div>
-        <div style="width: 30%;" class="pc-only"></div>
-    </div>
-
-    <audio id="audio-player"></audio>
-
-    <script>
-        const githubUser = "lucasthemaker"; 
-        const repo = "Music"; 
-        const baseRawUrl = `https://raw.githubusercontent.com/${githubUser}/${repo}/main/`;
-
-        const albums = [
-            { 
-                title: "Ye", year: 2018, img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
-                tracks: [
-                    { name: "I Thought About Killing You", file: "I%20Thought%20About%20Killing%20You.mp3" },
-                    { name: "Yikes", file: "2.%20Yikes.mp3" },
-                    { name: "All Mine", file: "3.%20All%20Mine.mp3" },
-                    { name: "Wouldn't Leave", file: "4.%20Wouldn't%20Leave.mp3" },
-                    { name: "No Mistakes", file: "5.%20No%20Mistakes.mp3" },
-                    { name: "Ghost Town", file: "6.%20Ghost%20Town.mp3" },
-                    { name: "Violent Crimes", file: "7.%20Violent%20Crimes.mp3" }
-                ] 
-            },
-            { 
-                title: "Vultures 1", year: 2024, img: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Vultures_1_Cover.jpg",
-                tracks: [
-                    { name: "Stars", file: "01%20Stars.mp3" },
-                    { name: "Keys To My Life", file: "02%20Keys%20To%20My%20Life.mp3" },
-                    { name: "Carnival", file: "12%20Carnival.mp3" }
-                ] 
-            }
-        ];
-
-        let currentTracks = [];
-        let index = 0;
-        const player = document.getElementById('audio-player');
-
-        function init() {
-            const row = document.getElementById('album-row');
-            albums.forEach(a => {
-                row.innerHTML += `<div class="card" onclick="openAlb('${a.title}')"><img src="${a.img}"><div style="margin-top:10px; font-weight:600;">${a.title}</div></div>`;
-            });
-        }
-
-        function openAlb(t) {
-            const a = albums.find(x => x.title === t);
-            currentTracks = a.tracks;
-            document.getElementById('overlay-header').innerHTML = `<img src="${a.img}" style="width:200px; border-radius:12px;"><h1>${a.title}</h1>`;
-            document.getElementById('track-list').innerHTML = a.tracks.map((tr, i) => `
-                <div class="track-row" onclick="playTrack(${i}, '${a.img}', '${a.title}')">
-                    <span>${tr.name}</span><span>▶</span>
-                </div>`).join('');
-            document.getElementById('overlay').style.display = 'block';
-        }
-
-        function playTrack(idx, img, alb) {
-            index = idx;
-            const track = currentTracks[index];
-            player.src = baseRawUrl + track.file;
-            document.getElementById('p-title').innerText = track.name;
-            document.getElementById('f-title').innerText = track.name;
-            document.getElementById('p-album').innerText = alb;
-            document.getElementById('f-album').innerText = alb;
-            document.getElementById('p-img').src = img;
-            document.getElementById('f-img').src = img;
-            player.play();
-        }
-
-        function togglePlay() { player.paused ? player.play() : player.pause(); }
-        function nextTrack() { if(index < currentTracks.length - 1) playTrack(index+1, document.getElementById('p-img').src, document.getElementById('p-album').innerText); }
-        function prevTrack() { if(index > 0) playTrack(index-1, document.getElementById('p-img').src, document.getElementById('p-album').innerText); }
-        function toggleFullPlayer() { const fp = document.getElementById('full-player'); fp.style.display = (fp.style.display === 'flex') ? 'none' : 'flex'; }
-        function closeOverlay() { document.getElementById('overlay').style.display = 'none'; }
-
-        // Time Updates
-        player.ontimeupdate = () => {
+    // --- TIME UPDATES ---
+    player.ontimeupdate = () => {
+        if (!isNaN(player.duration)) {
+            // Calculate percentage
             const perc = (player.currentTime / player.duration) * 100;
-            document.getElementById('seek-slider').value = perc || 0;
-            document.getElementById('f-seek').value = perc || 0;
+            
+            // Update the slider positions
+            seekSlider.value = perc;
+            fullSeek.value = perc;
+
+            // Update Time Text
             document.getElementById('current-time').innerText = formatTime(player.currentTime);
             document.getElementById('f-current').innerText = formatTime(player.currentTime);
             document.getElementById('duration').innerText = formatTime(player.duration);
             document.getElementById('f-total').innerText = formatTime(player.duration);
-        };
+        }
+    };
 
-        function formatTime(s) { if(isNaN(s)) return "0:00"; let m = Math.floor(s/60); let sec = Math.floor(s%60); return m + ":" + (sec < 10 ? "0" : "") + sec; }
-        
-        window.onload = init;
-    </script>
-</body>
-</html>
+    // --- SCRUBBING LOGIC (The "Skip to Timestamp" Part) ---
+    function scrub(e) {
+        const scrubTime = (e.target.value / 100) * player.duration;
+        player.currentTime = scrubTime;
+    }
+
+    // Attach scrub event to both sliders
+    seekSlider.oninput = scrub;
+    fullSeek.oninput = scrub;
+
+    // --- TRACK NAVIGATION ---
+    function nextTrack() {
+        if (index < currentTracks.length - 1) {
+            playTrack(index + 1, document.getElementById('p-img').src, document.getElementById('p-album').innerText);
+        }
+    }
+
+    function prevTrack() {
+        // If song is more than 3 seconds in, restart the song instead of skipping back
+        if (player.currentTime > 3) {
+            player.currentTime = 0;
+        } else if (index > 0) {
+            playTrack(index - 1, document.getElementById('p-img').src, document.getElementById('p-album').innerText);
+        }
+    }
+
+    // Format seconds into 0:00
+    function formatTime(s) {
+        if (isNaN(s)) return "0:00";
+        let min = Math.floor(s / 60);
+        let sec = Math.floor(s % 60);
+        return min + ":" + (sec < 10 ? "0" : "") + sec;
+    }
+
+    // Auto-play next song when current one ends
+    player.onended = nextTrack;
+</script>
