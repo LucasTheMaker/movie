@@ -6,110 +6,84 @@
     <title>Lucas Hub | Music</title>
     <style>
         :root { --apple-red: #fa233c; --bg: #000; --sidebar: #121212; --card-bg: #1c1c1e; --text-gray: #8e8e93; }
-        
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- APPLE SIDEBAR --- */
-        .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #2c2c2e; padding: 30px 20px; flex-shrink: 0; display: flex; flex-direction: column; }
-        .sidebar h2 { font-size: 11px; color: var(--text-gray); letter-spacing: 1px; margin-left: 12px; margin-bottom: 20px; text-transform: uppercase; }
-        .nav-item { padding: 10px 15px; color: #fff; border-radius: 8px; margin-bottom: 4px; cursor: pointer; font-weight: 500; font-size: 15px; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
-        .nav-item:hover { background: #2c2c2e; }
-        .nav-item.active { background: #3a3a3c; }
+        /* --- SIDEBAR --- */
+        .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #2c2c2e; padding: 30px 20px; flex-shrink: 0; }
+        .nav-item { padding: 10px 15px; color: #fff; border-radius: 8px; margin-bottom: 4px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 12px; }
+        .nav-item.active { background: #2c2c2e; }
         .nav-item span { color: var(--apple-red); font-size: 18px; }
 
-        /* --- MAIN VIEW --- */
-        .main-view { flex: 1; overflow-y: auto; padding-bottom: 150px; scroll-behavior: smooth; }
-        .hero { height: 45vh; min-height: 300px; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000 100%), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/20% no-repeat, #111; background-size: cover; display: flex; align-items: flex-end; padding: 60px; }
-        .hero-text h1 { font-size: 72px; margin: 0; letter-spacing: -4px; font-weight: 900; }
+        /* --- MAIN CONTENT --- */
+        .main-view { flex: 1; overflow-y: auto; padding-bottom: 150px; }
+        .hero { height: 40vh; background: linear-gradient(to bottom, rgba(0,0,0,0), #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 40px; }
+        .section-label { padding: 30px 40px 10px; font-size: 22px; font-weight: 700; }
+        .scroller { display: flex; overflow-x: auto; gap: 20px; padding: 0 40px 30px; scrollbar-width: none; }
+        .card { min-width: 180px; cursor: pointer; transition: 0.3s; }
+        .card:hover { transform: scale(1.03); }
+        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
-        .section-label { padding: 40px 40px 15px; font-size: 22px; font-weight: 700; border-bottom: 1px solid #1c1c1e; margin-bottom: 20px; }
-        .scroller { display: flex; overflow-x: auto; gap: 24px; padding: 0 40px 40px; scrollbar-width: none; }
-        .scroller::-webkit-scrollbar { display: none; }
+        /* --- OVERLAY & DESCRIPTION --- */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; overflow-y: auto; }
+        .album-header-content { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 40px 20px; }
+        .album-desc { max-width: 600px; color: var(--text-gray); font-size: 14px; line-height: 1.5; margin: 20px 0; }
+        .action-btns { display: flex; gap: 15px; margin-bottom: 30px; }
+        .btn-play { background: #fff; color: #000; border: none; padding: 12px 35px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .btn-shuffle { background: #2c2c2e; color: #fff; border: none; padding: 12px 35px; border-radius: 8px; font-weight: 700; cursor: pointer; }
 
-        /* --- ALBUM CARDS --- */
-        .card { min-width: 200px; width: 200px; cursor: pointer; transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .card:hover { transform: scale(1.04); }
-        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; margin-bottom: 12px; object-fit: cover; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-        .card-title { font-weight: 600; font-size: 16px; margin: 0; }
-        .card-year { color: var(--text-gray); font-size: 14px; margin-top: 4px; }
+        .track-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 40px; cursor: pointer; transition: 0.2s; border-radius: 10px; margin: 0 20px; }
+        .track-row:hover { background: #1c1c1e; }
+        .track-row.playing { color: var(--apple-red); }
 
         /* --- PLAYER BAR --- */
-        .player-bar { position: fixed; bottom: 0; width: 100%; background: rgba(25, 25, 25, 0.85); backdrop-filter: saturate(180%) blur(20px); border-top: 1px solid #333; padding: 12px 30px; display: flex; align-items: center; justify-content: space-between; z-index: 3000; height: 85px; }
+        .player-bar { position: fixed; bottom: 0; width: 100%; background: rgba(20,20,20,0.9); backdrop-filter: blur(20px); border-top: 1px solid #333; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; z-index: 3000; }
         .track-info { display: flex; align-items: center; gap: 15px; width: 30%; }
-        .track-info img { width: 56px; height: 56px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-        #p-title { font-weight: 600; font-size: 15px; }
-        #p-album { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
-        
-        audio { flex: 1; max-width: 500px; height: 35px; filter: invert(1); }
-
-        /* --- OVERLAY --- */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; overflow-y: auto; }
-        .track-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 40px; cursor: pointer; border-radius: 8px; margin: 0 20px; }
-        .track-row:hover { background: #1c1c1e; }
-        .track-row span b { color: var(--apple-red); margin-right: 15px; font-family: monospace; font-size: 16px; }
+        .track-info img { width: 50px; height: 50px; border-radius: 4px; }
+        audio { flex: 1; max-width: 500px; filter: invert(1); }
 
         @media (max-width: 768px) {
             .sidebar { display: none; }
-            .hero { padding: 30px; height: 35vh; }
-            .hero-text h1 { font-size: 42px; }
-            .scroller { padding: 0 20px 40px; gap: 15px; }
-            .card { min-width: 160px; }
-            .player-bar { padding: 10px; height: auto; flex-direction: column; gap: 10px; }
-            .track-info { width: 100%; justify-content: center; }
-            audio { width: 100%; }
+            .hero h1 { font-size: 40px !important; }
+            .action-btns { width: 100%; flex-direction: column; }
+            .player-bar { flex-direction: column; height: auto; padding: 10px; }
+            .track-info { width: 100%; margin-bottom: 10px; }
         }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <h2 style="color: var(--apple-red); font-weight: 900; font-size: 18px; text-transform: none; margin-bottom: 40px;">Lucas Hub</h2>
-        <h2>Menu</h2>
+        <h2 style="color: var(--apple-red); font-size: 20px; font-weight: 900; margin-bottom: 40px;">Lucas Hub</h2>
         <div class="nav-item active"><span>🏠</span> Music</div>
         <div class="nav-item" onclick="window.location.href='movie.html'"><span>🎬</span> Movies</div>
-        <div class="nav-item"><span>📻</span> Radio</div>
-        
-        <h2 style="margin-top: 40px;">Library</h2>
-        <div class="nav-item"><span>📁</span> Albums</div>
-        <div class="nav-item"><span>👤</span> Artists</div>
     </nav>
 
     <main class="main-view">
         <div class="hero">
-            <div class="hero-text">
-                <h1 id="artist-name">Kanye West</h1>
-                <p style="color: var(--text-gray); font-weight: 600; margin-top: 10px;">94,203,110 MONTHLY LISTENERS</p>
-            </div>
+            <h1 style="font-size: 70px; margin: 0; font-weight: 900;">Kanye West</h1>
         </div>
-
-        <div class="section-label">Essential Albums</div>
+        <div class="section-label">Discography</div>
         <div class="scroller" id="album-row"></div>
-
-        <div class="section-label">Singles & EPs</div>
-        <div class="scroller" id="singles-row"></div>
     </main>
 
     <div id="overlay" class="overlay">
-        <div style="padding: 30px; position: sticky; top: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 100; display: flex; align-items: center; gap: 20px;">
-            <button onclick="closeOverlay()" style="background: #1c1c1e; border: none; color: #fff; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 600;">← Back</button>
+        <div style="padding: 20px; position: sticky; top: 0; background: rgba(0,0,0,0.8); z-index: 100;">
+            <span onclick="closeOverlay()" style="cursor:pointer; font-weight:bold; color:var(--apple-red);">← Back</span>
         </div>
-        <div id="overlay-header" style="text-align:center; padding: 20px 20px 60px;"></div>
-        <div id="track-list" style="max-width: 900px; margin: 0 auto; padding-bottom: 150px;"></div>
+        <div class="album-header-content" id="overlay-header"></div>
+        <div id="track-list" style="max-width: 800px; margin: 0 auto; padding-bottom: 150px;"></div>
     </div>
 
     <div class="player-bar">
         <div class="track-info">
             <img id="p-img" src="">
-            <div class="track-text">
-                <div id="p-title">Not Playing</div>
-                <div id="p-album">Select music</div>
+            <div>
+                <div id="p-title" style="font-weight:bold; font-size:14px;">Not Playing</div>
+                <div id="p-album" style="font-size:11px; color:var(--text-gray);">Stream active</div>
             </div>
         </div>
         <audio id="player-core" controls></audio>
-        <div style="width: 30%; display: flex; justify-content: flex-end; padding-right: 20px;" class="pc-only">
-            <span style="font-size: 20px; cursor: pointer; opacity: 0.6;">≡</span>
-        </div>
     </div>
 
     <script>
@@ -119,7 +93,8 @@
 
         const albums = [
             { 
-                title: "Ye", year: 2018, img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg", 
+                title: "Ye", year: 2018, img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
+                desc: "Ye is the eighth studio album by Kanye West. It features a raw, personal look into his mental health and family life, recorded entirely at his ranch in Wyoming.",
                 tracks: [
                     { name: "I Thought About Killing You", file: "I%20Thought%20About%20Killing%20You.mp3" },
                     { name: "Yikes", file: "2.%20Yikes.mp3" },
@@ -130,10 +105,15 @@
                     { name: "Violent Crimes", file: "7.%20Violent%20Crimes.mp3" }
                 ] 
             },
-            { title: "Graduation", year: 2007, img: "https://upload.wikimedia.org/wikipedia/en/7/70/Graduation_%28album%29.jpg", tracks: ["Good Morning", "Stronger", "I Wonder"] },
-            { title: "BULLY", year: 2026, img: "https://images.complex.com/complex/images/c_fill,dpr_auto,f_auto,q_auto,w_1400/fl_lossy,pg_1/vntx53u6k5tq4u2p1p9z/kanye-west-bully-cover", tracks: ["Preacher Man"] },
-            { title: "The Life of Pablo", year: 2016, img: "https://upload.wikimedia.org/wikipedia/en/4/4d/The_Life_of_Pablo_album_cover.jpg", tracks: ["Ultralight Beam", "Famous"] }
+            { 
+                title: "Graduation", year: 2007, img: "https://upload.wikimedia.org/wikipedia/en/7/70/Graduation_%28album%29.jpg",
+                desc: "The album that changed hip-hop forever, blending stadium rock and electronic influences with soulful rap.",
+                tracks: [{name: "Good Morning", file: "01%20Good%20Morning.mp3"}, {name: "Stronger", file: "02%20Stronger.mp3"}] 
+            }
         ];
+
+        let currentAlbumTracks = [];
+        let currentTrackIndex = 0;
 
         function init() {
             const row = document.getElementById('album-row');
@@ -141,42 +121,71 @@
                 row.innerHTML += `
                     <div class="card" onclick="openAlb('${a.title}')">
                         <img src="${a.img}">
-                        <div class="card-title">${a.title}</div>
-                        <div class="card-year">${a.year}</div>
+                        <div style="font-weight:600;">${a.title}</div>
+                        <div style="color:var(--text-gray); font-size:13px;">${a.year}</div>
                     </div>`;
             });
         }
 
         function openAlb(t) {
             const a = albums.find(x => x.title === t);
+            currentAlbumTracks = a.tracks;
+            
             document.getElementById('overlay-header').innerHTML = `
-                <img src="${a.img}" style="width:280px; border-radius:15px; box-shadow: 0 30px 60px rgba(0,0,0,0.8);">
-                <h1 style="font-size: 48px; margin: 30px 0 10px;">${a.title}</h1>
-                <p style="color: var(--apple-red); font-weight: 700;">KANYE WEST • ${a.year}</p>
+                <img src="${a.img}" style="width:250px; border-radius:12px;">
+                <h1 style="font-size: 40px; margin: 20px 0 5px;">${a.title}</h1>
+                <p style="color:var(--apple-red); font-weight:700;">KANYE WEST</p>
+                <p class="album-desc">${a.desc}</p>
+                <div class="action-btns">
+                    <button class="btn-play" onclick="playAlbum(0)"><span>▶</span> Play</button>
+                    <button class="btn-shuffle" onclick="playAlbum(Math.floor(Math.random()*currentAlbumTracks.length))">Shuffle</button>
+                </div>
             `;
             
-            document.getElementById('track-list').innerHTML = a.tracks.map((tr, i) => {
-                const isObj = typeof tr === 'object';
-                const name = isObj ? tr.name : tr;
-                const file = isObj ? tr.file : null;
-                
-                return `
-                <div class="track-row" onclick="${file ? `play('${file}', '${name}', '${a.img}', '${a.title}')` : `alert('File not uploaded to GitHub yet!')`}">
-                    <span><b>${i+1}</b> ${name}</span>
-                    <span style="color: ${file ? 'var(--apple-red)' : '#333'}">▶</span>
-                </div>`;
-            }).join('');
+            renderTracklist(a);
             document.getElementById('overlay').style.display = 'block';
         }
 
-        function play(file, name, img, alb) {
+        function renderTracklist(a) {
+            document.getElementById('track-list').innerHTML = a.tracks.map((tr, i) => `
+                <div class="track-row" id="track-${i}" onclick="playTrack(${i}, '${a.img}', '${a.title}')">
+                    <span><b style="color:#444; margin-right:15px;">${i+1}</b> ${tr.name}</span>
+                    <span>▶</span>
+                </div>
+            `).join('');
+        }
+
+        function playTrack(index, img, albTitle) {
+            currentTrackIndex = index;
+            const track = currentAlbumTracks[index];
             const audio = document.getElementById('player-core');
-            audio.src = baseRawUrl + file;
-            document.getElementById('p-title').innerText = name;
-            document.getElementById('p-album').innerText = alb;
+            
+            audio.src = baseRawUrl + track.file;
+            document.getElementById('p-title').innerText = track.name;
+            document.getElementById('p-album').innerText = albTitle;
             document.getElementById('p-img').src = img;
+            
+            // Highlight active track
+            document.querySelectorAll('.track-row').forEach(r => r.classList.remove('playing'));
+            const row = document.getElementById(`track-${index}`);
+            if(row) row.classList.add('playing');
+
             audio.play();
         }
+
+        // Play album from beginning logic
+        function playAlbum(startIndex) {
+            const activeAlb = albums.find(a => a.tracks === currentAlbumTracks);
+            playTrack(startIndex, activeAlb.img, activeAlb.title);
+        }
+
+        // Auto-play next track
+        document.getElementById('player-core').onended = function() {
+            if (currentTrackIndex < currentAlbumTracks.length - 1) {
+                const activeAlb = albums.find(a => a.tracks === currentAlbumTracks);
+                playTrack(currentTrackIndex + 1, activeAlb.img, activeAlb.title);
+            }
+        };
 
         function closeOverlay() { document.getElementById('overlay').style.display = 'none'; }
         window.onload = init;
