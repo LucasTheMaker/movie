@@ -3,85 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucas Hub | Artist & Movies</title>
+    <title>Lucas Hub | 2026</title>
     <style>
-        /* Base Styling */
         body { font-family: -apple-system, system-ui, sans-serif; background: #000; color: #fff; margin: 0; padding-bottom: 80px; overflow: hidden; height: 100vh; }
         
-        /* Navigation & Tabs */
         .page { display: none; height: 100%; width: 100%; overflow-y: auto; animation: fadeIn 0.2s; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* Navigation */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 0.5px solid #333; z-index: 1000; }
         .nav-item { background: none; border: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 10px; cursor: pointer; flex: 1; }
         .nav-item.active { color: #fa2d48; }
         .nav-icon { font-size: 22px; margin-bottom: 4px; }
 
-        /* Artist Header (Latest Release Layout) */
-        .artist-header { display: flex; align-items: center; padding: 20px; gap: 20px; text-align: left; }
-        .artist-pfp { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
-        .dual-layout { display: flex; flex-wrap: wrap; gap: 40px; padding: 20px; border-top: 0.5px solid #333; }
-        .latest-release { flex: 1; min-width: 250px; text-align: left; }
-        .latest-img { width: 100%; max-width: 220px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .top-songs { flex: 1; min-width: 250px; text-align: left; }
-        .song-row { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 0.5px solid #222; font-size: 14px; }
-        .song-row span { color: #fa2d48; font-weight: bold; }
+        /* Search Tab Styles */
+        .search-header { padding: 40px 20px 10px; position: sticky; top: 0; background: #000; z-index: 10; }
+        .search-input { width: 100%; padding: 15px; border-radius: 12px; border: none; background: #222; color: #fff; font-size: 16px; outline: none; box-sizing: border-box; }
+        .results-container { padding: 0 20px; }
+        .result-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 0.5px solid #222; cursor: pointer; }
+        .result-img { width: 50px; height: 50px; border-radius: 6px; object-fit: cover; }
+        .result-type { font-size: 10px; color: #fa2d48; text-transform: uppercase; font-weight: bold; }
 
-        /* Music Grid */
-        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; padding: 20px; }
-        .album-card { cursor: pointer; transition: transform 0.2s; }
-        .album-card:active { transform: scale(0.95); }
+        /* Existing Grid Styles */
+        .music-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; padding: 20px; }
         .album-card img { width: 100%; border-radius: 10px; aspect-ratio: 1/1; object-fit: cover; }
-
-        /* Iframe for Movies */
-        .iframe-container { width: 100%; height: calc(100vh - 70px); border: none; }
-        iframe { width: 100%; height: 100%; border: none; }
+        iframe { width: 100%; height: calc(100vh - 70px); border: none; }
     </style>
 </head>
 <body>
 
     <div id="moviesTab" class="page active">
-        <div class="iframe-container">
-            <iframe src="https://lucasthemaker.github.io/movie/index.html"></iframe>
-        </div>
+        <iframe src="https://lucasthemaker.github.io/movie/index.html"></iframe>
     </div>
 
     <div id="musicTab" class="page">
-        <div class="artist-header">
-            <img src="https://raw.githubusercontent.com/playermatrix/assets/main/ye_pfp.jpg" class="artist-pfp">
-            <div>
-                <h1 style="margin: 0; font-size: 32px;">Kanye West</h1>
-                <p style="color: #fa2d48; margin: 5px 0;">Global Artist • Verified 2026</p>
-            </div>
+        <div style="padding: 20px;">
+            <h1 style="margin: 0;">Kanye West</h1>
+            <p style="color: #fa2d48; margin-top: 5px;">Artist • Verified 2026</p>
         </div>
-
-        <div class="dual-layout">
-            <div class="latest-release">
-                <h3 style="color: #888; font-size: 14px;">LATEST RELEASE</h3>
-                <img src="https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.jpg" class="latest-img">
-                <h2 style="margin: 10px 0 2px;">BULLY [E]</h2>
-                <p style="color: #888; margin: 0;">Mar 28, 2026 • 18 Songs</p>
-            </div>
-            <div class="top-songs">
-                <h3 style="color: #888; font-size: 14px;">TOP SONGS</h3>
-                <div class="song-row"><span>1</span> ▶️ FATHER [E]</div>
-                <div class="song-row"><span>2</span> ▶️ ALL THE LOVE [E]</div>
-                <div class="song-row"><span>3</span> ▶️ THIS A MUST [E]</div>
-                <div class="song-row"><span>4</span> ▶️ PREACHER MAN [E]</div>
-                <div class="song-row"><span>5</span> ▶️ BEAUTY AND THE BEAST [E]</div>
-            </div>
-        </div>
-
-        <h3 style="padding: 20px 20px 0; color: #888;">ALBUMS</h3>
-        <div class="music-grid" id="albumGrid">
-            </div>
+        <div class="music-grid" id="albumGrid"></div>
     </div>
 
     <div id="searchTab" class="page">
-        <div style="padding: 40px 20px;">
-            <h1>Search</h1>
-            <input type="text" style="width:100%; padding:15px; border-radius:12px; border:none; background:#222; color:#fff;" placeholder="Artists, Songs, Movies...">
+        <div class="search-header">
+            <h1 style="margin-top: 0;">Search</h1>
+            <input type="text" id="searchInput" class="search-input" placeholder="Artists, Movies, or Songs...">
+        </div>
+        <div id="searchResults" class="results-container">
+            <p style="color: #555; text-align: center; margin-top: 40px;">Enter a title to search your library</p>
         </div>
     </div>
 
@@ -92,22 +62,18 @@
     </div>
 
     <script>
-        const albums = [
-            { title: "Dropout", year: 2004, img: "https://m.media-amazon.com/images/I/71R3OitAovL.jpg" },
-            { title: "Late Reg.", year: 2005, img: "https://m.media-amazon.com/images/I/719hE1Z7FzL.jpg" },
-            { title: "Graduation", year: 2007, img: "https://m.media-amazon.com/images/I/8152D6J3N9L.jpg" },
-            { title: "808s", year: 2008, img: "https://m.media-amazon.com/images/I/61j8vI-X2YL.jpg" },
-            { title: "MBDTF", year: 2010, img: "https://m.media-amazon.com/images/I/91M9pUeHbeL.jpg" },
-            { title: "WTT", year: 2011, img: "https://m.media-amazon.com/images/I/619WofgBqFL.jpg" },
-            { title: "Yeezus", year: 2013, img: "https://m.media-amazon.com/images/I/71-6Yy7l4DL.jpg" },
-            { title: "TLOP", year: 2016, img: "https://m.media-amazon.com/images/I/61q3K-o1E6L.jpg" },
-            { title: "ye", year: 2018, img: "https://m.media-amazon.com/images/I/71RkRjYp3TL.jpg" },
-            { title: "KSG", year: 2018, img: "https://m.media-amazon.com/images/I/71E3v1-E9jL.jpg" },
-            { title: "JIK", year: 2019, img: "https://m.media-amazon.com/images/I/61H7o+Gq8GL.jpg" },
-            { title: "Donda", year: 2021, img: "https://m.media-amazon.com/images/I/41-lS09S2AL.jpg" },
-            { title: "Vultures 1", year: 2024, img: "https://m.media-amazon.com/images/I/71Tbe93S+YL.jpg" },
-            { title: "Vultures 2", year: 2024, img: "https://upload.wikimedia.org/wikipedia/en/b/b3/Vultures_2_cover.jpg" },
-            { title: "BULLY", year: 2026, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.jpg" }
+        // Data for Search Engine
+        const musicData = [
+            { title: "BULLY", type: "Album", year: 2026, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.jpg", songs: ["Preacher Man", "Father", "Beauty and the Beast"] },
+            { title: "Vultures 2", type: "Album", year: 2024, img: "https://upload.wikimedia.org/wikipedia/en/b/b3/Vultures_2_cover.jpg", songs: ["Slide", "Field Trip", "River"] },
+            { title: "Graduation", type: "Album", year: 2007, img: "https://m.media-amazon.com/images/I/8152D6J3N9L.jpg", songs: ["Stronger", "Flashing Lights"] }
+            // Add more albums here...
+        ];
+
+        const movieData = [
+            { title: "Spider-Man: No Way Home", type: "Movie", img: "https://m.media-amazon.com/images/I/81Ni6s73rlL.jpg" },
+            { title: "The Batman", type: "Movie", img: "https://m.media-amazon.com/images/I/81dg68XUqzL.jpg" }
+            // Add your movie titles here...
         ];
 
         function showPage(id, btn) {
@@ -117,18 +83,56 @@
             btn.classList.add('active');
         }
 
-        function loadGrid() {
-            const grid = document.getElementById('albumGrid');
-            albums.reverse().forEach(alb => {
-                grid.innerHTML += `
-                    <div class="album-card">
-                        <img src="${alb.img}">
-                        <h4 style="margin: 8px 0 2px;">${alb.title}</h4>
-                        <p style="font-size: 12px; color: #888;">${alb.year}</p>
+        // Search Engine Logic
+        const searchInput = document.getElementById('searchInput');
+        const resultsBox = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            resultsBox.innerHTML = "";
+
+            if (!query) {
+                resultsBox.innerHTML = '<p style="color: #555; text-align: center; margin-top: 40px;">Enter a title to search your library</p>';
+                return;
+            }
+
+            // Search Albums & Movies
+            const allItems = [...musicData, ...movieData];
+            const filtered = allItems.filter(item => item.title.toLowerCase().includes(query));
+
+            // Search Songs specifically
+            musicData.forEach(album => {
+                album.songs.forEach(song => {
+                    if (song.toLowerCase().includes(query)) {
+                        filtered.push({ title: song, type: "Song", img: album.img, sub: album.title });
+                    }
+                });
+            });
+
+            if (filtered.length === 0) {
+                resultsBox.innerHTML = '<p style="color: #555; text-align: center; margin-top: 40px;">No results found.</p>';
+            }
+
+            filtered.forEach(item => {
+                resultsBox.innerHTML += `
+                    <div class="result-item">
+                        <img src="${item.img}" class="result-img">
+                        <div>
+                            <div class="result-type">${item.type}</div>
+                            <div style="font-weight: bold;">${item.title}</div>
+                            <div style="font-size: 12px; color: #888;">${item.sub || item.year || ''}</div>
+                        </div>
                     </div>`;
             });
-        }
-        window.onload = loadGrid;
+        });
+
+        // Initialize Music Grid
+        window.onload = () => {
+            const grid = document.getElementById('albumGrid');
+            musicData.forEach(alb => {
+                grid.innerHTML += `<div class="album-card"><img src="${alb.img}"><h4>${alb.title}</h4><p>${alb.year}</p></div>`;
+            });
+        };
     </script>
 </body>
 </html>
