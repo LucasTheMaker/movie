@@ -3,32 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lucas Hub | Music</title>
+    <title>Lucas Hub</title>
     <style>
-        :root { --apple-red: #fa233c; --bg: #000; --sidebar: #121212; --card-bg: #1c1c1e; --text-gray: #8e8e93; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        :root { --apple-red: #fa233c; --bg: #000; --sidebar: #121212; --text-gray: #8e8e93; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: #000; color: #fff; height: 100vh; overflow: hidden; display: flex; }
 
-        /* --- SIDEBAR --- */
+        /* Navigation */
         .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #2c2c2e; padding: 30px 20px; flex-shrink: 0; }
-        .nav-item { padding: 12px; color: #fff; border-radius: 8px; margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 500; }
+        .nav-item { padding: 12px; border-radius: 8px; margin-bottom: 5px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 500; }
         .nav-item.active { background: #2c2c2e; }
 
-        /* --- MAIN VIEW --- */
+        /* Main Area */
         .main-view { flex: 1; overflow-y: auto; padding-bottom: 120px; }
-        .hero { height: 40vh; background: linear-gradient(to bottom, rgba(0,0,0,0), #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 40px; }
-        .scroller { display: flex; overflow-x: auto; gap: 20px; padding: 20px 40px; scrollbar-width: none; }
-        .card { min-width: 180px; cursor: pointer; transition: 0.3s; }
-        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .hero { height: 35vh; background: linear-gradient(to bottom, rgba(0,0,0,0), #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 30px; }
+        .scroller { display: flex; overflow-x: auto; gap: 20px; padding: 20px 30px; }
+        .card { min-width: 160px; cursor: pointer; }
+        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; background: #1c1c1e; }
 
-        /* --- PLAYER BAR --- */
-        .player-bar { position: fixed; bottom: 0; width: 100%; background: rgba(20,20,20,0.95); backdrop-filter: blur(20px); border-top: 1px solid #333; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; z-index: 3000; height: 90px; }
-        .track-info-box { display: flex; align-items: center; gap: 15px; width: 30%; cursor: pointer; }
-        .track-info-box img { width: 55px; height: 55px; border-radius: 6px; }
-        .controls { display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1; }
+        /* Bottom Player */
+        .player-bar { position: fixed; bottom: 0; width: 100%; background: rgba(20,20,20,0.95); backdrop-filter: blur(15px); border-top: 1px solid #333; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 3000; height: 90px; }
+        .track-info { display: flex; align-items: center; gap: 12px; width: 50%; }
+        .track-info img { width: 50px; height: 50px; border-radius: 6px; }
+        .controls { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
         .btn-group { display: flex; align-items: center; gap: 20px; }
-        .control-btn { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; opacity: 0.8; transition: 0.2s; }
-        .control-btn:hover { opacity: 1; transform: scale(1.1); }
+        .control-btn { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
 
-        /* Progress Bar Styling */
-        .progress-container { display: flex; align-items: center; gap: 12px; width: 100%; max-width:
+        /* Progress Bar */
+        .progress-container { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 400px; font-size: 10px; color: var(--text-gray); }
+        input[type="range"] { flex: 1; accent-color: var(--apple-red); height: 4px; }
+
+        /* Overlays */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; overflow-y: auto; }
+        #full-player { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 4000; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        #full-player img { width: 80vw; max-width: 300px; border-radius: 15px; margin-bottom: 20px; }
+
+        @media (max-width: 768px) { .sidebar { display: none; } .pc-only { display: none; } .track-info { width: 70%; } }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2 style="color: var(--apple-red); margin-bottom: 30px;">Lucas Hub</h2>
+        <div class="nav-item active">🏠 Music</div>
+        <div class="nav-item" onclick="window.location.href='movie.html'">🎬 Movies</div>
+    </nav>
+
+    <main class="main-view">
+        <div class="hero"><h1 style="font-size: 40px; font-weight: 900;">Kanye West</h1></div>
+        <h3 style="padding: 20px 30px 0;">Albums</h3>
+        <div class="scroller" id="album-row">
