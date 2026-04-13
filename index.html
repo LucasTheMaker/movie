@@ -23,7 +23,7 @@
         .overlay { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; overflow-y: auto; padding: 40px 20px; }
         .track-row { display: flex; align-items: center; padding: 15px; border-radius: 10px; cursor: pointer; border-bottom: 1px solid #111; }
         
-        #full-player { position: fixed; bottom: -100%; left: 0; width: 100%; height: 100%; background: #0a0a0a; z-index: 3000; transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; align-items: center; padding: 40px 30px; }
+        #full-player { position: fixed; bottom: -100%; left: 0; width: 100%; height: 100%; background: #0a0a0a; z-index: 3000; transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; align-items: center; padding: 40px 30px; touch-action: none; }
         #full-player.active { bottom: 0; }
         .large-art { width: 80vw; max-width: 320px; border-radius: 15px; margin-bottom: 30px; }
         
@@ -31,9 +31,8 @@
         #time-slider { width: 100%; height: 6px; cursor: pointer; accent-color: #fff; }
 
         .mini-player { position: fixed; bottom: 0; width: 100%; background: rgba(20,20,20,0.95); backdrop-filter: blur(15px); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 2000; border-top: 1px solid #222; cursor: pointer; }
-        .mini-meta { display: flex; align-items: center; }
+        .mini-meta { display: flex; align-items: center; flex: 1; overflow: hidden; }
         .mini-img { width: 45px; height: 45px; border-radius: 5px; margin-right: 12px; }
-        .repeat-btn.on { color: var(--apple-red); }
 
         @media (max-width: 768px) { .sidebar { display: none; } }
     </style>
@@ -84,7 +83,7 @@
         <div class="mini-meta">
             <img id="m-art" class="mini-img" src="">
             <div>
-                <div id="m-title" style="font-weight:bold; font-size:14px;">Not Playing</div>
+                <div id="m-title" style="font-weight:bold; font-size:14px; white-space:nowrap; text-overflow:ellipsis;">Not Playing</div>
                 <div id="m-album" style="font-size:12px; color:#888;">ye</div>
             </div>
         </div>
@@ -98,23 +97,26 @@
         const audio = document.getElementById('audio-core');
         const slider = document.getElementById('time-slider');
 
+        function toTitleCase(str) {
+            return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+        }
+
         const albums = [
             {
-                title: "BULLY", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
+                title: "Bully", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
                 tracks: [
                     { name: "King", file: "KING_spotdown.org bully.mp3" },
-                    { name: "Sisters and brothers", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
+                    { name: "Sisters And Brothers", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
                     { name: "Father", file: "FATHER (feat. Travis Scott)_spotdown.org.mp3" },
-                    { name: "Preacher man", file: "PREACHER MAN.mp3" },
-                    { name: "Beauty and the beast", file: "BEAUTY AND THE BEAST.mp3" },
-                    { name: "Damn", file: "DAMN.mp3" }
+                    { name: "Preacher Man", file: "PREACHER MAN.mp3" },
+                    { name: "Beauty And The Beast", file: "BEAUTY AND THE BEAST.mp3" }
                 ]
             },
             {
                 title: "Vultures 1", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/vultures1_cover.jpg",
                 tracks: [
                     { name: "Stars", file: "STARS_spotdown.org.mp3" },
-                    { name: "Back to me", file: "BACK TO ME_spotdown.org.mp3" },
+                    { name: "Back To Me", file: "BACK TO ME_spotdown.org.mp3" },
                     { name: "Burn", file: "BURN_spotdown.org.mp3" },
                     { name: "Carnival", file: "CARNIVAL_spotdown.org.mp3" },
                     { name: "King", file: "KING_spotdown.org.mp3" }
@@ -123,13 +125,13 @@
             {
                 title: "ye", img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
                 tracks: [
-                    { name: "I thought about killing you", file: "1. I Thought About Killing You.mp3" },
+                    { name: "I Thought About Killing You", file: "1. I Thought About Killing You.mp3" },
                     { name: "Yikes", file: "2. Yikes.mp3" },
-                    { name: "All mine", file: "3. All Mine.mp3" },
-                    { name: "Wouldnt leave", file: "4. Wouldn't Leave.mp3" },
-                    { name: "No mistakes", file: "5. No Mistakes.mp3" },
-                    { name: "Ghost town", file: "6. Ghost Town.mp3" },
-                    { name: "Violent crimes", file: "7. Violent Crimes.mp3" }
+                    { name: "All Mine", file: "3. All Mine.mp3" },
+                    { name: "Wouldn't Leave", file: "4. Wouldn't Leave.mp3" },
+                    { name: "No Mistakes", file: "5. No Mistakes.mp3" },
+                    { name: "Ghost Town", file: "6. Ghost Town.mp3" },
+                    { name: "Violent Crimes", file: "7. Violent Crimes.mp3" }
                 ]
             }
         ];
@@ -149,7 +151,7 @@
             document.getElementById('track-list').innerHTML = alb.tracks.map((t, idx) => `
                 <div class="track-row" onclick="playSong(${idx})">
                     <span style="width:30px; color:#555;">${idx+1}</span>
-                    <span style="flex:1;">${t.name}</span><span>▶</span>
+                    <span style="flex:1;">${toTitleCase(t.name)}</span><span>▶</span>
                 </div>`).join('');
             document.getElementById('album-overlay').style.display = 'block';
         }
@@ -157,8 +159,8 @@
         function playSong(idx) {
             curTrack = idx; const track = albums[curAlb].tracks[idx];
             audio.src = encodeURI(GITHUB_BASE + track.file);
-            document.getElementById('f-title').innerText = track.name;
-            document.getElementById('m-title').innerText = track.name;
+            document.getElementById('f-title').innerText = toTitleCase(track.name);
+            document.getElementById('m-title').innerText = toTitleCase(track.name);
             document.getElementById('f-album').innerText = albums[curAlb].title;
             document.getElementById('m-album').innerText = albums[curAlb].title;
             document.getElementById('f-art').src = albums[curAlb].img;
@@ -178,18 +180,33 @@
             document.getElementById('m-play-btn').innerText = icon;
         }
 
+        function nextTrack() {
+            if (curTrack < albums[curAlb].tracks.length - 1) playSong(curTrack + 1);
+            else playSong(0);
+        }
+
+        function prevTrack() { if (curTrack > 0) playSong(curTrack - 1); }
+
         function toggleRepeat() {
             isRepeating = !isRepeating;
             audio.loop = isRepeating;
             document.getElementById('repeat-toggle').style.color = isRepeating ? "#fa2d48" : "#fff";
         }
 
-        function nextTrack() { if (curTrack < albums[curAlb].tracks.length - 1) playSong(curTrack + 1); }
-        function prevTrack() { if (curTrack > 0) playSong(curTrack - 1); }
+        // SWIPE TO CLOSE LOGIC
+        let touchStartY = 0;
+        const playerPanel = document.getElementById('full-player');
 
-        function togglePlayer() { document.getElementById('full-player').classList.toggle('active'); }
+        playerPanel.addEventListener('touchstart', e => { touchStartY = e.touches[0].clientY; });
+        playerPanel.addEventListener('touchend', e => {
+            const touchEndY = e.changedTouches[0].clientY;
+            if (touchEndY - touchStartY > 100) togglePlayer(); // Swipe down distance
+        });
+
+        function togglePlayer() { playerPanel.classList.toggle('active'); }
         function closeAlbum() { document.getElementById('album-overlay').style.display = 'none'; }
         
+        audio.onended = () => { if (!isRepeating) nextTrack(); };
         audio.ontimeupdate = () => {
             slider.value = (audio.currentTime / audio.duration) * 100 || 0;
             document.getElementById('cur-time').innerText = fmt(audio.currentTime);
