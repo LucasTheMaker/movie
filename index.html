@@ -14,11 +14,15 @@
         .nav-link.active { color: #fff; background: #222; border-left: 3px solid var(--apple-red); }
 
         .main-view { flex: 1; overflow-y: scroll; padding-bottom: 140px; position: relative; }
-        .hero { width: 100%; height: 40vh; background: linear-gradient(to bottom, transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 40px; }
+        .hero { 
+            width: 100%; height: 40vh; 
+            background: linear-gradient(to bottom, transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg');
+            background-size: cover; background-position: center 20%; display: flex; align-items: flex-end; padding: 40px; 
+        }
 
         .section-label { padding: 30px 40px 15px; font-size: 22px; font-weight: 800; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 0 40px; }
-        .album-card { cursor: pointer; text-align: center; transition: 0.2s; }
+        .album-card { cursor: pointer; text-align: center; }
         .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
 
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; overflow-y: auto; padding: 40px 20px; }
@@ -57,41 +61,62 @@
     </div>
 
     <script>
-        const GITHUB_BASE = "https://raw.githubusercontent.com/LucasTheMaker/movie/main/music/";
+        const GITHUB_BASE = "https://raw.githubusercontent.com/LucasTheMaker/Music/main/";
 
         const albums = [
             {
                 title: "BULLY", year: 2026, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png",
                 tracks: [
-                    { name: "PREACHER MAN", file: "PREACHER_MAN.mp3" },
-                    { name: "BEAUTY AND THE BEAST", file: "BEAUTY_AND_THE_BEAST.mp3" },
+                    { name: "KING", file: "KING_spotdown.org.mp3" },
+                    { name: "THIS A MUST", file: "THIS A MUST_spotdown.org.mp3" },
+                    { name: "FATHER (feat. Travis Scott)", file: "FATHER (feat. Travis Scott)_spotdown.org.mp3" },
+                    { name: "ALL THE LOVE", file: "ALL THE LOVE (feat. Andre Troutman)_spotdown.org.mp3" },
+                    { name: "PUNCH DRUNK", file: "PUNCH DRUNK_spotdown.org.mp3" },
+                    { name: "WHATEVER WORKS", file: "WHATEVER WORKS_spotdown.org.mp3" },
+                    { name: "MAMA'S FAVORITE", file: "MAMA’S FAVORITE_spotdown.org.mp3" },
+                    { name: "SISTERS AND BROTHERS", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
+                    { name: "BULLY (feat. CeeLo Green)", file: "BULLY (feat. CeeLo Green)_spotdown.org.mp3" },
+                    { name: "HIGHS AND LOWS", file: "HIGHS AND LOWS_spotdown.org.mp3" },
+                    { name: "I CAN'T WAIT", file: "I CAN’T WAIT_spotdown.org.mp3" },
+                    { name: "WHITE LINES", file: "WHITE LINES (feat. Andre Troutman)_spotdown.org.mp3" },
+                    { name: "CIRCLES (feat. Don Toliver)", file: "CIRCLES (feat. Don Toliver)_spotdown.org.mp3" },
+                    { name: "PREACHER MAN", file: "PREACHER MAN.mp3" },
+                    { name: "BEAUTY AND THE BEAST", file: "BEAUTY AND THE BEAST.mp3" },
                     { name: "DAMN", file: "DAMN.mp3" },
-                    { name: "LAST BREATH", file: "LAST_BREATH.mp3" },
-                    { name: "WHITE LINES", file: "WHITE_LINES.mp3" },
-                    { name: "BULLY", file: "BULLY.mp3" },
-                    { name: "CIRCLES", file: "CIRCLES.mp3" },
-                    { name: "SHOWTIME", file: "SHOWTIME.mp3" }
+                    { name: "LAST BREATH", file: "LAST BREATH (feat. Peso Pluma)_spotdown.org.mp3" },
+                    { name: "THIS ONE HERE", file: "THIS ONE HERE_spotdown.org.mp3" }
                 ]
             },
             {
                 title: "Vultures 1", year: 2024, img: "https://raw.githubusercontent.com/playermatrix/assets/main/vultures1.jpg",
                 tracks: [
-                    { name: "Everybody", file: "Everybody.mp3" },
-                    { name: "Back to Me", file: "Back_to_Me.mp3" },
-                    { name: "Fuk Sumn", file: "Fuk_Sumn.mp3" },
-                    { name: "Slide", file: "Slide.mp3" },
-                    { name: "Burn", file: "BURN_spotdown.org.mp3" },
-                    { name: "Carnival", file: "CARNIVAL_spotdown.org.mp3" }
+                    { name: "STARS", file: "STARS_spotdown.org.mp3" },
+                    { name: "KEYS TO MY LIFE", file: "KEYS TO MY LIFE_spotdown.org.mp3" },
+                    { name: "PAID", file: "PAID.mp3" },
+                    { name: "TALKING", file: "TALKING_spotdown.org.mp3" },
+                    { name: "BACK TO ME", file: "BACK TO ME_spotdown.org.mp3" },
+                    { name: "HOODRAT", file: "HOODRAT_spotdown.org.mp3" },
+                    { name: "DO IT", file: "DO IT_spotdown.org.mp3" },
+                    { name: "PAPERWORK", file: "PAPERWORK_spotdown.org.mp3" },
+                    { name: "BURN", file: "BURN_spotdown.org.mp3" },
+                    { name: "FUK SUMN", file: "FUK SUMN_spotdown.org.mp3" },
+                    { name: "VULTURES", file: "VULTURES_spotdown.org.mp3" },
+                    { name: "CARNIVAL", file: "CARNIVAL_spotdown.org.mp3" },
+                    { name: "BEG FORGIVENESS", file: "BEG FORGIVENESS_spotdown.org.mp3" },
+                    { name: "PROBLEMATIC", file: "PROBLEMATIC_spotdown.org.mp3" },
+                    { name: "KING", file: "KING_spotdown.org.mp3" }
                 ]
             },
             {
                 title: "Ye", year: 2018, img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
                 tracks: [
-                    { name: "I Thought About Killing You", file: "1._I_Thought_About_Killing_You.mp3" },
-                    { name: "Yikes", file: "2._Yikes.mp3" },
-                    { name: "All Mine", file: "3._All_Mine.mp3" },
-                    { name: "Ghost Town", file: "6._Ghost_Town.mp3" },
-                    { name: "Violent Crimes", file: "7._Violent_Crimes.mp3" }
+                    { name: "I Thought About Killing You", file: "1. I Thought About Killing You.mp3" },
+                    { name: "Yikes", file: "2. Yikes.mp3" },
+                    { name: "All Mine", file: "3. All Mine.mp3" },
+                    { name: "Wouldn't Leave", file: "4. Wouldn't Leave.mp3" },
+                    { name: "No Mistakes", file: "5. No Mistakes.mp3" },
+                    { name: "Ghost Town", file: "6. Ghost Town.mp3" },
+                    { name: "Violent Crimes", file: "7. Violent Crimes.mp3" }
                 ]
             }
         ];
@@ -108,16 +133,16 @@
             document.getElementById('album-content').innerHTML = `
                 <div style="text-align:center;"><img src="${alb.img}" style="width:240px; border-radius:15px; margin-bottom:20px;"><h1>${alb.title}</h1></div>
                 <div style="max-width:600px; margin:auto; background:#111; padding:15px; border-radius:12px;">
-                    ${alb.tracks.map((t, i) => `<div class="track-row" onclick="playSong('${GITHUB_BASE}${t.file}', '${t.name}')"><span>${i+1}. ${t.name}</span><span>▶</span></div>`).join('')}
+                    ${alb.tracks.map((t, i) => `<div class="track-row" onclick="playSong('${GITHUB_BASE}${t.file}', '${t.name.replace(/'/g, "\\'")}')"><span>${i+1}. ${t.name}</span><span>▶</span></div>`).join('')}
                 </div>`;
             document.getElementById('album-view').style.display = 'block';
         }
 
         function playSong(url, name) {
             const audio = document.getElementById('main-audio');
-            audio.src = url;
+            audio.src = encodeURI(url);
             document.getElementById('p-info').innerText = "Playing: " + name;
-            audio.play().catch(() => alert("Error: File '" + url.split('/').pop() + "' not found in your GitHub music folder. Check the filename exactly!"));
+            audio.play().catch(() => alert("Error: File not found in GitHub 'Music' repo. Check the name: " + url.split('/').pop()));
         }
 
         function closeAlbum() { document.getElementById('album-view').style.display = 'none'; }
