@@ -3,140 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goat App</title>
+    <title>Lucas The Maker | Hub</title>
     <style>
-        :root { --accent: #fa243c; --bg: #000; --card: #121212; --gray: #888; --green: #1db954; }
-        body { background: var(--bg); color: white; font-family: -apple-system, system-ui, sans-serif; margin: 0; padding-bottom: 160px; overflow-x: hidden; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #000; color: #fff; margin: 0; padding: 0; text-align: center; }
+        
+        /* Tab Navigation */
+        .tab-bar { display: flex; justify-content: center; background: #111; padding: 15px 0; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #333; }
+        .tab-btn { background: none; border: none; color: #888; font-size: 16px; font-weight: 600; margin: 0 20px; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { color: #fa2d48; border-bottom: 2px solid #fa2d48; }
 
-        /* Navigation */
-        .page { display: none; }
-        .active-page { display: block; }
+        /* Content Sections */
+        .tab-content { display: none; padding: 20px; }
+        .tab-content.active { display: block; }
 
-        /* Headers */
-        .header { padding: 50px 20px 10px; font-size: 32px; font-weight: 800; }
-        .section-title { padding: 20px; font-size: 22px; font-weight: 700; }
+        /* Music Grid Styles */
+        .music-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; max-width: 1000px; margin: 0 auto; }
+        .album-card img { width: 100%; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .album-card h4 { margin: 10px 0 2px; font-size: 14px; }
+        .album-card p { color: #888; font-size: 12px; margin: 0; }
 
-        /* Original Card Look */
-        .row { display: flex; gap: 12px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
-        .row::-webkit-scrollbar { display: none; }
-        .card { min-width: 150px; height: 220px; border-radius: 12px; background-size: cover; background-position: center; border: 1px solid #222; flex-shrink: 0; cursor: pointer; }
-
-        /* Album View (Screenshot Style) */
-        #album-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; overflow-y: auto; display: none; }
-        .album-header-img { width: 100%; height: 35vh; background-size: cover; background-position: center; display: flex; align-items: flex-end; position: relative; }
-        .back-arrow { position: absolute; top: 40px; left: 20px; font-size: 24px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-        .play-btn-float { position: absolute; right: 20px; bottom: -25px; width: 55px; height: 55px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: black; font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
-
-        /* Song Rows from Screenshot */
-        .track-row { display: flex; align-items: center; padding: 12px 20px; gap: 15px; }
-        .track-thumb { width: 45px; height: 45px; border-radius: 4px; background-size: cover; }
-        .track-info { flex-grow: 1; }
-        .track-name { font-size: 16px; font-weight: 600; display: block; }
-        .track-status { font-size: 13px; color: var(--gray); display: flex; align-items: center; gap: 5px; }
-
-        /* Players */
-        .mini-player { position: fixed; bottom: 85px; left: 10px; right: 10px; height: 60px; background: rgba(30,30,30,0.98); backdrop-filter: blur(20px); border-radius: 12px; display: flex; align-items: center; padding: 0 15px; justify-content: space-between; border: 1px solid #333; z-index: 4000; }
-        #expanded-player { position: fixed; top: 100%; left: 0; width: 100%; height: 100%; background: #000; z-index: 6000; transition: 0.4s; padding: 40px 24px; box-sizing: border-box; text-align: center; }
-        #expanded-player.open { top: 0; }
-
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: #000; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #222; z-index: 4500; }
-        .nav-item { text-align: center; font-size: 11px; color: var(--gray); cursor: pointer; }
-        .nav-item.active { color: white; }
+        /* Movie Frame */
+        iframe { width: 100%; height: 90vh; border: none; border-radius: 15px; }
     </style>
 </head>
 <body>
 
-    <div id="movies-page" class="page active-page">
-        <div class="header">Goat Films</div>
-        <p class="section-title">Superhero Movies</p>
-        <div class="row">
-            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMzY2OTgxOTE3OF5BMl5BanBnXkFtZTYwMTY3OTY3._V1_.jpg');"></div>
-            <div class="card" style="background-image: url('https://m.media-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_.jpg');"></div>
-        </div>
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="openTab('music')"> Music</button>
+        <button class="tab-btn" onclick="openTab('movies')">🎬 Movies</button>
     </div>
 
-    <div id="music-page" class="page">
-        <div class="header">Goat Audio</div>
-        <p class="section-title">Kanye West Discography</p>
-        <div class="row">
-            <div class="card" onclick="openAlbum('808s & Heartbreak', 'https://upload.wikimedia.org/wikipedia/en/f/f1/808s_%26_Heartbreak.png')" style="background-image: url('https://upload.wikimedia.org/wikipedia/en/f/f1/808s_%26_Heartbreak.png');"></div>
-            <div class="card" onclick="openAlbum('Vultures 1', 'https://upload.wikimedia.org/wikipedia/commons/b/b8/Vultures_1_cover.jpg')" style="background-image: url('https://upload.wikimedia.org/wikipedia/commons/b/b8/Vultures_1_cover.jpg');"></div>
-            <div class="card" onclick="openAlbum('MBDTF', 'https://m.media-amazon.com/images/I/A18S35XlSFL._SL1500_.jpg')" style="background-image: url('https://m.media-amazon.com/images/I/A18S35XlSFL._SL1500_.jpg');"></div>
-        </div>
-    </div>
-
-    <div id="album-view">
-        <div id="header-img" class="album-header-img">
-            <div class="back-arrow" onclick="closeAlbum()">←</div>
-            <div class="play-btn-float">▶</div>
-            <h1 id="view-title" style="margin: 0 0 20px 20px; font-size: 24px; text-shadow: 0 2px 10px rgba(0,0,0,0.5);"></h1>
-        </div>
-        
-        <div style="margin-top: 40px;" id="track-list">
-            <div class="track-row" onclick="playSong('Heartless', 'Kanye West', currentArt)">
-                <div class="track-thumb" id="track-thumb-img"></div>
-                <div class="track-info">
-                    <span class="track-name">Heartless</span>
-                    <span class="track-status"><span style="color:var(--green)">⇩</span> Kanye West</span>
-                </div>
-                <div style="color:var(--gray)">⋮</div>
+    <div id="music" class="tab-content active">
+        <h1>Kanye West</h1>
+        <p style="color: #888;">Artist • Verified 2026</p>
+        <div class="music-grid">
+            <div class="album-card">
+                <img src="https://m.media-amazon.com/images/I/71R3OitAovL.jpg">
+                <h4>The College Dropout</h4>
+                <p>2004</p>
+            </div>
+            <div class="album-card">
+                <img src="https://m.media-amazon.com/images/I/719hE1Z7FzL.jpg">
+                <h4>Late Registration</h4>
+                <p>2005</p>
+            </div>
+             <div class="album-card">
+                <img src="https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.jpg">
+                <h4>BULLY [E]</h4>
+                <p>2026</p>
             </div>
         </div>
     </div>
 
-    <div class="mini-player" onclick="toggleFullPlayer(true)">
-        <div style="display:flex; align-items:center; gap:10px;">
-            <div id="m-art" style="width:40px; height:40px; border-radius:4px; background-size:cover; background-color:#222;"></div>
-            <div>
-                <b id="m-title" style="font-size:13px; display:block;">Select Music</b>
-                <small id="m-artist" style="color:var(--gray);">Kanye West</small>
-            </div>
-        </div>
-        <div style="font-size:22px;">▶</div>
-    </div>
-
-    <div id="expanded-player">
-        <div style="font-size:35px; text-align:left;" onclick="toggleFullPlayer(false)">⌄</div>
-        <img id="big-art" style="width:100%; border-radius:12px; margin: 40px 0; box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
-        <h2 id="big-title" style="margin-bottom:5px;"></h2>
-        <p id="big-artist" style="color:var(--gray);"></p>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active" id="n-movies" onclick="switchTab('movies')">🏠<br>Home</div>
-        <div class="nav-item">🔍<br>Search</div>
-        <div class="nav-item" id="n-music" onclick="switchTab('music')">📚<br>Library</div>
+    <div id="movies" class="tab-content">
+        <iframe src="https://lucasthemaker.github.io/movie/index.html"></iframe>
     </div>
 
     <script>
-        let currentArt = "";
-
-        function switchTab(t) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if(t==='movies') { document.getElementById('movies-page').classList.add('active-page'); document.getElementById('n-movies').classList.add('active'); }
-            else { document.getElementById('music-page').classList.add('active-page'); document.getElementById('n-music').classList.add('active'); }
+        function openTab(tabName) {
+            var i, content, tabs;
+            content = document.getElementsByClassName("tab-content");
+            for (i = 0; i < content.length; i++) { content[i].classList.remove("active"); }
+            
+            tabs = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tabs.length; i++) { tabs[i].classList.remove("active"); }
+            
+            document.getElementById(tabName).classList.add("active");
+            event.currentTarget.classList.add("active");
         }
-
-        function openAlbum(title, art) {
-            currentArt = art;
-            document.getElementById('view-title').innerText = title;
-            document.getElementById('header-img').style.backgroundImage = `linear-gradient(to top, #000, transparent), url(${art})`;
-            document.getElementById('track-thumb-img').style.backgroundImage = `url(${art})`;
-            document.getElementById('album-view').style.display = 'block';
-        }
-
-        function playSong(name, artist, art) {
-            document.getElementById('m-title').innerText = name;
-            document.getElementById('m-artist').innerText = artist;
-            document.getElementById('m-art').style.backgroundImage = `url(${art})`;
-            document.getElementById('big-title').innerText = name;
-            document.getElementById('big-artist').innerText = artist;
-            document.getElementById('big-art').src = art;
-        }
-
-        function closeAlbum() { document.getElementById('album-view').style.display = 'none'; }
-        function toggleFullPlayer(open) { document.getElementById('expanded-player').classList.toggle('open', open); }
     </script>
 </body>
 </html>
