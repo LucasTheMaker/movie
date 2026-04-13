@@ -5,94 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucas Hub | 2026</title>
     <style>
-        :root { --apple-red: #fa2d48; --itunes-bg: #111; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: #000; color: #fff; margin: 0; }
+        :root { --apple-red: #fa2d48; --bg-black: #000; --card-grey: #1c1c1e; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg-black); color: #fff; margin: 0; overflow-x: hidden; }
 
-        /* --- DUAL INTERFACE ENGINE --- */
+        /* --- NAVIGATION --- */
         @media (max-width: 768px) {
             .desktop-ui { display: none; }
-            .mobile-ui { position: fixed; bottom: 0; width: 100%; background: rgba(20,20,20,0.95); backdrop-filter: blur(20px); border-top: 0.5px solid #333; z-index: 1000; display: flex; padding: 12px 0; }
-            .content { padding: 40px 20px 100px; }
-            .nav-item { flex: 1; text-align: center; color: #888; font-size: 11px; }
+            .mobile-ui { position: fixed; bottom: 0; width: 100%; background: rgba(20,20,20,0.95); backdrop-filter: blur(25px); border-top: 0.5px solid #333; z-index: 4000; display: flex; padding: 12px 0; }
+            .content { padding: 20px 20px 100px; }
+            .nav-item { flex: 1; text-align: center; color: #888; font-size: 11px; cursor: pointer; }
             .nav-item.active { color: var(--apple-red); }
         }
 
         @media (min-width: 769px) {
             .mobile-ui { display: none; }
             body { display: flex; height: 100vh; }
-            .sidebar { width: 250px; background: #111; border-right: 0.5px solid #333; padding: 60px 25px; }
+            .sidebar { width: 260px; background: #111; border-right: 0.5px solid #333; padding: 60px 25px; }
             .content { flex: 1; overflow-y: auto; padding: 60px 50px; }
             .top-player { position: fixed; top: 0; left: 0; width: 100%; height: 55px; background: #222; border-bottom: 0.5px solid #333; z-index: 2000; display: flex; align-items: center; justify-content: center; }
+            .nav-link { padding: 12px; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 5px; }
+            .nav-link.active { background: #222; color: var(--apple-red); font-weight: bold; }
         }
 
-        /* --- COMPONENT STYLES --- */
+        /* --- PAGES --- */
         .page { display: none; }
         .page.active { display: block; }
-        .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 30px; margin: 20px 0 40px; }
+        .album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; margin-top: 20px; }
         .album-card { cursor: pointer; transition: 0.2s; }
-        .album-card:hover { transform: scale(1.03); }
-        .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; background: #222; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
-        
-        .nav-link { padding: 12px; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 5px; }
-        .nav-link.active { background: #222; color: var(--apple-red); font-weight: bold; }
+        .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 
-        /* Full Album View */
-        .album-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; display: none; overflow-y: auto; padding-top: 60px; }
-        .track-row { display: flex; padding: 14px 20px; border-bottom: 0.5px solid #222; align-items: center; }
-        .track-num { width: 35px; color: #555; font-size: 14px; }
-        .track-title { flex: 1; font-weight: 500; }
+        /* --- SEARCH --- */
+        .search-bar { width: 100%; padding: 15px; border-radius: 12px; border: none; background: #222; color: #fff; font-size: 16px; margin-bottom: 20px; }
+        .result-item { background: #111; padding: 15px; border-radius: 10px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 15px; border: 0.5px solid #333; }
+        .result-item:hover { background: #222; }
+
+        /* --- ALBUM MODAL --- */
+        .album-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; overflow-y: auto; padding-top: 60px; }
+        .track-row { display: flex; padding: 12px 20px; border-bottom: 0.5px solid #222; font-size: 15px; }
     </style>
 </head>
 <body>
 
     <div class="top-player desktop-ui">
-        <div style="background:#000; border:1px solid #444; border-radius:4px; padding:4px 60px; font-size:12px; letter-spacing:1px;">LUCAS PLAYER — 2026 ARCHIVE</div>
+        <div style="background:#000; border:1px solid #444; border-radius:4px; padding:4px 60px; font-size:12px;">iTunes Archive v2026.4</div>
     </div>
 
     <div class="sidebar desktop-ui">
-        <div class="nav-link" id="d-mov" onclick="switchTab('movies')">🎬 Movies</div>
-        <div class="nav-link active" id="d-mus" onclick="switchTab('music')">🎵 Music</div>
-        <div class="nav-link">🔍 Search</div>
+        <div class="nav-link active" onclick="switchTab('music', this)">🎵 Music</div>
+        <div class="nav-link" onclick="switchTab('movies', this)">🎬 Movies</div>
+        <div class="nav-link" onclick="switchTab('search', this)">🔍 Search</div>
     </div>
 
     <div class="content">
-        <div id="moviesPage" class="page">
-            <h1>Movies</h1>
-            <iframe id="movieFrame" style="width:100%; height:85vh; border:none; border-radius:15px; background:#111;"></iframe>
-        </div>
-
         <div id="musicPage" class="page active">
-            <div id="artistList">
+            <div id="artistPicker">
                 <h1>Artists</h1>
                 <div class="album-grid">
-                    <div class="album-card" onclick="openArtist('Kanye West')">
+                    <div class="album-card" onclick="loadArtist('Kanye West')">
                         <img src="https://m.media-amazon.com/images/M/MV5BMjExOTY3NzExM15BMl5BanBnXkFtZTcwOTg4MzE2Mw@@._V1_.jpg">
-                        <p style="text-align:center; font-weight:bold; margin-top:12px;">Kanye West</p>
+                        <p style="text-align:center; font-weight:bold; margin-top:10px;">Kanye West</p>
                     </div>
                 </div>
             </div>
-
             <div id="artistProfile" style="display:none;">
-                <div style="display:flex; align-items:center; gap:25px; margin-bottom:40px;">
-                    <img id="pfp" style="width:100px; height:100px; border-radius:50%; border:3px solid var(--apple-red);">
-                    <h1 id="aName" style="font-size:42px; margin:0;"></h1>
+                <div style="display:flex; align-items:center; gap:20px; margin-bottom:30px;">
+                    <img id="pfp" style="width:80px; height:80px; border-radius:50%; border:2px solid var(--apple-red);">
+                    <h1 id="aName" style="font-size:32px; margin:0;"></h1>
                 </div>
-                <h2>Essential Albums</h2>
+                <h3>Essential Albums</h3>
                 <div class="album-grid" id="essGrid"></div>
-                <h2>Discography</h2>
+                <h3>All Albums</h3>
                 <div class="album-grid" id="fullGrid"></div>
             </div>
+        </div>
+
+        <div id="moviesPage" class="page">
+            <iframe id="movieFrame" style="width:100%; height:85vh; border:none; border-radius:15px; background:#111;"></iframe>
+        </div>
+
+        <div id="searchPage" class="page">
+            <h1>Search</h1>
+            <input type="text" id="mainSearch" class="search-bar" placeholder="Search Artists, Albums, or Songs..." onkeyup="doSearch()">
+            <div id="searchResults"></div>
         </div>
     </div>
 
     <div class="mobile-ui">
-        <div class="nav-item" id="m-mov" onclick="switchTab('movies')">🎬<br>Movies</div>
-        <div class="nav-item active" id="m-mus" onclick="switchTab('music')">🎵<br>Music</div>
+        <div class="nav-item active" onclick="switchTab('music', this)">🎵<br>Music</div>
+        <div class="nav-item" onclick="switchTab('movies', this)">🎬<br>Movies</div>
+        <div class="nav-item" onclick="switchTab('search', this)">🔍<br>Search</div>
     </div>
 
     <div id="albumView" class="album-view">
-        <div style="padding: 20px; color: var(--apple-red); font-weight: bold; cursor: pointer;" onclick="closeAlbum()">‹ Back to Artist</div>
-        <div id="albumDetailContent"></div>
+        <div style="padding: 20px; color: var(--apple-red); font-weight:bold; cursor:pointer;" onclick="closeAlbum()">‹ Back</div>
+        <div id="albumContent"></div>
     </div>
 
     <script>
@@ -100,66 +106,5 @@
             "Kanye West": {
                 pfp: "https://m.media-amazon.com/images/M/MV5BMjExOTY3NzExM15BMl5BanBnXkFtZTcwOTg4MzE2Mw@@._V1_.jpg",
                 albums: [
-                    { title: "BULLY", year: 2026, essential: false, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png", dist: "YZY", tracks: ["Sisters and Brothers", "Whatever Works", "Father", "All the Love", "I Can't Wait", "Bully", "Mama's Favorite", "Punch Drunk", "This a Must", "Outside", "Preacher Man", "White Lines", "Circles", "This One Here", "King", "Beauty and the Beast", "Damn", "Last Breath"] },
-                    { title: "The College Dropout", year: 2004, essential: true, img: "https://m.media-amazon.com/images/I/71R3OitAovL._AC_SL1200_.png", dist: "Roc-A-Fella / Def Jam", tracks: ["Intro", "We Don't Care", "Graduation Day", "All Falls Down", "I'll Fly Away", "Spaceship", "Jesus Walks", "Never Let Me Down", "Get Em High", "Workout Plan", "The New Workout Plan", "Slow Jamz", "Breathe In Breathe Out", "School Spirit Skit 1", "School Spirit", "School Spirit Skit 2", "Lil Jimmy Skit", "Two Words", "Through The Wire", "Family Business", "Last Call"] },
-                    { title: "Late Registration", year: 2005, essential: true, img: "https://m.media-amazon.com/images/I/719hE1Z7FzL._AC_SL1200_.png", dist: "Roc-A-Fella / Def Jam", tracks: ["Wake Up Mr. West", "Heard 'Em Say", "Touch The Sky", "Gold Digger", "Skit #1", "Drive Slow", "My Way Home", "Crack Music", "Roses", "Bring Me Down", "Addiction", "Skit #2", "Diamonds From Sierra Leone (Remix)", "We Major", "Skit #3", "Hey Mama", "Celebration", "Skit #4", "Gone", "Diamonds From Sierra Leone", "Late"] },
-                    { title: "MBDTF", year: 2010, essential: true, img: "https://m.media-amazon.com/images/I/91M9pUeHbeL._AC_SL1500_.png", dist: "Roc-A-Fella", tracks: ["Dark Fantasy", "Gorgeous", "POWER", "All of the Lights (Interlude)", "All of the Lights", "Monster", "So Appalled", "Devil In A New Dress", "Runaway", "Hell Of A Life", "Blame Game", "Lost In The World", "Who Will Survive In America"] },
-                    { title: "The Life of Pablo", year: 2016, essential: true, img: "https://m.media-amazon.com/images/I/61q3K-o1E6L._AC_SL1000_.png", dist: "G.O.O.D. Music / Def Jam", tracks: ["Ultralight Beam", "Father Stretch My Hands Pt. 1", "Pt. 2", "Famous", "Feedback", "Low Lights", "Highlights", "Freestyle 4", "I Love Kanye", "Waves", "FML", "Real Friends", "Wolves", "Frank's Track", "Siiiiiiiiilver Surffffeeeeer Intermission", "30 Hours", "No More Parties In LA", "Facts (Charlie Heat Version)", "Fade", "Saint Pablo"] },
-                    { title: "Kids See Ghosts", year: 2018, essential: true, img: "https://m.media-amazon.com/images/I/71E3v1-E9jL._AC_SL1200_.png", dist: "G.O.O.D. Music / Def Jam", tracks: ["Feel The Love", "Fire", "4th Dimension", "Freeee (Ghost Town Pt. 2)", "Reborn", "Kids See Ghosts", "Cudi Montage"] }
-                ]
-            }
-        };
-
-        function switchTab(tab) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-link, .nav-item').forEach(n => n.classList.remove('active'));
-            if(tab === 'movies') {
-                document.getElementById('moviesPage').classList.add('active');
-                document.getElementById('movieFrame').src = "https://lucasthemaker.github.io/movie/index.html";
-                document.getElementById('d-mov').classList.add('active'); document.getElementById('m-mov').classList.add('active');
-            } else {
-                document.getElementById('musicPage').classList.add('active');
-                document.getElementById('d-mus').classList.add('active'); document.getElementById('m-mus').classList.add('active');
-            }
-        }
-
-        function openArtist(name) {
-            const art = discography[name];
-            document.getElementById('artistList').style.display = 'none';
-            document.getElementById('artistProfile').style.display = 'block';
-            document.getElementById('aName').innerText = name;
-            document.getElementById('pfp').src = art.pfp;
-            
-            const essG = document.getElementById('essGrid'); const fullG = document.getElementById('fullGrid');
-            essG.innerHTML = ""; fullG.innerHTML = "";
-            
-            art.albums.forEach((alb, i) => {
-                const card = `<div class="album-card" onclick="showAlbum('${name}', ${i})"><img src="${alb.img}"><p style="font-weight:600; margin:10px 0 2px;">${alb.title}</p><p style="color:#888; font-size:12px;">${alb.year}</p></div>`;
-                fullG.innerHTML += card;
-                if(alb.essential) essG.innerHTML += card;
-            });
-        }
-
-        function showAlbum(artist, i) {
-            const alb = discography[artist].albums[i];
-            const content = document.getElementById('albumDetailContent');
-            content.innerHTML = `
-                <div style="padding:0 20px; text-align:center;">
-                    <img src="${alb.img}" style="width:280px; border-radius:15px; box-shadow: 0 20px 40px rgba(0,0,0,0.8);">
-                    <h1 style="margin:25px 0 5px;">${alb.title}</h1>
-                    <p style="color:var(--apple-red); font-weight:bold; font-size:18px;">${artist}</p>
-                    <p style="color:#666; font-size:12px; font-weight:bold; letter-spacing:1px; margin-bottom:40px;">LOSSLESS • ${alb.dist}</p>
-                </div>
-                <div style="max-width:800px; margin:0 auto;">
-                    ${alb.tracks.map((t, idx) => `<div class="track-row"><span class="track-num">${idx+1}</span><span class="track-title">${t}</span><span style="color:#444;">3:45</span></div>`).join('')}
-                </div>
-                <div style="padding:60px 20px; color:#555; font-size:13px; text-align:center;">
-                    <p>© 2026 ${alb.dist}. All Rights Reserved.</p>
-                </div>`;
-            document.getElementById('albumView').style.display = 'block';
-        }
-
-        function closeAlbum() { document.getElementById('albumView').style.display = 'none'; }
-    </script>
-</body>
-</html>
+                    { title: "BULLY", year: 2026, essential: false, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png", tracks: ["Sisters and Brothers", "Father", "Bully", "Preacher Man", "Beauty and the Beast"] },
+                    { title: "The College Dropout", year: 2004, essential: true, img: "https://m.media-amazon.com/images/I/71R3OitAovL._AC_SL1200_.png", tracks: ["Intro", "We Don't Care
