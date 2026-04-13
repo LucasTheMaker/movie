@@ -3,146 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucas Hub | Player</title>
+    <title>Lucas Hub | 2026</title>
     <style>
         :root { --apple-red: #fa2d48; --bg: #000; --sidebar: #111; --card-bg: #181818; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        .sidebar { width: 240px; background: var(--sidebar); border-right: 1px solid #222; padding: 40px 20px; flex-shrink: 0; }
+        /* Sidebar */
+        .sidebar { width: 240px; background: var(--sidebar); border-right: 1px solid #222; padding: 40px 20px; flex-shrink: 0; display: flex; flex-direction: column; }
         .nav-item { padding: 12px; color: #888; border-radius: 8px; margin-bottom: 5px; cursor: pointer; font-weight: 600; }
         .nav-item.active { color: #fff; background: #222; border-left: 4px solid var(--apple-red); }
 
+        /* Main View */
         .main-view { flex: 1; overflow-y: auto; padding-bottom: 150px; }
+        .hero { height: 35vh; background: linear-gradient(transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 40px; }
         .section-label { padding: 30px 40px 10px; font-size: 22px; font-weight: 800; }
-        .scroller { display: flex; overflow-x: auto; gap: 20px; padding: 0 40px 20px; scrollbar-width: none; }
         
+        /* Album Cards */
+        .scroller { display: flex; overflow-x: auto; gap: 20px; padding: 0 40px 20px; scrollbar-width: none; }
         .card { min-width: 180px; background: var(--card-bg); padding: 15px; border-radius: 12px; cursor: pointer; transition: 0.3s; }
-        .card:hover { background: #252525; transform: translateY(-5px); }
-        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; margin-bottom: 10px; object-fit: cover; }
+        .card:hover { transform: translateY(-5px); background: #222; }
+        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 6px; margin-bottom: 10px; object-fit: cover; }
 
         /* Player Bar */
         .player-bar { position: fixed; bottom: 0; width: 100%; background: #111; border-top: 1px solid #222; padding: 15px 30px; display: flex; align-items: center; justify-content: space-between; z-index: 3000; }
         .track-info { display: flex; align-items: center; gap: 15px; width: 30%; }
-        .track-info img { width: 50px; height: 50px; border-radius: 4px; }
-        .controls { flex: 1; text-align: center; }
-        audio { width: 100%; max-width: 400px; height: 30px; filter: invert(100%); }
+        .track-info img { width: 50px; height: 50px; border-radius: 4px; background: #222; }
+        audio { flex: 1; max-width: 500px; height: 32px; filter: invert(100%); }
 
         /* Overlay */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; overflow-y: auto; }
-        .track-row { display: flex; justify-content: space-between; padding: 12px 40px; border-bottom: 1px solid #111; cursor: pointer; }
+        .track-row { display: flex; justify-content: space-between; padding: 15px 40px; border-bottom: 1px solid #111; cursor: pointer; }
         .track-row:hover { background: #111; color: var(--apple-red); }
 
-        #folder-btn { background: var(--apple-red); color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-left: 40px; }
+        #link-btn { background: var(--apple-red); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%; }
     </style>
 </head>
 <body>
 
     <nav class="sidebar">
-        <h2 style="color: #444; font-size: 12px; margin-bottom: 30px;">LUCAS HUB</h2>
+        <h2 style="font-size: 11px; color: #444; margin-bottom: 30px;">LUCAS HUB</h2>
         <div class="nav-item active">🏠 Music</div>
         <div class="nav-item">🎬 Movies</div>
-        <div style="margin-top: 50px;">
-            <p style="font-size: 10px; color: #555;">LOCAL FILES</p>
-            <input type="file" id="music-upload" webkitdirectory directory multiple style="display:none">
-            <button id="folder-btn" onclick="document.getElementById('music-upload').click()">Link Music Folder</button>
+        
+        <div style="margin-top: auto; padding-bottom: 20px;">
+            <input type="file" id="folder-input" webkitdirectory directory multiple style="display:none">
+            <button id="link-btn" onclick="document.getElementById('folder-input').click()">LINK MP3 FOLDER</button>
         </div>
     </nav>
 
     <main class="main-view">
-        <div style="height: 30vh; background: linear-gradient(transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; padding: 40px; display: flex; align-items: flex-end;">
+        <div class="hero">
             <h1 style="font-size: 50px; margin: 0;">Kanye West</h1>
         </div>
-        
-        <div class="section-label">Selected Discography</div>
-        <div class="scroller" id="album-list"></div>
+        <div class="section-label">Your Library</div>
+        <div class="scroller" id="album-row"></div>
     </main>
 
-    <div id="player-overlay" class="overlay">
-        <div style="padding: 20px; display: flex; justify-content: space-between; position: sticky; top: 0; background: #000;">
-            <span onclick="closeOverlay()" style="cursor:pointer; font-weight:bold;">✕ BACK</span>
-            <span id="overlay-title"></span>
-            <div></div>
-        </div>
-        <div id="overlay-header" style="text-align:center; padding: 40px;"></div>
-        <div id="track-list-ui"></div>
+    <div id="overlay" class="overlay">
+        <div style="padding: 20px;"><span onclick="closeOverlay()" style="cursor:pointer; font-weight:bold;">← BACK</span></div>
+        <div id="overlay-header" style="text-align:center; padding: 20px;"></div>
+        <div id="track-list"></div>
     </div>
 
     <div class="player-bar">
         <div class="track-info">
-            <img id="now-playing-img" src="">
+            <img id="p-img" src="">
             <div>
-                <div id="now-playing-title" style="font-weight:bold; font-size:14px;">Select a song</div>
-                <div id="now-playing-album" style="font-size:12px; color:#666;">---</div>
+                <div id="p-title" style="font-weight:bold; font-size:14px;">No track selected</div>
+                <div id="p-album" style="font-size:11px; color:#666;">Link folder to start</div>
             </div>
         </div>
-        <div class="controls">
-            <audio id="main-audio" controls autoplay></audio>
-        </div>
+        <audio id="player-core" controls></audio>
     </div>
 
     <script>
         const albums = [
-            { title: "Ye", year: 2018, img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg", tracks: ["I Thought About Killing You", "Yikes", "All Mine", "Wouldn't Leave", "No Mistakes", "Ghost Town", "Violent Crimes"] },
-            { title: "Graduation", year: 2007, img: "https://upload.wikimedia.org/wikipedia/en/7/70/Graduation_%28album%29.jpg", tracks: ["Good Morning", "Stronger", "I Wonder", "Good Life", "Flashing Lights", "Homecoming"] }
+            { 
+                title: "Ye", year: 2018, img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg", 
+                tracks: ["I Thought About Killing You", "Yikes", "All Mine", "Wouldn't Leave", "No Mistakes", "Ghost Town", "Violent Crimes"] 
+            }
         ];
 
-        let musicFiles = {};
+        let library = {};
 
-        // Handle folder upload
-        document.getElementById('music-upload').onchange = function(e) {
-            const files = e.target.files;
-            for (let file of files) {
-                // Store files by name without extension: "Yikes" -> file object
-                const cleanName = file.name.split('.').slice(0, -1).join('.').toLowerCase();
-                musicFiles[cleanName] = URL.createObjectURL(file);
-            }
-            alert("Folder Linked! You can now play songs if the names match.");
-        };
-
-        function init() {
-            const list = document.getElementById('album-list');
-            albums.forEach(alb => {
-                list.innerHTML += `
-                    <div class="card" onclick="openAlbum('${alb.title}')">
-                        <img src="${alb.img}">
-                        <p class="card-title">${alb.title}</p>
-                        <p class="card-meta">${alb.year}</p>
+        // 1. Load the UI
+        function load() {
+            const row = document.getElementById('album-row');
+            albums.forEach(a => {
+                row.innerHTML += `
+                    <div class="card" onclick="openAlb('${a.title}')">
+                        <img src="${a.img}">
+                        <p class="card-title">${a.title}</p>
                     </div>`;
             });
         }
 
-        function openAlbum(title) {
-            const alb = albums.find(a => a.title === title);
-            document.getElementById('overlay-title').innerText = alb.title;
-            document.getElementById('overlay-header').innerHTML = `<img src="${alb.img}" style="width:200px; border-radius:10px;"><h1>${alb.title}</h1>`;
-            
-            document.getElementById('track-list-ui').innerHTML = alb.tracks.map((t, i) => `
-                <div class="track-row" onclick="playSong('${t.replace(/'/g, "\\'")}', '${alb.img}', '${alb.title}')">
-                    <span>${i+1}. ${t}</span>
+        // 2. Link the Folder
+        document.getElementById('folder-input').onchange = function(e) {
+            for (let file of e.target.files) {
+                // We store the filename exactly as it is (e.g., "2. Yikes.mp3")
+                library[file.name.toLowerCase()] = URL.createObjectURL(file);
+            }
+            document.getElementById('p-title').innerText = "Folder Linked ✅";
+            alert(e.target.files.length + " tracks linked!");
+        };
+
+        // 3. Open Album
+        function openAlb(t) {
+            const a = albums.find(x => x.title === t);
+            document.getElementById('overlay-header').innerHTML = `<img src="${a.img}" style="width:200px; border-radius:10px;"><h1>${a.title}</h1>`;
+            document.getElementById('track-list').innerHTML = a.tracks.map(tr => `
+                <div class="track-row" onclick="play('${tr.replace(/'/g, "\\'")}', '${a.img}', '${a.title}')">
+                    <span>${tr}</span>
                     <span>▶</span>
                 </div>
             `).join('');
-            document.getElementById('player-overlay').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
         }
 
-        function playSong(trackName, img, albumTitle) {
-            const audio = document.getElementById('main-audio');
-            const fileUrl = musicFiles[trackName.toLowerCase()];
+        // 4. Play with "Smart Search" for your specific filenames
+        function play(name, img, alb) {
+            const audio = document.getElementById('player-core');
+            const search = name.toLowerCase();
 
-            if (fileUrl) {
-                audio.src = fileUrl;
-                document.getElementById('now-playing-title').innerText = trackName;
-                document.getElementById('now-playing-album').innerText = albumTitle;
-                document.getElementById('now-playing-img').src = img;
+            // This looks for your file even if it has "2. " or "6. " at the start
+            const fileKey = Object.keys(library).find(key => key.includes(search));
+
+            if (fileKey) {
+                audio.src = library[fileKey];
+                document.getElementById('p-title').innerText = name;
+                document.getElementById('p-album').innerText = alb;
+                document.getElementById('p-img').src = img;
                 audio.play();
             } else {
-                alert("File not found in linked folder. Make sure the file is named: " + trackName + ".mp3");
+                alert("Can't find: " + name + "\nCheck if the file is in your linked folder.");
             }
         }
 
-        function closeOverlay() { document.getElementById('player-overlay').style.display = 'none'; }
-
-        init();
+        function closeOverlay() { document.getElementById('overlay').style.display = 'none'; }
+        window.onload = load;
     </script>
 </body>
 </html>
