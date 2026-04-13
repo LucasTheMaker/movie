@@ -3,165 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucas Hub | 2026</title>
+    <title>Lucas Hub | Apple Music 2026 Edition</title>
     <style>
-        body { font-family: -apple-system, system-ui, sans-serif; background: #000; color: #fff; margin: 0; padding-bottom: 80px; overflow: hidden; height: 100vh; }
-        
-        /* Navigation & Tabs */
-        .page { display: none; height: 100%; width: 100%; overflow-y: auto; animation: fadeIn 0.2s; }
+        :root { --apple-red: #fa2d48; --glass: rgba(28, 28, 30, 0.8); }
+        body { font-family: -apple-system, system-ui, sans-serif; background: #000; color: #fff; margin: 0; padding-bottom: 90px; }
+
+        /* iOS 26 "Liquid Glass" Navigation */
+        .bottom-nav { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; background: var(--glass); backdrop-filter: blur(25px); display: flex; justify-content: space-around; padding: 12px 0; border-radius: 25px; border: 0.5px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .nav-item { background: none; border: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 10px; flex: 1; transition: 0.3s; }
+        .nav-item.active { color: var(--apple-red); transform: scale(1.1); }
+
+        /* Library Page */
+        .page { display: none; min-height: 100vh; animation: fadeIn 0.4s ease-out; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(20, 20, 20, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 0.5px solid #333; z-index: 1000; }
-        .nav-item { background: none; border: none; color: #888; display: flex; flex-direction: column; align-items: center; font-size: 10px; cursor: pointer; flex: 1; }
-        .nav-item.active { color: #fa2d48; }
-        .nav-icon { font-size: 22px; margin-bottom: 4px; }
+        .horizontal-scroll { display: flex; overflow-x: auto; gap: 15px; padding: 15px 20px; scrollbar-width: none; }
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
+        .album-card { min-width: 160px; cursor: pointer; transition: transform 0.2s; }
+        .album-card:active { transform: scale(0.95); }
+        .album-card img { width: 100%; border-radius: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
 
-        /* Artist Header Section */
-        .artist-header { padding: 40px 20px 20px; text-align: left; background: linear-gradient(to bottom, #1a1a1a, #000); }
-        .upcoming-tag { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; font-size: 10px; text-transform: uppercase; font-weight: bold; margin-bottom: 12px; display: inline-block; border: 0.5px solid #444; }
-        .profile-row { display: flex; align-items: center; gap: 15px; }
-        .play-btn { background: #fa2d48; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
-        .artist-pfp { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #333; }
+        /* Full Mobile Album Deep-Dive */
+        .album-view { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; overflow-y: auto; }
+        .album-hero { padding: 60px 20px 30px; text-align: center; transition: background 0.5s ease; }
+        .hero-img { width: 240px; height: 240px; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        
+        .action-bar { display: flex; justify-content: center; gap: 12px; margin: 25px 0; }
+        .btn-apple { background: rgba(255,255,255,0.1); color: #fff; padding: 14px 45px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; gap: 8px; backdrop-filter: blur(10px); }
+        .btn-play { background: #fff; color: #000; }
 
-        /* Screenshot Layout (Latest Release / Top Songs) */
-        .featured-layout { display: flex; flex-wrap: wrap; gap: 40px; padding: 20px; }
-        .latest-box { flex: 1; min-width: 280px; }
-        .latest-img { width: 100%; max-width: 300px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
-        .top-songs-list { flex: 1.5; min-width: 320px; }
-        .song-card { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid #222; cursor: pointer; }
-        .song-card img { width: 45px; height: 45px; border-radius: 6px; }
-        .song-details { flex: 1; }
-        .song-title { font-weight: 600; font-size: 14px; }
-        .song-album { font-size: 12px; color: #888; margin-top: 2px; }
-
-        /* Search Styles */
-        .search-container { padding: 20px; }
-        .search-bar { width: 100%; padding: 15px; border-radius: 12px; border: none; background: #222; color: #fff; font-size: 16px; outline: none; }
-        .result-row { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 0.5px solid #222; animation: fadeIn 0.3s; }
-        .result-img { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; }
-        .tag { font-size: 10px; background: #fa2d48; color: #fff; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
-
-        iframe { width: 100%; height: calc(100vh - 70px); border: none; }
+        .track-list { padding: 0 5px 120px; }
+        .track-item { display: flex; align-items: center; padding: 14px 20px; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
+        .t-num { width: 35px; color: #666; font-size: 14px; }
+        .t-info { flex: 1; }
+        .t-name { font-weight: 500; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+        .e-tag { background: #666; color: #000; font-size: 9px; padding: 1px 4px; border-radius: 2px; font-weight: 800; }
+        
+        .nitty-gritty-footer { padding: 30px 20px; border-top: 0.5px solid #222; font-size: 13px; color: #888; line-height: 1.6; }
+        .back-nav { position: fixed; top: 25px; left: 20px; font-size: 18px; color: var(--apple-red); font-weight: 600; z-index: 2001; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="moviesTab" class="page active">
-        <iframe src="https://lucasthemaker.github.io/movie/index.html"></iframe>
+    <div id="musicTab" class="page active">
+        <div style="padding: 60px 20px 10px;">
+            <h1 style="font-size: 34px; letter-spacing: -1px; margin: 0;">Kanye West</h1>
+            <p style="color: var(--apple-red); font-weight: 700; font-size: 14px; margin-top: 4px;">Verified Artist • 2026</p>
+        </div>
+
+        <h2 style="padding: 0 20px; margin-top: 35px; font-size: 20px;">Essential Albums</h2>
+        <div class="horizontal-scroll" id="essentialRow"></div>
+
+        <h2 style="padding: 0 20px; margin-top: 30px; font-size: 20px;">Albums</h2>
+        <div class="horizontal-scroll" id="albumRow"></div>
     </div>
 
-    <div id="musicTab" class="page">
-        <div class="artist-header">
-            <div class="upcoming-tag">🎟️ Upcoming Concerts</div>
-            <div class="profile-row">
-                <div class="play-btn">▶</div>
-                <h1 style="margin: 0; font-size: 38px; flex: 1;">Kanye West</h1>
-                <img src="https://m.media-amazon.com/images/M/MV5BMjExOTY3NzExM15BMl5BanBnXkFtZTcwOTg4MzE2Mw@@._V1_.jpg" class="artist-pfp">
-            </div>
-        </div>
-
-        <div class="featured-layout">
-            <div class="latest-box">
-                <p style="color: #888; font-size: 13px; font-weight: 700; letter-spacing: 1px;">LATEST RELEASE</p>
-                <img src="https://images.genius.com/f047464654929851722650c7038e235e.1000x1000x1.jpg" class="latest-img">
-                <div style="margin-top: 15px;">
-                    <span style="color: #888; font-size: 12px; font-weight: 600;">MAR 28, 2026</span>
-                    <h2 style="margin: 5px 0;">BULLY [E]</h2>
-                    <p style="color: #888; margin: 0;">18 Songs</p>
-                </div>
-            </div>
-
-            <div class="top-songs-list">
-                <p style="color: #888; font-size: 13px; font-weight: 700; letter-spacing: 1px;">TOP SONGS ></p>
-                <div id="topSongsGrid"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="searchTab" class="page">
-        <div class="search-container">
-            <h1>Search</h1>
-            <input type="text" id="searchInput" class="search-bar" placeholder="Movies, Artists, Songs...">
-            <div id="searchResults" style="margin-top: 20px;"></div>
-        </div>
+    <div id="albumView" class="album-view">
+        <div class="back-nav" onclick="closeAlbum()">‹ Library</div>
+        <div id="albumContent"></div>
     </div>
 
     <div class="bottom-nav">
-        <button class="nav-item active" onclick="showTab('moviesTab', this)"><span class="nav-icon">🎬</span><span>Movies</span></button>
-        <button class="nav-item" onclick="showTab('musicTab', this)"><span class="nav-icon">🎵</span><span>Music</span></button>
-        <button class="nav-item" onclick="showTab('searchTab', this)"><span class="nav-icon">🔍</span><span>Search</span></button>
+        <div class="nav-item"><span>🎬</span>Movies</div>
+        <div class="nav-item active"><span>🎵</span>Music</div>
+        <div class="nav-item"><span>🔍</span>Search</div>
     </div>
 
     <script>
-        const libraryData = [
-            { title: "BULLY", type: "Album", year: 2026, img: "https://images.genius.com/f047464654929851722650c7038e235e.1000x1000x1.jpg", songs: ["PREACHER MAN", "FATHER", "ALL THE LOVE"] },
-            { title: "Vultures 2", type: "Album", year: 2024, img: "https://upload.wikimedia.org/wikipedia/en/b/b3/Vultures_2_cover.jpg", songs: ["SLIDE", "FIELD TRIP", "RIVER"] },
-            { title: "My Beautiful Dark Twisted Fantasy", type: "Album", year: 2010, img: "https://m.media-amazon.com/images/I/91M9pUeHbeL.jpg", songs: ["RUNAWAY", "POWER", "MONSTER"] },
-            { title: "Graduation", type: "Album", year: 2007, img: "https://m.media-amazon.com/images/I/8152D6J3N9L.jpg", songs: ["STRONGER", "FLASHING LIGHTS", "CAN'T TELL ME NOTHING"] },
-            { title: "Spider-Man: Across the Spider-Verse", type: "Movie", year: 2023, img: "https://m.media-amazon.com/images/I/71YvS-f76SL._AC_SL1500_.jpg" },
-            { title: "The Dark Knight", type: "Movie", year: 2008, img: "https://m.media-amazon.com/images/I/91Eb6vSthXL._AC_SL1500_.jpg" }
+        const discography = [
+            { 
+                title: "BULLY", year: 2026, genre: "Alternative Hip-Hop", 
+                img: "https://images.genius.com/f047464654929851722650c7038e235e.1000x1000x1.jpg", 
+                essential: true, dist: "YZY / Gamma", time: "42:26", release: "March 28, 2026",
+                tracks: ["KING", "THIS A MUST", "FATHER (feat. Travis Scott)", "ALL THE LOVE", "SISTERS AND BROTHERS", "BULLY (feat. CeeLo Green)", "PREACHER MAN", "BEAUTY AND THE BEAST"] 
+            },
+            { 
+                title: "The Life of Pablo", year: 2016, genre: "Hip-Hop/Rap",
+                img: "https://m.media-amazon.com/images/I/61q3K-o1E6L.jpg", 
+                essential: true, dist: "G.O.O.D. Music / Def Jam", time: "66:01", release: "February 14, 2016",
+                tracks: ["Ultralight Beam", "Father Stretch My Hands Pt. 1", "Famous", "Feedback", "Waves", "FML", "Real Friends", "Wolves"] 
+            },
+            { 
+                title: "My Beautiful Dark Twisted Fantasy", year: 2010, genre: "Hip-Hop/Rap",
+                img: "https://m.media-amazon.com/images/I/91M9pUeHbeL.jpg", 
+                essential: true, dist: "Roc-A-Fella / Def Jam", time: "68:36", release: "November 22, 2010",
+                tracks: ["Dark Fantasy", "Gorgeous", "POWER", "All of the Lights", "Monster", "So Appalled", "Runaway"] 
+            }
         ];
 
-        function showTab(id, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        function render() {
+            const eR = document.getElementById('essentialRow');
+            const aR = document.getElementById('albumRow');
+            discography.forEach((alb, i) => {
+                const card = `<div class="album-card" onclick="openAlbum(${i})"><img src="${alb.img}"><p style="font-size:14px; margin:10px 0 2px; font-weight:600;">${alb.title}</p><p style="color:#888; font-size:12px; margin:0;">${alb.year}</p></div>`;
+                aR.innerHTML += card;
+                if(alb.essential) eR.innerHTML += card;
+            });
         }
 
-        // Load Top Songs to Music Tab
-        const songsContainer = document.getElementById('topSongsGrid');
-        libraryData.slice(0, 4).forEach(alb => {
-            if(alb.songs) {
-                songsContainer.innerHTML += `
-                    <div class="song-card">
-                        <img src="${alb.img}">
-                        <div class="song-details">
-                            <div class="song-title">${alb.songs[0]} [E]</div>
-                            <div class="song-album">${alb.title} • ${alb.year}</div>
-                        </div>
-                        <div style="color: #fa2d48;">▶</div>
-                    </div>`;
-            }
-        });
-
-        // Interactive Search Logic
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const query = e.target.value.toLowerCase();
-            const results = document.getElementById('searchResults');
-            results.innerHTML = "";
-            if(!query) return;
-
-            libraryData.forEach(item => {
-                if(item.title.toLowerCase().includes(query)) {
-                    results.innerHTML += `
-                        <div class="result-row">
-                            <img src="${item.img}" class="result-img">
-                            <div style="flex:1">
-                                <span class="tag">${item.type}</span>
-                                <div style="font-weight:bold; margin-top:4px;">${item.title}</div>
-                                <div style="font-size:12px; color:#888;">${item.year}</div>
+        function openAlbum(index) {
+            const alb = discography[index];
+            const view = document.getElementById('albumView');
+            const content = document.getElementById('albumContent');
+            
+            content.innerHTML = `
+                <div class="album-hero">
+                    <img src="${alb.img}" class="hero-img">
+                    <h2 style="margin:25px 0 5px; font-size:24px;">${alb.title}</h2>
+                    <p style="color:var(--apple-red); font-weight:600; font-size:18px;">Kanye West</p>
+                    <p style="color:#888; font-size:11px; margin-top:8px; font-weight:700;">${alb.genre.toUpperCase()} • ${alb.year} • LOSSLESS • DOLBY ATMOS</p>
+                    <div class="action-bar">
+                        <div class="btn-apple btn-play"><span>▶</span> Play</div>
+                        <div class="btn-apple"><span>🔀</span> Shuffle</div>
+                    </div>
+                </div>
+                <div class="track-list">
+                    ${alb.tracks.map((t, idx) => `
+                        <div class="track-item">
+                            <span class="t-num">${idx + 1}</span>
+                            <div class="t-info">
+                                <div class="t-name">${t} <span class="e-tag">E</span></div>
                             </div>
-                        </div>`;
-                }
-                if(item.songs) {
-                    item.songs.forEach(song => {
-                        if(song.toLowerCase().includes(query)) {
-                            results.innerHTML += `
-                                <div class="result-row">
-                                    <img src="${item.img}" class="result-img">
-                                    <div style="flex:1">
-                                        <span class="tag" style="background:#555">SONG</span>
-                                        <div style="font-weight:bold; margin-top:4px;">${song}</div>
-                                        <div style="font-size:12px; color:#888;">${item.title}</div>
-                                    </div>
-                                </div>`;
-                        }
-                    });
-                }
-            });
-        });
+                            <span style="color:#666; font-size:14px;">▶</span>
+                        </div>
+                    `).join('')}
+                    <div class="nitty-gritty-footer">
+                        <p>${alb.release}</p>
+                        <p>${alb.tracks.length} Songs, ${alb.time}</p>
+                        <p>℗ ${alb.year} ${alb.dist}</p>
+                    </div>
+                </div>
+            `;
+            view.style.display = "block";
+            window.scrollTo(0,0);
+        }
+
+        function closeAlbum() { document.getElementById('albumView').style.display = "none"; }
+        window.onload = render;
     </script>
 </body>
 </html>
