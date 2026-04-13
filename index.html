@@ -46,4 +46,80 @@
         }
         .card:hover { transform: translateY(-5px); background: #202020; }
         .card img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; margin-bottom: 12px; object-fit: cover; background: #222; }
-        .card-title { font-weight: 700; font-size:
+        .card-title { font-weight: 700; font-size: 14px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-meta { font-size: 11px; color: #666; margin-top: 4px; }
+
+        /* --- PLAYER OVERLAY --- */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; overflow-y: auto; }
+        .track-row { display: flex; justify-content: space-between; padding: 15px 40px; border-bottom: 1px solid #111; transition: 0.2s; font-size: 14px; cursor: default; }
+        .track-row:hover { background: #111; }
+
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .bottom-nav { display: flex; }
+            .hero { height: 35vh; padding: 20px; }
+            .section-label { padding: 20px; }
+            .scroller { padding: 0 20px 20px; gap: 15px; }
+            .card { min-width: 155px; max-width: 155px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2 style="font-size:10px; color:#444; letter-spacing:2px; margin-bottom:40px;">HUB v2.6</h2>
+        <div class="nav-item active" id="pc-nav-music" onclick="switchTab('music')">🏠 Home</div>
+        <div class="nav-item" id="pc-nav-movies" onclick="switchTab('movies')">🎬 Movies</div>
+    </nav>
+
+    <main class="main-view">
+        <section id="music" class="tab-content active">
+            <div class="hero">
+                <div style="background:var(--apple-red); width:fit-content; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:bold; margin-bottom:15px;">TOP ARTIST</div>
+                <h1 style="font-size: clamp(40px, 6vw, 70px); margin: 0;">Kanye West</h1>
+            </div>
+
+            <div class="section-label">Latest & 2026</div>
+            <div class="scroller" id="latest-row"></div>
+
+            <div class="section-label">The Classics</div>
+            <div class="scroller" id="classic-row"></div>
+        </section>
+
+        <section id="movies" class="tab-content">
+            <div style="padding: 60px 40px;">
+                <h1 style="font-size: 48px;">Cinema</h1>
+                <div class="scroller" style="padding: 0;" id="movie-row"></div>
+            </div>
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <div onclick="switchTab('music')">🏠</div>
+        <div onclick="switchTab('movies')">🎬</div>
+    </nav>
+
+    <div id="player" class="overlay">
+        <div style="padding: 30px; position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center;">
+            <span onclick="closePlayer()" style="color:var(--apple-red); font-weight:800; font-size: 18px; cursor:pointer;">✕</span>
+            <span id="player-title-mini" style="font-weight: bold; font-size: 14px;"></span>
+            <div style="width:20px;"></div>
+        </div>
+        <div id="player-header" style="text-align:center; padding: 40px 20px;"></div>
+        <div id="tracklist-container" style="max-width: 800px; margin: 0 auto; padding-bottom: 100px;"></div>
+    </div>
+
+    <script>
+        const albums = [
+            { 
+                title: "BULLY", year: 2026, runtime: "??:??", label: "YZY", cat: "latest",
+                img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png",
+                tracks: ["PREACHER MAN", "BEAUTY AND THE BEAST"]
+            },
+            { 
+                title: "The College Dropout", year: 2004, runtime: "76:13", label: "Roc-A-Fella", cat: "classic",
+                img: "https://upload.wikimedia.org/wikipedia/en/a/a3/Kanyewest_collegedropout.jpg",
+                tracks: ["Intro", "We Don't Care", "Graduation Day", "All Falls Down", "I'll Fly Away", "Spaceships", "Jesus Walks", "Never Let Me Down", "Get Em High", "The New Workout Plan", "Slow Jamz", "Breathe In Breathe Out", "School Spirit", "Two Words", "Through The Wire", "Family Business", "Last Call"]
+            },
+            { 
+                title: "Late Registration", year: 2005, runtime: "70:25", label
