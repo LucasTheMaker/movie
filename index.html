@@ -89,17 +89,12 @@
             {
                 title: "Bully", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
                 tracks: [
-                    { name: "King", file: "KING_spotdown.org bully.mp3" },
-                    { name: "Sisters And Brothers", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
-                    { name: "Father", file: "FATHER (feat. Travis Scott)_spotdown.org.mp3" },
-                    { name: "Punch Drunk", file: "PUNCH DRUNK_spotdown.org.mp3" },
-                    { name: "Whatever Works", file: "WHATEVER WORKS_spotdown.org.mp3" },
-                    { name: "Mama's Favorite", file: "MAMA’S FAVORITE_spotdown.org.mp3" },
-                    { name: "All The Love", file: "ALL THE LOVE (feat. Andre Troutman)_spotdown.org.mp3" },
-                    { name: "Circles", file: "CIRCLES (feat. Don Toliver)_spotdown.org.mp3" },
-                    { name: "White Lines", file: "WHITE LINES (feat. Andre Troutman)_spotdown.org.mp3" },
                     { name: "Preacher Man", file: "PREACHER MAN.mp3" },
-                    { name: "Beauty And The Beast", file: "BEAUTY AND THE BEAST.mp3" }
+                    { name: "Beauty And The Beast", file: "BEAUTY AND THE BEAST.mp3" },
+                    { name: "Last Breath", file: "LAST BREATH (feat. Peso Pluma)_spotdown.org.mp3" },
+                    { name: "White Lines", file: "WHITE LINES.mp3" },
+                    { name: "Damn", file: "DAMN.mp3" },
+                    { name: "King", file: "KING_spotdown.org bully.mp3" }
                 ]
             },
             {
@@ -140,13 +135,19 @@
 
         function init() {
             const grid = document.getElementById('album-grid');
-            albums.forEach((alb, i) => { grid.innerHTML += `<div class="album-card" onclick="openAlbum(${i})"><img src="${alb.img}" onerror="this.src='https://via.placeholder.com/300/222/fff?text=No+Cover'"><p><b>${alb.title}</b></p></div>`; });
+            albums.forEach((alb, i) => {
+                grid.innerHTML += `<div class="album-card" onclick="openAlbum(${i})"><img src="${alb.img}" onerror="this.src='https://via.placeholder.com/300/222/fff?text=No+Cover'"><p><b>${alb.title}</b></p></div>`;
+            });
         }
 
         function openAlbum(i) {
             curAlb = i; const alb = albums[i];
             document.getElementById('album-header').innerHTML = `<img src="${alb.img}" style="width:180px; border-radius:10px; margin-bottom:15px;"><h2>${alb.title}</h2>`;
-            document.getElementById('track-list').innerHTML = alb.tracks.map((t, idx) => `<div class="track-row" onclick="playSong(${idx})"><span style="width:30px; color:#555;">${idx+1}</span><span style="flex:1;">${toTitleCase(t.name)}</span><span>▶</span></div>`).join('');
+            document.getElementById('track-list').innerHTML = alb.tracks.map((t, idx) => `
+                <div class="track-row" onclick="playSong(${idx})">
+                    <span style="width:30px; color:#555;">${idx+1}</span>
+                    <span style="flex:1;">${toTitleCase(t.name)}</span><span>▶</span>
+                </div>`).join('');
             document.getElementById('album-overlay').style.display = 'block';
         }
 
@@ -159,14 +160,33 @@
             document.getElementById('m-album').innerText = albums[curAlb].title;
             document.getElementById('f-art').src = albums[curAlb].img;
             document.getElementById('m-art').src = albums[curAlb].img;
-            audio.play(); updateIcons(true);
+            audio.play();
+            updateIcons(true);
         }
 
-        function togglePlay() { if (audio.paused) { audio.play(); updateIcons(true); } else { audio.pause(); updateIcons(false); } }
-        function updateIcons(p) { const icon = p ? "⏸" : "▶️"; document.getElementById('play-btn').innerText = icon; document.getElementById('m-play-btn').innerText = icon; }
-        function nextTrack() { if (curTrack < albums[curAlb].tracks.length - 1) playSong(curTrack + 1); else playSong(0); }
+        function togglePlay() { 
+            if (audio.paused) { audio.play(); updateIcons(true); } 
+            else { audio.pause(); updateIcons(false); } 
+        }
+
+        function updateIcons(p) {
+            const icon = p ? "⏸" : "▶️";
+            document.getElementById('play-btn').innerText = icon;
+            document.getElementById('m-play-btn').innerText = icon;
+        }
+
+        function nextTrack() {
+            if (curTrack < albums[curAlb].tracks.length - 1) playSong(curTrack + 1);
+            else playSong(0);
+        }
+
         function prevTrack() { if (curTrack > 0) playSong(curTrack - 1); }
-        function toggleRepeat() { isRepeating = !isRepeating; audio.loop = isRepeating; document.getElementById('repeat-toggle').style.color = isRepeating ? "#fa2d48" : "#fff"; }
+
+        function toggleRepeat() {
+            isRepeating = !isRepeating;
+            audio.loop = isRepeating;
+            document.getElementById('repeat-toggle').style.color = isRepeating ? "#fa2d48" : "#fff";
+        }
 
         let touchStartY = 0;
         const playerPanel = document.getElementById('full-player');
@@ -175,10 +195,16 @@
 
         function togglePlayer() { playerPanel.classList.toggle('active'); }
         function closeAlbum() { document.getElementById('album-overlay').style.display = 'none'; }
+        
         audio.onended = () => { if (!isRepeating) nextTrack(); };
-        audio.ontimeupdate = () => { slider.value = (audio.currentTime / audio.duration) * 100 || 0; document.getElementById('cur-time').innerText = fmt(audio.currentTime); document.getElementById('dur-time').innerText = fmt(audio.duration); };
+        audio.ontimeupdate = () => {
+            slider.value = (audio.currentTime / audio.duration) * 100 || 0;
+            document.getElementById('cur-time').innerText = fmt(audio.currentTime);
+            document.getElementById('dur-time').innerText = fmt(audio.duration);
+        };
         slider.oninput = () => { audio.currentTime = (slider.value / 100) * audio.duration; };
         function fmt(s) { const m=Math.floor(s/60), sec=Math.floor(s%60); return `${m}:${sec<10?'0':''}${sec}`; }
+
         init();
     </script>
 </body>
