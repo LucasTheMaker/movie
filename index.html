@@ -8,35 +8,44 @@
         :root { --apple-red: #fa2d48; --bg: #000; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: #fff; margin: 0; height: 100vh; overflow: hidden; }
+        
         .app-container { display: flex; height: 100vh; }
         .sidebar { width: 250px; background: #000; padding: 40px 20px; border-right: 1px solid #222; flex-shrink: 0; }
         .main-content { flex: 1; overflow-y: auto; padding-bottom: 120px; }
         .nav-item { padding: 12px; color: #a1a1a1; cursor: pointer; font-size: 17px; font-weight: 600; }
         .nav-item.active { color: var(--apple-red); }
+
         .hero { height: 35vh; background: linear-gradient(transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 40px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; padding: 20px 40px; }
         .album-card { cursor: pointer; text-align: center; }
         .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); background: #111; }
+
         .overlay { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; overflow-y: auto; padding: 40px 20px; }
         .track-row { display: flex; align-items: center; padding: 15px; border-radius: 10px; cursor: pointer; border-bottom: 1px solid #111; }
+        
         #full-player { position: fixed; bottom: -100%; left: 0; width: 100%; height: 100%; background: #0a0a0a; z-index: 3000; transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; align-items: center; padding: 40px 30px; touch-action: none; }
         #full-player.active { bottom: 0; }
         .large-art { width: 80vw; max-width: 320px; border-radius: 15px; margin-bottom: 30px; }
+        
         .scrubber-box { width: 100%; max-width: 400px; margin-top: 20px; }
         #time-slider { width: 100%; height: 6px; cursor: pointer; accent-color: #fff; }
+
         .mini-player { position: fixed; bottom: 0; width: 100%; background: rgba(20,20,20,0.95); backdrop-filter: blur(15px); padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; z-index: 2000; border-top: 1px solid #222; cursor: pointer; }
         .mini-meta { display: flex; align-items: center; flex: 1; overflow: hidden; }
         .mini-img { width: 45px; height: 45px; border-radius: 5px; margin-right: 12px; }
+
         @media (max-width: 768px) { .sidebar { display: none; } }
     </style>
 </head>
 <body>
+
     <div class="app-container">
         <nav class="sidebar">
             <h2 style="color:var(--apple-red); margin-bottom:30px;">Lucas Music</h2>
             <div class="nav-item active">Listen Now</div>
             <div class="nav-item" onclick="window.location.href='IronMan-2008.html'">Movies</div>
         </nav>
+
         <main class="main-content">
             <div class="hero"><h1>Kanye West</h1></div>
             <div class="grid" id="album-grid"></div>
@@ -54,12 +63,14 @@
         <img id="f-art" class="large-art" src="">
         <h2 id="f-title" style="margin:0; text-align:center;">Select Song</h2>
         <p id="f-album" style="color:#888;">ye</p>
+        
         <div class="scrubber-box">
             <input type="range" id="time-slider" value="0" max="100">
             <div style="display:flex; justify-content:space-between; font-size:12px; color:#777; margin-top:10px;">
                 <span id="cur-time">0:00</span><span id="dur-time">0:00</span>
             </div>
         </div>
+
         <div style="display:flex; gap:40px; margin-top:30px; align-items:center; font-size:35px;">
             <span onclick="prevTrack()" style="cursor:pointer;">⏪</span>
             <span id="play-btn" onclick="togglePlay()" style="font-size:60px; cursor:pointer;">▶️</span>
@@ -95,26 +106,42 @@
                 title: "Bully", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
                 tracks: [
                     { name: "King", file: "KING_spotdown.org bully.mp3" },
+                    { name: "This A Must", file: "THIS A MUST_spotdown.org.mp3" },
                     { name: "Father", file: "FATHER (feat. Travis Scott)_spotdown.org.mp3" },
                     { name: "All The Love", file: "ALL THE LOVE (feat. Andre Troutman)_spotdown.org.mp3" },
                     { name: "Punch Drunk", file: "PUNCH DRUNK_spotdown.org.mp3" },
+                    { name: "Whatever Works", file: "WHATEVER WORKS_spotdown.org.mp3" },
                     { name: "Mama's Favorite", file: "MAMA’S FAVORITE_spotdown.org.mp3" },
                     { name: "Sisters And Brothers", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
-                    { name: "Bully", file: "BULLY.mp3" },
-                    { name: "I Can't Wait", file: "I CAN'T WAIT.mp3" },
-                    { name: "White Lines", file: "WHITE LINES.mp3" },
-                    { name: "Circles", file: "CIRCLES.mp3" },
+                    { name: "Bully", file: "BULLY_spotdown.org.mp3" },
+                    { name: "Highs And Lows", file: "HIGHS AND LOWS_spotdown.org.mp3" },
+                    { name: "I Can't Wait", file: "I CAN'T WAIT_spotdown.org.mp3" },
+                    { name: "White Lines", file: "WHITE LINES_spotdown.org.mp3" },
+                    { name: "Circles", file: "CIRCLES (feat. Don Toliver)_spotdown.org.mp3" },
                     { name: "Preacher Man", file: "PREACHER MAN.mp3" },
                     { name: "Beauty And The Beast", file: "BEAUTY AND THE BEAST.mp3" },
-                    { name: "Damn", file: "DAMN.mp3" }
+                    { name: "Damn", file: "DAMN.mp3" },
+                    { name: "Last Breath", file: "LAST BREATH (feat. Peso Pluma)_spotdown.org.mp3" },
+                    { name: "This One Here", file: "THIS ONE HERE_spotdown.org.mp3" }
                 ]
             },
             {
                 title: "Vultures 1", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/vultures1_cover.jpg",
                 tracks: [
                     { name: "Stars", file: "STARS_spotdown.org.mp3" },
+                    { name: "Keys To My Life", file: "KEYS TO MY LIFE_spotdown.org.mp3" },
+                    { name: "Paid", file: "PAID.mp3" },
+                    { name: "Talking", file: "TALKING_spotdown.org.mp3" },
+                    { name: "Back To Me", file: "BACK TO ME_spotdown.org.mp3" },
+                    { name: "Hoodrat", file: "HOODRAT_spotdown.org.mp3" },
+                    { name: "Do It", file: "DO IT_spotdown.org.mp3" },
+                    { name: "Paperwork", file: "PAPERWORK_spotdown.org.mp3" },
                     { name: "Burn", file: "BURN_spotdown.org.mp3" },
+                    { name: "Fuk Sumn", file: "FUK SUMN_spotdown.org.mp3" },
+                    { name: "Vultures", file: "VULTURES_spotdown.org.mp3" },
                     { name: "Carnival", file: "CARNIVAL_spotdown.org.mp3" },
+                    { name: "Beg Forgiveness", file: "BEG FORGIVENESS_spotdown.org.mp3" },
+                    { name: "Problematic", file: "PROBLEMATIC_spotdown.org.mp3" },
                     { name: "King", file: "KING_spotdown.org.mp3" }
                 ]
             },
@@ -133,18 +160,28 @@
         ];
 
         let curAlb = 0, curTrack = 0, isRepeating = false;
+
         function init() {
             const grid = document.getElementById('album-grid');
-            albums.forEach((alb, i) => { grid.innerHTML += `<div class="album-card" onclick="openAlbum(${i})"><img src="${alb.img}" onerror="this.src='https://via.placeholder.com/300/222/fff?text=No+Cover'"><p><b>${alb.title}</b></p></div>`; });
+            albums.forEach((alb, i) => {
+                grid.innerHTML += `<div class="album-card" onclick="openAlbum(${i})"><img src="${alb.img}" onerror="this.src='https://via.placeholder.com/300/222/fff?text=No+Cover'"><p><b>${alb.title}</b></p></div>`;
+            });
         }
+
         function openAlbum(i) {
             curAlb = i; const alb = albums[i];
             document.getElementById('album-header').innerHTML = `<img src="${alb.img}" style="width:180px; border-radius:10px; margin-bottom:15px;"><h2>${alb.title}</h2>`;
-            document.getElementById('track-list').innerHTML = alb.tracks.map((t, idx) => `<div class="track-row" onclick="playSong(${idx})"><span style="width:30px; color:#555;">${idx+1}</span><span style="flex:1;">${toTitleCase(t.name)}</span><span>▶</span></div>`).join('');
+            document.getElementById('track-list').innerHTML = alb.tracks.map((t, idx) => `
+                <div class="track-row" onclick="playSong(${idx})">
+                    <span style="width:30px; color:#555;">${idx+1}</span>
+                    <span style="flex:1;">${toTitleCase(t.name)}</span><span>▶</span>
+                </div>`).join('');
             document.getElementById('album-overlay').style.display = 'block';
         }
+
         function playSong(idx) {
             curTrack = idx; const track = albums[curAlb].tracks[idx];
+            // ENCODE THE URL TO HANDLE SPACES (Critical for "I Thought About Killing You")
             audio.src = encodeURI(GITHUB_BASE + track.file);
             document.getElementById('f-title').innerText = toTitleCase(track.name);
             document.getElementById('m-title').innerText = toTitleCase(track.name);
@@ -152,26 +189,51 @@
             document.getElementById('m-album').innerText = albums[curAlb].title;
             document.getElementById('f-art').src = albums[curAlb].img;
             document.getElementById('m-art').src = albums[curAlb].img;
-            audio.play().catch(e => console.log("Playback error: ", e));
+            audio.play();
             updateIcons(true);
         }
-        function togglePlay() { if (audio.paused) { audio.play(); updateIcons(true); } else { audio.pause(); updateIcons(false); } }
-        function updateIcons(p) { const icon = p ? "⏸" : "▶️"; document.getElementById('play-btn').innerText = icon; document.getElementById('m-play-btn').innerText = icon; }
-        function toggleRepeat() { isRepeating = !isRepeating; audio.loop = isRepeating; document.getElementById('repeat-toggle').style.color = isRepeating ? "#fa2d48" : "#fff"; }
-        function nextTrack() { if (curTrack < albums[curAlb].tracks.length - 1) playSong(curTrack + 1); else playSong(0); }
+
+        function togglePlay() { 
+            if (audio.paused) { audio.play(); updateIcons(true); } 
+            else { audio.pause(); updateIcons(false); } 
+        }
+
+        function updateIcons(p) {
+            const icon = p ? "⏸" : "▶️";
+            document.getElementById('play-btn').innerText = icon;
+            document.getElementById('m-play-btn').innerText = icon;
+        }
+
+        function nextTrack() {
+            if (curTrack < albums[curAlb].tracks.length - 1) playSong(curTrack + 1);
+            else playSong(0);
+        }
+
         function prevTrack() { if (curTrack > 0) playSong(curTrack - 1); }
-        function togglePlayer() { document.getElementById('full-player').classList.toggle('active'); }
-        function closeAlbum() { document.getElementById('album-overlay').style.display = 'none'; }
-        
+
+        function toggleRepeat() {
+            isRepeating = !isRepeating;
+            audio.loop = isRepeating;
+            document.getElementById('repeat-toggle').style.color = isRepeating ? "#fa2d48" : "#fff";
+        }
+
         let touchStartY = 0;
         const fullPlayer = document.getElementById('full-player');
         fullPlayer.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; }, {passive: true});
-        fullPlayer.addEventListener('touchend', (e) => { if (e.changedTouches[0].clientY - touchStartY > 80) togglePlayer(); }, {passive: true});
-        
+        fullPlayer.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            if (touchEndY - touchStartY > 80) togglePlayer();
+        }, {passive: true});
+
         audio.onended = () => { if (!isRepeating) nextTrack(); };
-        audio.ontimeupdate = () => { slider.value = (audio.currentTime / audio.duration) * 100 || 0; document.getElementById('cur-time').innerText = fmt(audio.currentTime); document.getElementById('dur-time').innerText = fmt(audio.duration); };
+        audio.ontimeupdate = () => {
+            slider.value = (audio.currentTime / audio.duration) * 100 || 0;
+            document.getElementById('cur-time').innerText = fmt(audio.currentTime);
+            document.getElementById('dur-time').innerText = fmt(audio.duration);
+        };
         slider.oninput = () => { audio.currentTime = (slider.value / 100) * audio.duration; };
         function fmt(s) { const m=Math.floor(s/60), sec=Math.floor(s%60); return `${m}:${sec<10?'0':''}${sec}`; }
+
         init();
     </script>
 </body>
