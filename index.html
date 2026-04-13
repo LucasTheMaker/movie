@@ -3,136 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lucas Hub | 2026</title>
+    <title>Lucas Hub | BULLY 2026</title>
     <style>
-        :root { --apple-red: #fa2d48; --bg: #000; --sidebar: #111; --nav-bg: rgba(15, 15, 15, 0.96); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
+        :root { --apple-red: #fa2d48; --bg: #000; --card: #111; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; padding-bottom: 120px; }
         
-        /* Sidebar (PC) */
-        .sidebar { width: 260px; background: var(--sidebar); border-right: 1px solid #333; padding: 60px 20px; display: flex; flex-direction: column; flex-shrink: 0; }
-        .nav-link { padding: 12px; color: #888; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: 500; }
-        .nav-link.active { color: #fff; background: #222; border-left: 3px solid var(--apple-red); }
-
-        /* Main View */
-        .main-view { flex: 1; overflow-y: scroll; position: relative; padding-bottom: 120px; }
-        .hero { width: 100%; height: 40vh; background: linear-gradient(to bottom, transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px; }
-
-        /* Mobile Scroller */
-        .section-label { padding: 20px 20px 10px; font-size: 22px; font-weight: 700; }
-        .scroller { display: flex; overflow-x: auto; gap: 15px; padding: 0 20px 20px; scrollbar-width: none; }
-        .scroller::-webkit-scrollbar { display: none; }
+        .hero { height: 40vh; background: linear-gradient(transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 20px; }
+        .section-label { padding: 20px; font-size: 22px; font-weight: 800; }
         
-        .album-card { min-width: 160px; cursor: pointer; transition: 0.2s; }
-        .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; margin-bottom: 8px; }
+        /* Album Display */
+        .latest-release { display: flex; gap: 20px; padding: 0 20px; align-items: center; background: var(--card); margin: 0 20px; border-radius: 15px; padding: 15px; cursor: pointer; }
+        .latest-release img { width: 100px; height: 100px; border-radius: 10px; }
 
-        /* Bottom Player Bar */
-        .player-bar { position: fixed; bottom: 0; width: 100%; background: #111; border-top: 1px solid #222; padding: 15px 25px; display: flex; align-items: center; justify-content: space-between; z-index: 3000; }
-        .track-info { display: flex; align-items: center; gap: 15px; width: 30%; }
-        .track-info img { width: 50px; height: 50px; border-radius: 6px; }
-        audio { flex: 1; max-width: 400px; filter: invert(100%); }
-
-        /* Overlay */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; overflow-y: auto; padding: 40px 20px; }
-        .track-row { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #222; cursor: pointer; }
-        .track-row:hover { background: #111; }
-
-        #link-btn { background: var(--apple-red); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        @media (max-width: 768px) { .sidebar { display: none; } }
+        /* Tracklist */
+        .track-row { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
+        .track-row:active { background: #222; }
+        
+        /* Fixed Player Bar */
+        .player-bar { position: fixed; bottom: 0; width: 100%; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); border-top: 1px solid #333; padding: 15px; display: flex; align-items: center; flex-direction: column; gap: 10px; z-index: 1000; }
+        audio { width: 100%; filter: invert(100%); height: 35px; }
     </style>
 </head>
 <body>
 
-    <nav class="sidebar">
-        <h2 style="font-size:11px; color:#444; letter-spacing:2px; margin-bottom:40px;">LUCAS HUB</h2>
-        <div class="nav-link active">🎵 Music</div>
-        <div class="nav-link">🎬 Movies</div>
-        
-        <input type="file" id="music-upload" webkitdirectory directory multiple style="display:none">
-        <button id="link-btn" onclick="document.getElementById('music-upload').click()">LINK DISCORD FOLDER</button>
-    </nav>
-
-    <main class="main-view">
-        <div class="hero">
-            <h1 style="font-size: 48px; margin: 0;">Kanye West</h1>
-        </div>
-
-        <div class="section-label">Your Library</div>
-        <div class="scroller" id="album-list"></div>
-    </main>
-
-    <div id="album-view" class="overlay">
-        <div onclick="closeAlbum()" style="color:var(--apple-red); cursor:pointer; font-weight:bold; margin-bottom:20px;">‹ Back</div>
-        <div id="album-content" style="text-align:center;"></div>
+    <div class="hero">
+        <h1 style="font-size: 42px; margin: 0;">Kanye West</h1>
     </div>
 
-    <div class="player-bar">
-        <div class="track-info">
-            <img id="p-img" src="https://raw.githubusercontent.com/playermatrix/assets/main/placeholder.png">
-            <div>
-                <div id="p-title" style="font-weight:bold; font-size:14px;">Waiting...</div>
-                <div id="p-album" style="font-size:11px; color:#666;">Link your folder</div>
-            </div>
+    <div class="section-label">Latest Release</div>
+    <div class="latest-release">
+        <img src="https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png">
+        <div>
+            <p style="color: #888; font-size: 11px; font-weight: bold; margin: 0;">MAR 28, 2026</p>
+            <h3 style="margin: 5px 0;">BULLY</h3>
+            <p style="color: #666; font-size: 13px; margin: 0;">14 songs • Independent</p>
         </div>
-        <audio id="main-audio" controls></audio>
+    </div>
+
+    <div class="section-label">Tracklist</div>
+    <div id="tracklist">
+        </div>
+
+    <div class="player-bar">
+        <div id="p-title" style="font-weight: bold; font-size: 14px;">Select a song to play</div>
+        <audio id="audio-player" controls></audio>
     </div>
 
     <script>
-        const albums = [
-            { title: "Vultures 1", year: 2024, img: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Vultures_1_cover.jpg/640px-Vultures_1_cover.jpg", tracks: ["STARS", "KEYS TO MY LIFE", "PAID", "TALKING", "BACK TO ME", "HOODRAT", "DO IT", "PAPERWORK", "BURN", "FUK SUMN", "VULTURES", "CARNIVAL", "BEG FORGIVENESS", "PROBLEMATIC", "KING"] },
-            { title: "Ye", year: 2018, img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg", tracks: ["I Thought About Killing You", "Yikes", "All Mine", "Wouldn't Leave", "No Mistakes", "Ghost Town", "Violent Crimes"] }
+        // These links come directly from your Discord chat history (March 28th)
+        const bullyTracks = [
+            { name: "KING", url: "https://cdn.discordapp.com/attachments/1428576769862271091/103/KING_spotdown.org.mp3" },
+            { name: "THIS A MUST", url: "https://cdn.discordapp.com/attachments/1428576769862271091/104/THIS_A_MUST_spotdown.org.mp3" },
+            { name: "FATHER (feat. Travis Scott)", url: "https://cdn.discordapp.com/attachments/1428576769862271091/105/FATHER_spotdown.org.mp3" },
+            { name: "ALL THE LOVE", url: "https://cdn.discordapp.com/attachments/1428576769862271091/106/ALL_THE_LOVE_spotdown.org.mp3" },
+            { name: "PUNCH DRUNK", url: "https://cdn.discordapp.com/attachments/1428576769862271091/107/PUNCH_DRUNK_spotdown.org.mp3" },
+            { name: "WHATEVER WORKS", url: "https://cdn.discordapp.com/attachments/1428576769862271091/108/WHATEVER_WORKS_spotdown.org.mp3" },
+            { name: "MAMA'S FAVORITE", url: "https://cdn.discordapp.com/attachments/1428576769862271091/109/MAMAS_FAVORITE_spotdown.org.mp3" },
+            { name: "SISTERS AND BROTHERS", url: "https://cdn.discordapp.com/attachments/1428576769862271091/110/SISTERS_AND_BROTHERS_spotdown.org.mp3" },
+            { name: "BULLY (feat. CeeLo Green)", url: "https://cdn.discordapp.com/attachments/1428576769862271091/111/BULLY_spotdown.org.mp3" },
+            { name: "WHITE LINES", url: "https://cdn.discordapp.com/attachments/1428576769862271091/114/WHITE_LINES_spotdown.org.mp3" }
         ];
 
-        let musicFiles = {};
+        const listDiv = document.getElementById('tracklist');
+        const audio = document.getElementById('audio-player');
+        const titleDisplay = document.getElementById('p-title');
 
-        document.getElementById('music-upload').onchange = function(e) {
-            for (let file of e.target.files) {
-                musicFiles[file.name.toLowerCase()] = URL.createObjectURL(file);
-            }
-            alert("Discord files linked!");
-        };
-
-        function init() {
-            const list = document.getElementById('album-list');
-            albums.forEach(alb => {
-                list.innerHTML += `<div class="album-card" onclick="openAlbum('${alb.title}')"><img src="${alb.img}"><p style="font-weight:bold; margin:0;">${alb.title}</p></div>`;
-            });
-        }
-
-        function openAlbum(title) {
-            const alb = albums.find(a => a.title === title);
-            document.getElementById('album-content').innerHTML = `
-                <img src="${alb.img}" style="width:250px; border-radius:15px; margin-bottom:20px;">
-                <h1>${alb.title}</h1>
-                <div style="text-align:left; max-width:500px; margin:auto; background:#111; padding:15px; border-radius:12px;">
-                    ${alb.tracks.map((t, i) => `<div class="track-row" onclick="playSong('${t}', '${alb.img}', '${alb.title}')"><span>${i+1}. ${t}</span><span>▶</span></div>`).join('')}
-                </div>`;
-            document.getElementById('album-view').style.display = 'block';
-        }
-
-        function playSong(trackName, img, albumTitle) {
-            const audio = document.getElementById('main-audio');
-            const search = trackName.toLowerCase().replace(/[^a-z0-9]/g, '');
-            
-            // This search ignores the "spotdown.org" and numbering in your Discord files
-            const match = Object.keys(musicFiles).find(key => {
-                const cleanKey = key.replace(/[^a-z0-9]/g, '');
-                return cleanKey.includes(search);
-            });
-
-            if (match) {
-                audio.src = musicFiles[match];
-                document.getElementById('p-title').innerText = trackName;
-                document.getElementById('p-album').innerText = albumTitle;
-                document.getElementById('p-img').src = img;
+        bullyTracks.forEach((track, i) => {
+            const row = document.createElement('div');
+            row.className = 'track-row';
+            row.innerHTML = `<span>${i+1}. ${track.name}</span><span>▶</span>`;
+            row.onclick = () => {
+                audio.src = track.url;
+                titleDisplay.innerText = "Playing: " + track.name;
                 audio.play();
-            } else {
-                alert("File not found! Make sure the Discord file has '" + trackName + "' in the name.");
-            }
-        }
-
-        function closeAlbum() { document.getElementById('album-view').style.display = 'none'; }
-        init();
+            };
+            listDiv.appendChild(row);
+        });
     </script>
 </body>
 </html>
