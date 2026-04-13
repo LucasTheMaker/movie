@@ -19,7 +19,7 @@
             .mobile-nav { display: flex; }
         }
 
-        .nav-btn { padding: 12px; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 5px; font-size: 15px; }
+        .nav-btn { padding: 12px; color: #aaa; cursor: pointer; border-radius: 8px; margin-bottom: 5px; font-size: 15px; transition: 0.2s; }
         .nav-btn.active { background: #333; color: var(--apple-red); font-weight: bold; }
         .nav-item { flex: 1; text-align: center; color: #888; font-size: 10px; cursor: pointer; }
         .nav-item.active { color: var(--apple-red); }
@@ -32,8 +32,8 @@
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; margin-top: 20px; }
         .card { cursor: pointer; transition: 0.2s; text-align: center; }
         .card:hover { transform: scale(1.05); }
-        .card img { width: 100%; aspect-ratio: 2/3; border-radius: 12px; background: #222; object-fit: cover; }
-        .music-card img { aspect-ratio: 1/1; }
+        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; background: #222; object-fit: cover; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        .movie-card img { aspect-ratio: 2/3; }
 
         /* OVERLAYS */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; overflow-y: auto; padding: 40px 20px; }
@@ -53,13 +53,16 @@
         <section id="music-page" class="page active">
             <h1>Music</h1>
             <div class="grid">
-                <div class="card music-card" onclick="openArtist('Kanye West')">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_6uYy9uXkX9O5m_oYm7-m0D7-Y8L9L9L9L9L9L9L9L9L9L9L9L9L9">
+                <div class="card" onclick="openArtist('Kanye West')">
+                    <img src="https://m.media-amazon.com/images/M/MV5BMjExOTY3NzExM15BMl5BanBnXkFtZTcwOTg4MzE2Mw@@._V1_.jpg">
                     <p style="margin-top:10px; font-weight:600;">Kanye West</p>
                 </div>
             </div>
             <div id="artist-profile" style="display:none; margin-top:40px;">
                 <h2 id="profile-name"></h2>
+                <h3>Essential Albums</h3>
+                <div class="grid" id="ess-grid"></div>
+                <h3>Discography</h3>
                 <div class="grid" id="full-grid"></div>
             </div>
         </section>
@@ -67,11 +70,11 @@
         <section id="movies-page" class="page">
             <h1>Movies</h1>
             <div class="grid">
-                <div class="card" onclick="openMovie('Iron Man')">
+                <div class="card movie-card" onclick="openMovie('Iron Man')">
                     <img src="https://m.media-amazon.com/images/I/91N9mX6K8HL._AC_SL1500_.jpg">
                     <p style="margin-top:10px; font-weight:600;">Iron Man</p>
                 </div>
-                <div class="card" onclick="openMovie('Spider-Man')">
+                <div class="card movie-card" onclick="openMovie('Spider-Man')">
                     <img src="https://m.media-amazon.com/images/I/61-6v-f9u9L._AC_SL1000_.jpg">
                     <p style="margin-top:10px; font-weight:600;">Spider-Man</p>
                 </div>
@@ -80,7 +83,7 @@
 
         <section id="search-page" class="page">
             <h1>Search</h1>
-            <input type="text" id="search-input" style="width:100%; padding:15px; border-radius:10px; border:1px solid #333; background:#222; color:#fff;" placeholder="Search..." onkeyup="search()">
+            <input type="text" id="search-input" style="width:100%; padding:15px; border-radius:10px; border:1px solid #333; background:#222; color:#fff;" placeholder="Artists, Movies, or Albums..." onkeyup="search()">
             <div id="search-results" style="margin-top:20px;"></div>
         </section>
     </main>
@@ -100,15 +103,17 @@
         const musicDB = {
             "Kanye West": {
                 albums: [
-                    { title: "BULLY", year: 2026, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png", tracks: ["Sisters and Brothers", "Father", "Bully", "Preacher Man", "Beauty and the Beast"] },
-                    { title: "The Life of Pablo", year: 2016, img: "https://m.media-amazon.com/images/I/61q3K-o1E6L.jpg", tracks: ["Ultralight Beam", "Father Stretch My Hands Pt. 1", "Waves", "Wolves"] }
+                    { title: "BULLY", year: 2026, essential: false, img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png", tracks: ["Sisters and Brothers", "Father", "Bully", "Preacher Man", "Beauty and the Beast", "Last Breath"] },
+                    { title: "The Life of Pablo", year: 2016, essential: true, img: "https://m.media-amazon.com/images/I/61q3K-o1E6L.jpg", tracks: ["Ultralight Beam", "Father Stretch My Hands Pt. 1", "Pt. 2", "Famous", "Feedback", "Low Lights", "Highlights", "Freestyle 4", "I Love Kanye", "Waves", "FML", "Real Friends", "Wolves", "Frank's Track", "Siiiiiiiiilver Surffffeeeeer Intermission", "30 Hours", "No More Parties In LA", "Facts (Charlie Heat Version)", "Fade", "Saint Pablo"] },
+                    { title: "Yeezus", year: 2013, essential: true, img: "https://upload.wikimedia.org/wikipedia/en/0/03/Yeezus_album_cover.png", tracks: ["On Sight", "Black Skinhead", "I Am a God", "New Slaves", "Hold My Liquor", "I'm In It", "Blood on the Leaves", "Guilt Trip", "Send It Up", "Bound 2"] },
+                    { title: "MBDTF", year: 2010, essential: true, img: "https://m.media-amazon.com/images/I/91M9pUeHbeL._AC_SL1500_.png", tracks: ["Dark Fantasy", "Gorgeous", "POWER", "All of the Lights", "Monster", "So Appalled", "Devil In A New Dress", "Runaway", "Hell Of A Life", "Blame Game", "Lost In The World", "Who Will Survive In America"] }
                 ]
             }
         };
 
         const movieDB = {
-            "Iron Man": { year: 2008, dist: "Marvel Studios / Paramount", img: "https://m.media-amazon.com/images/I/91N9mX6K8HL._AC_SL1500_.jpg", info: "After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil." },
-            "Spider-Man": { year: 2002, dist: "Columbia Pictures", img: "https://m.media-amazon.com/images/I/61-6v-f9u9L._AC_SL1000_.jpg", info: "After being bitten by a genetically modified spider, a shy teenager gains spider-like abilities that he uses to fight injustice as a masked superhero." }
+            "Iron Man": { year: 2008, dist: "Marvel Studios", img: "https://m.media-amazon.com/images/I/91N9mX6K8HL._AC_SL1500_.jpg", info: "Billionaire Tony Stark builds a weaponized suit of armor to fight evil." },
+            "Spider-Man": { year: 2002, dist: "Columbia Pictures", img: "https://m.media-amazon.com/images/I/61-6v-f9u9L._AC_SL1000_.jpg", info: "Teenager Peter Parker gains spider-like abilities and fights crime." }
         };
 
         function nav(id) {
@@ -121,21 +126,52 @@
 
         function openArtist(name) {
             const art = musicDB[name];
-            const profile = document.getElementById('artist-profile');
-            profile.style.display = 'block';
+            document.getElementById('artist-profile').style.display = 'block';
             document.getElementById('profile-name').innerText = name;
-            const grid = document.getElementById('full-grid');
-            grid.innerHTML = art.albums.map((alb, i) => `<div class="card music-card" onclick="showMusicDetails('${name}', ${i})"><img src="${alb.img}"><p>${alb.title}</p></div>`).join('');
-            window.scrollTo(0, 500);
+            
+            const essGrid = document.getElementById('ess-grid');
+            const fullGrid = document.getElementById('full-grid');
+            essGrid.innerHTML = ""; fullGrid.innerHTML = "";
+
+            art.albums.forEach((alb, i) => {
+                const cardHtml = `<div class="card" onclick="showMusicDetails('${name}', ${i})"><img src="${alb.img}"><p style="font-weight:600; font-size:14px; margin-top:8px;">${alb.title}</p></div>`;
+                fullGrid.innerHTML += cardHtml;
+                if(alb.essential) essGrid.innerHTML += cardHtml;
+            });
         }
 
         function showMusicDetails(artist, i) {
             const alb = musicDB[artist].albums[i];
             const overlay = document.getElementById('detail-content');
-            overlay.innerHTML = `<div style="text-align:center;"><img src="${alb.img}" style="width:250px; border-radius:15px;"><h1>${alb.title}</h1><p>${artist}</p><div style="text-align:left; max-width:500px; margin:auto; background:#111; padding:15px; border-radius:10px;">${alb.tracks.map((t, idx) => `<p>${idx+1}. ${t}</p>`).join('')}</div></div>`;
+            overlay.innerHTML = `
+                <div style="text-align:center;">
+                    <img src="${alb.img}" style="width:280px; border-radius:15px; box-shadow: 0 20px 40px rgba(0,0,0,0.8);">
+                    <h1>${alb.title}</h1>
+                    <p style="color:var(--apple-red); font-weight:bold;">${artist}</p>
+                    <div style="text-align:left; max-width:600px; margin:40px auto; background:#111; padding:10px; border-radius:12px;">
+                        ${alb.tracks.map((t, idx) => `<div style="padding:12px; border-bottom:1px solid #222; display:flex;"><span style="color:#555; width:30px;">${idx+1}</span><span>${t}</span></div>`).join('')}
+                    </div>
+                </div>`;
             document.getElementById('detail-overlay').style.display = 'block';
         }
 
         function openMovie(name) {
             const mov = movieDB[name];
-            const overlay =
+            const overlay = document.getElementById('detail-content');
+            overlay.innerHTML = `<div style="text-align:center;"><img src="${mov.img}" style="width:250px; border-radius:12px;"><h1>${name}</h1><p style="color:var(--apple-red); font-weight:bold;">${mov.year} • ${mov.dist}</p><p style="max-width:600px; margin:20px auto; color:#ccc; line-height:1.6;">${mov.info}</p></div>`;
+            document.getElementById('detail-overlay').style.display = 'block';
+        }
+
+        function closeOverlay() { document.getElementById('detail-overlay').style.display = 'none'; }
+
+        function search() {
+            const q = document.getElementById('search-input').value.toLowerCase();
+            const res = document.getElementById('search-results');
+            res.innerHTML = "";
+            if(!q) return;
+            for(let key in movieDB) if(key.toLowerCase().includes(q)) res.innerHTML += `<div style="padding:15px; background:#111; margin-bottom:10px; border-radius:8px; cursor:pointer;" onclick="openMovie('${key}')">🎬 ${key} (Movie)</div>`;
+            for(let key in musicDB) if(key.toLowerCase().includes(q)) res.innerHTML += `<div style="padding:15px; background:#111; margin-bottom:10px; border-radius:8px; cursor:pointer;" onclick="openArtist('${key}')">🎵 ${key} (Artist)</div>`;
+        }
+    </script>
+</body>
+</html>
