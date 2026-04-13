@@ -3,24 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Lucas Hub | BULLY 2026</title>
+    <title>Lucas Hub | 2026</title>
     <style>
-        :root { --apple-red: #fa2d48; --bg: #000; --card: #111; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; padding-bottom: 120px; }
+        :root { --apple-red: #fa2d48; --bg: #000; --card: #111; --nav-bg: rgba(15, 15, 15, 0.95); }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; padding-bottom: 140px; overflow-x: hidden; }
         
-        .hero { height: 40vh; background: linear-gradient(transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 20px; }
+        /* Layout */
+        .hero { height: 35vh; background: linear-gradient(transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 20px; }
         .section-label { padding: 20px; font-size: 22px; font-weight: 800; }
         
-        /* Album Display */
-        .latest-release { display: flex; gap: 20px; padding: 0 20px; align-items: center; background: var(--card); margin: 0 20px; border-radius: 15px; padding: 15px; cursor: pointer; }
-        .latest-release img { width: 100px; height: 100px; border-radius: 10px; }
+        /* Album Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; padding: 0 20px; }
+        .album-card { cursor: pointer; transition: 0.2s; }
+        .album-card:active { transform: scale(0.95); }
+        .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; margin-bottom: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .album-title { font-weight: 700; font-size: 14px; margin: 0; }
+        .album-year { font-size: 12px; color: #666; margin: 0; }
 
-        /* Tracklist */
-        .track-row { display: flex; justify-content: space-between; padding: 15px 20px; border-bottom: 1px solid #222; cursor: pointer; transition: 0.2s; }
-        .track-row:active { background: #222; }
+        /* Tracklist Overlay */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; overflow-y: auto; padding: 40px 20px; }
+        .track-row { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #222; cursor: pointer; }
+        .track-row:active { background: #111; }
         
         /* Fixed Player Bar */
-        .player-bar { position: fixed; bottom: 0; width: 100%; background: rgba(15,15,15,0.95); backdrop-filter: blur(20px); border-top: 1px solid #333; padding: 15px; display: flex; align-items: center; flex-direction: column; gap: 10px; z-index: 1000; }
+        .player-bar { position: fixed; bottom: 0; width: 100%; background: var(--nav-bg); backdrop-filter: blur(20px); border-top: 1px solid #333; padding: 15px; z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .now-playing { font-size: 13px; font-weight: 700; color: var(--apple-red); text-align: center; }
         audio { width: 100%; filter: invert(100%); height: 35px; }
     </style>
 </head>
@@ -30,55 +37,64 @@
         <h1 style="font-size: 42px; margin: 0;">Kanye West</h1>
     </div>
 
-    <div class="section-label">Latest Release</div>
-    <div class="latest-release">
-        <img src="https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png">
-        <div>
-            <p style="color: #888; font-size: 11px; font-weight: bold; margin: 0;">MAR 28, 2026</p>
-            <h3 style="margin: 5px 0;">BULLY</h3>
-            <p style="color: #666; font-size: 13px; margin: 0;">14 songs • Independent</p>
+    <div class="section-label">Your Albums</div>
+    <div class="grid" id="main-grid">
         </div>
+
+    <div id="album-view" class="overlay">
+        <div onclick="closeAlbum()" style="color:var(--apple-red); cursor:pointer; font-weight:bold; margin-bottom:20px; font-size:18px;">‹ Library</div>
+        <div id="album-header" style="text-align:center; margin-bottom:30px;"></div>
+        <div id="tracklist-container" style="max-width: 600px; margin: auto;"></div>
     </div>
 
-    <div class="section-label">Tracklist</div>
-    <div id="tracklist">
-        </div>
-
     <div class="player-bar">
-        <div id="p-title" style="font-weight: bold; font-size: 14px;">Select a song to play</div>
-        <audio id="audio-player" controls></audio>
+        <div id="p-title" class="now-playing">Select a track to play</div>
+        <audio id="main-audio" controls></audio>
     </div>
 
     <script>
-        // These links come directly from your Discord chat history (March 28th)
-        const bullyTracks = [
-            { name: "KING", url: "https://cdn.discordapp.com/attachments/1428576769862271091/103/KING_spotdown.org.mp3" },
-            { name: "THIS A MUST", url: "https://cdn.discordapp.com/attachments/1428576769862271091/104/THIS_A_MUST_spotdown.org.mp3" },
-            { name: "FATHER (feat. Travis Scott)", url: "https://cdn.discordapp.com/attachments/1428576769862271091/105/FATHER_spotdown.org.mp3" },
-            { name: "ALL THE LOVE", url: "https://cdn.discordapp.com/attachments/1428576769862271091/106/ALL_THE_LOVE_spotdown.org.mp3" },
-            { name: "PUNCH DRUNK", url: "https://cdn.discordapp.com/attachments/1428576769862271091/107/PUNCH_DRUNK_spotdown.org.mp3" },
-            { name: "WHATEVER WORKS", url: "https://cdn.discordapp.com/attachments/1428576769862271091/108/WHATEVER_WORKS_spotdown.org.mp3" },
-            { name: "MAMA'S FAVORITE", url: "https://cdn.discordapp.com/attachments/1428576769862271091/109/MAMAS_FAVORITE_spotdown.org.mp3" },
-            { name: "SISTERS AND BROTHERS", url: "https://cdn.discordapp.com/attachments/1428576769862271091/110/SISTERS_AND_BROTHERS_spotdown.org.mp3" },
-            { name: "BULLY (feat. CeeLo Green)", url: "https://cdn.discordapp.com/attachments/1428576769862271091/111/BULLY_spotdown.org.mp3" },
-            { name: "WHITE LINES", url: "https://cdn.discordapp.com/attachments/1428576769862271091/114/WHITE_LINES_spotdown.org.mp3" }
+        const albums = [
+            {
+                title: "BULLY",
+                year: "2026",
+                img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png",
+                tracks: [
+                    { name: "KING", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1222878235211534346/KING_spotdown.org.mp3" },
+                    { name: "FATHER (feat. Travis Scott)", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1222878236163772537/FATHER_feat._Travis_Scott_spotdown.org.mp3" },
+                    { name: "BURN", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1207727196653133914/BURN_spotdown.org.mp3" }
+                ]
+            },
+            {
+                title: "Ye",
+                year: "2018",
+                img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
+                tracks: [
+                    { name: "I Thought About Killing You", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1226132845627904030/1._I_Thought_About_Killing_You.mp3" },
+                    { name: "Yikes", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1226132846181548132/2._Yikes.mp3" },
+                    { name: "Ghost Town", url: "https://cdn.discordapp.com/attachments/1428576769862271091/1226132847255158866/6._Ghost_Town.mp3" }
+                ]
+            }
         ];
 
-        const listDiv = document.getElementById('tracklist');
-        const audio = document.getElementById('audio-player');
-        const titleDisplay = document.getElementById('p-title');
+        function init() {
+            const grid = document.getElementById('main-grid');
+            albums.forEach((alb, i) => {
+                grid.innerHTML += `
+                    <div class="album-card" onclick="openAlbum(${i})">
+                        <img src="${alb.img}">
+                        <p class="album-title">${alb.title}</p>
+                        <p class="album-year">${alb.year}</p>
+                    </div>`;
+            });
+        }
 
-        bullyTracks.forEach((track, i) => {
-            const row = document.createElement('div');
-            row.className = 'track-row';
-            row.innerHTML = `<span>${i+1}. ${track.name}</span><span>▶</span>`;
-            row.onclick = () => {
-                audio.src = track.url;
-                titleDisplay.innerText = "Playing: " + track.name;
-                audio.play();
-            };
-            listDiv.appendChild(row);
-        });
-    </script>
-</body>
-</html>
+        function openAlbum(index) {
+            const alb = albums[index];
+            document.getElementById('album-header').innerHTML = `
+                <img src="${alb.img}" style="width:200px; border-radius:15px; margin-bottom:15px;">
+                <h1 style="margin:0;">${alb.title}</h1>
+                <p style="color:#666;">${alb.year}</p>
+            `;
+            
+            const container = document.getElementById('tracklist-container');
+            container.innerHTML =
