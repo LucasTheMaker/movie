@@ -7,60 +7,39 @@
     <style>
         :root { --apple-red: #fa2d48; --bg: #000; --sidebar: #111; --card-bg: #151515; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); color: #fff; margin: 0; display: flex; height: 100vh; overflow: hidden; }
         
-        body { 
-            font-family: -apple-system, system-ui, sans-serif; 
-            background: var(--bg); color: #fff; margin: 0; 
-            display: flex; height: 100vh; overflow: hidden; 
-        }
-
-        /* --- NAVIGATION --- */
-        .sidebar { width: 240px; background: var(--sidebar); border-right: 1px solid #222; padding: 40px 20px; flex-shrink: 0; z-index: 100; }
-        .nav-item { padding: 14px; color: #888; border-radius: 10px; margin-bottom: 8px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .nav-item:hover { color: #fff; background: #222; }
+        /* Sidebar & Nav */
+        .sidebar { width: 240px; background: var(--sidebar); border-right: 1px solid #222; padding: 40px 20px; flex-shrink: 0; }
+        .nav-item { padding: 14px; color: #888; border-radius: 10px; margin-bottom: 8px; font-weight: 600; cursor: pointer; }
         .nav-item.active { color: #fff; background: #222; border-left: 4px solid var(--apple-red); }
-
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: rgba(10,10,10,0.9); backdrop-filter: blur(20px); border-top: 1px solid #222; display: none; justify-content: space-around; padding: 10px 0 30px; z-index: 1000; }
 
-        /* --- MAIN CONTENT --- */
-        .main-view { flex: 1; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; position: relative; }
+        /* Main Area */
+        .main-view { flex: 1; overflow-y: auto; scroll-behavior: smooth; }
         .tab-content { display: none; padding-bottom: 120px; }
         .tab-content.active { display: block; }
+        .hero { height: 40vh; background: linear-gradient(to bottom, transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px; }
+        .section-label { padding: 30px 40px 10px; font-size: 20px; font-weight: 800; }
 
-        .hero { 
-            height: 45vh; background: linear-gradient(to bottom, transparent, #000 95%), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg');
-            background-size: cover; background-position: center 20%; display: flex; flex-direction: column; justify-content: flex-end; padding: 40px;
-        }
-
-        .section-label { padding: 30px 40px 15px; font-size: 22px; font-weight: 800; color: #fff; }
-        .scroller { 
-            display: flex; overflow-x: auto; gap: 20px; padding: 0 40px 20px; 
-            scrollbar-width: none; -ms-overflow-style: none; 
-        }
+        /* Scroller & Cards */
+        .scroller { display: flex; overflow-x: auto; gap: 20px; padding: 0 40px 20px; scrollbar-width: none; }
         .scroller::-webkit-scrollbar { display: none; }
-
-        /* --- CARDS --- */
-        .card { 
-            min-width: 200px; max-width: 200px; background: var(--card-bg); 
-            padding: 15px; border-radius: 16px; transition: 0.3s; cursor: pointer;
-        }
-        .card:hover { transform: translateY(-5px); background: #202020; }
-        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; margin-bottom: 12px; object-fit: cover; background: #222; }
-        .card-title { font-weight: 700; font-size: 14px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card { min-width: 180px; background: var(--card-bg); padding: 12px; border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .card:hover { transform: scale(1.02); background: #1a1a1a; }
+        .card img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; margin-bottom: 10px; object-fit: cover; background: #222; }
+        .card-title { font-weight: 700; font-size: 14px; margin: 0; }
         .card-meta { font-size: 11px; color: #666; margin-top: 4px; }
 
-        /* --- PLAYER OVERLAY --- */
+        /* Overlay */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 2000; display: none; overflow-y: auto; }
-        .track-row { display: flex; justify-content: space-between; padding: 15px 40px; border-bottom: 1px solid #111; transition: 0.2s; font-size: 14px; cursor: default; }
-        .track-row:hover { background: #111; }
+        .track-row { display: flex; justify-content: space-between; padding: 15px 40px; border-bottom: 1px solid #111; font-size: 14px; }
 
         @media (max-width: 768px) {
             .sidebar { display: none; }
             .bottom-nav { display: flex; }
-            .hero { height: 35vh; padding: 20px; }
-            .section-label { padding: 20px; }
-            .scroller { padding: 0 20px 20px; gap: 15px; }
-            .card { min-width: 155px; max-width: 155px; }
+            .scroller { padding: 0 20px 20px; }
+            .hero, .section-label { padding: 20px; }
         }
     </style>
 </head>
@@ -68,58 +47,5 @@
 
     <nav class="sidebar">
         <h2 style="font-size:10px; color:#444; letter-spacing:2px; margin-bottom:40px;">HUB v2.6</h2>
-        <div class="nav-item active" id="pc-nav-music" onclick="switchTab('music')">🏠 Home</div>
-        <div class="nav-item" id="pc-nav-movies" onclick="switchTab('movies')">🎬 Movies</div>
-    </nav>
-
-    <main class="main-view">
-        <section id="music" class="tab-content active">
-            <div class="hero">
-                <div style="background:var(--apple-red); width:fit-content; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:bold; margin-bottom:15px;">TOP ARTIST</div>
-                <h1 style="font-size: clamp(40px, 6vw, 70px); margin: 0;">Kanye West</h1>
-            </div>
-
-            <div class="section-label">Latest & 2026</div>
-            <div class="scroller" id="latest-row"></div>
-
-            <div class="section-label">The Classics</div>
-            <div class="scroller" id="classic-row"></div>
-        </section>
-
-        <section id="movies" class="tab-content">
-            <div style="padding: 60px 40px;">
-                <h1 style="font-size: 48px;">Cinema</h1>
-                <div class="scroller" style="padding: 0;" id="movie-row"></div>
-            </div>
-        </section>
-    </main>
-
-    <nav class="bottom-nav">
-        <div onclick="switchTab('music')">🏠</div>
-        <div onclick="switchTab('movies')">🎬</div>
-    </nav>
-
-    <div id="player" class="overlay">
-        <div style="padding: 30px; position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(15px); border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center;">
-            <span onclick="closePlayer()" style="color:var(--apple-red); font-weight:800; font-size: 18px; cursor:pointer;">✕</span>
-            <span id="player-title-mini" style="font-weight: bold; font-size: 14px;"></span>
-            <div style="width:20px;"></div>
-        </div>
-        <div id="player-header" style="text-align:center; padding: 40px 20px;"></div>
-        <div id="tracklist-container" style="max-width: 800px; margin: 0 auto; padding-bottom: 100px;"></div>
-    </div>
-
-    <script>
-        const albums = [
-            { 
-                title: "BULLY", year: 2026, runtime: "??:??", label: "YZY", cat: "latest",
-                img: "https://raw.githubusercontent.com/playermatrix/assets/main/bully_cover.png",
-                tracks: ["PREACHER MAN", "BEAUTY AND THE BEAST"]
-            },
-            { 
-                title: "The College Dropout", year: 2004, runtime: "76:13", label: "Roc-A-Fella", cat: "classic",
-                img: "https://upload.wikimedia.org/wikipedia/en/a/a3/Kanyewest_collegedropout.jpg",
-                tracks: ["Intro", "We Don't Care", "Graduation Day", "All Falls Down", "I'll Fly Away", "Spaceships", "Jesus Walks", "Never Let Me Down", "Get Em High", "The New Workout Plan", "Slow Jamz", "Breathe In Breathe Out", "School Spirit", "Two Words", "Through The Wire", "Family Business", "Last Call"]
-            },
-            { 
-                title: "Late Registration", year: 2005, runtime: "70:25", label
+        <div class="nav-item active" id="pc-music" onclick="switchTab('music')">🏠 Home</div>
+        <div class="nav-item" id="pc-movies" onclick="switchTab('movies')">🎬 Movies
