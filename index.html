@@ -5,28 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Lucas Music</title>
     <style>
-        :root { --apple-red: #fa2d48; --bg: #000; --card-bg: #1c1c1e; }
+        :root { --apple-red: #fa2d48; --bg: #000; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: #fff; margin: 0; height: 100vh; overflow: hidden; }
 
-        /* Main Layout */
         .app-container { display: flex; height: 100vh; }
         .sidebar { width: 250px; background: #000; padding: 40px 20px; border-right: 1px solid #222; flex-shrink: 0; }
         .main-content { flex: 1; overflow-y: auto; padding-bottom: 150px; }
+        
         .nav-item { padding: 12px; color: #a1a1a1; cursor: pointer; font-size: 17px; font-weight: 600; }
         .nav-item.active { color: var(--apple-red); }
 
-        /* Grid */
         .hero { height: 35vh; background: linear-gradient(transparent, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_banner_edited.jpg') center/cover; display: flex; align-items: flex-end; padding: 40px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; padding: 20px 40px; }
         .album-card { cursor: pointer; text-align: center; }
         .album-card img { width: 100%; aspect-ratio: 1/1; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
 
-        /* Overlays */
         .overlay { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; overflow-y: auto; padding: 40px 20px; }
         .track-row { display: flex; align-items: center; padding: 15px; border-radius: 10px; cursor: pointer; }
         .track-row:active { background: #1c1c1e; }
 
-        /* SLIDE-UP PLAYER */
         #full-player { 
-            position: fixed; bottom: -100%; left: 0; width
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 100%; 
+            background: #0a0a0a; z-index: 3000; transition: bottom 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex; flex-direction: column; align-items: center; padding: 40px 30px;
+        }
+        #full-player.active { bottom: 0; }
+        .pull-down { width: 40px; height: 5px; background: #333; border-radius: 10px; margin-bottom: 40px; }
+        .large-art { width: 80vw; max-width: 320px; border-radius: 15px; box-shadow: 0 20
