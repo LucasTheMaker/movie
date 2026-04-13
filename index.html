@@ -106,23 +106,20 @@
                 title: "Bully", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
                 tracks: [
                     { name: "King", file: "KING_spotdown.org bully.mp3" },
-                    { name: "This A Must", file: "THIS A MUST_spotdown.org.mp3" },
                     { name: "Father", file: "FATHER (feat. Travis Scott)_spotdown.org.mp3" },
-                    { name: "All The Love", file: "ALL THE LOVE (feat. Andre Troutman)_spotdown.org.mp3" },
                     { name: "Punch Drunk", file: "PUNCH DRUNK_spotdown.org.mp3" },
                     { name: "Whatever Works", file: "WHATEVER WORKS_spotdown.org.mp3" },
-                    { name: "Mama's Favorite", file: "MAMA’S FAVORITE_spotdown.org.mp3" },
+                    { name: "Mama’s Favorite", file: "MAMA’S FAVORITE_spotdown.org.mp3" },
                     { name: "Sisters And Brothers", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
-                    { name: "Bully", file: "BULLY_spotdown.org.mp3" },
+                    { name: "Bully", file: "BULLY (feat. CeeLo Green)_spotdown.org.mp3" },
                     { name: "Highs And Lows", file: "HIGHS AND LOWS_spotdown.org.mp3" },
-                    { name: "I Can't Wait", file: "I CAN'T WAIT_spotdown.org.mp3" },
-                    { name: "White Lines", file: "WHITE LINES_spotdown.org.mp3" },
+                    { name: "I Can’t Wait", file: "I CAN’T WAIT_spotdown.org.mp3" },
+                    { name: "White Lines", file: "WHITE LINES.mp3" },
                     { name: "Circles", file: "CIRCLES (feat. Don Toliver)_spotdown.org.mp3" },
                     { name: "Preacher Man", file: "PREACHER MAN.mp3" },
                     { name: "Beauty And The Beast", file: "BEAUTY AND THE BEAST.mp3" },
                     { name: "Damn", file: "DAMN.mp3" },
-                    { name: "Last Breath", file: "LAST BREATH (feat. Peso Pluma)_spotdown.org.mp3" },
-                    { name: "This One Here", file: "THIS ONE HERE_spotdown.org.mp3" }
+                    { name: "Last Breath", file: "LAST BREATH (feat. Peso Pluma)_spotdown.org.mp3" }
                 ]
             },
             {
@@ -181,7 +178,6 @@
 
         function playSong(idx) {
             curTrack = idx; const track = albums[curAlb].tracks[idx];
-            // ENCODE THE URL TO HANDLE SPACES (Critical for "I Thought About Killing You")
             audio.src = encodeURI(GITHUB_BASE + track.file);
             document.getElementById('f-title').innerText = toTitleCase(track.name);
             document.getElementById('m-title').innerText = toTitleCase(track.name);
@@ -204,6 +200,12 @@
             document.getElementById('m-play-btn').innerText = icon;
         }
 
+        function toggleRepeat() {
+            isRepeating = !isRepeating;
+            audio.loop = isRepeating;
+            document.getElementById('repeat-toggle').style.color = isRepeating ? "#fa2d48" : "#fff";
+        }
+
         function nextTrack() {
             if (curTrack < albums[curAlb].tracks.length - 1) playSong(curTrack + 1);
             else playSong(0);
@@ -211,11 +213,8 @@
 
         function prevTrack() { if (curTrack > 0) playSong(curTrack - 1); }
 
-        function toggleRepeat() {
-            isRepeating = !isRepeating;
-            audio.loop = isRepeating;
-            document.getElementById('repeat-toggle').style.color = isRepeating ? "#fa2d48" : "#fff";
-        }
+        function togglePlayer() { document.getElementById('full-player').classList.toggle('active'); }
+        function closeAlbum() { document.getElementById('album-overlay').style.display = 'none'; }
 
         let touchStartY = 0;
         const fullPlayer = document.getElementById('full-player');
