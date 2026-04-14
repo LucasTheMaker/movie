@@ -9,38 +9,33 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: #fff; margin: 0; padding-bottom: 160px; overflow-x: hidden; }
 
-        header { padding: 60px 25px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: linear-gradient(to bottom, #000 80%, transparent); z-index: 1000; }
+        /* Header with Profile Pic */
+        header { padding: 60px 25px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #000; z-index: 1000; }
         .brand { font-size: 20px; font-weight: 900; color: var(--apple-red); letter-spacing: 1px; }
-        .profile-icon { width: 38px; height: 38px; border-radius: 50%; background: #222; border: 1px solid rgba(255,255,255,0.2); }
+        .profile-icon { width: 38px; height: 38px; border-radius: 50%; background: url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_profile_custom.jpg') center/cover; border: 1px solid rgba(255,255,255,0.2); }
 
         h2 { font-size: 34px; margin: 10px 25px; font-weight: 800; letter-spacing: -1px; }
 
-        .top-picks-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 10px 25px; scroll-snap-type: x mandatory; scrollbar-width: none; }
-        .pick-card { position: relative; flex: 0 0 90%; aspect-ratio: 1/1.1; border-radius: 28px; overflow: hidden; scroll-snap-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6); transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        .pick-card:active { transform: scale(0.96); }
+        .top-picks-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 10px 25px; scrollbar-width: none; }
+        .pick-card { position: relative; flex: 0 0 90%; aspect-ratio: 1/1.1; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
         .pick-card.kanye { background: linear-gradient(to bottom, transparent 40%, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_profile_custom.jpg') center/cover; }
         .pick-card .label { position: absolute; bottom: 25px; left: 25px; }
 
-        .section-label { padding: 30px 25px 10px; font-size: 22px; font-weight: 700; display: flex; justify-content: space-between; }
+        .section-label { padding: 30px 25px 10px; font-size: 22px; font-weight: 700; }
         .recently-grid { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px; scrollbar-width: none; }
-        .recent-item { flex: 0 0 160px; cursor: pointer; transition: transform 0.2s; }
-        .recent-item:active { transform: scale(0.94); }
-        .recent-item img { width: 100%; aspect-ratio: 1/1; border-radius: 16px; box-shadow: 0 10px 20px rgba(0,0,0,0.4); background: #111; }
-        .recent-item p { margin: 10px 0 2px; font-size: 15px; font-weight: 700; }
-        .recent-item span { font-size: 13px; color: #888; }
+        .recent-item { flex: 0 0 160px; cursor: pointer; }
+        .recent-item img { width: 100%; aspect-ratio: 1/1; border-radius: 16px; background: #111; }
 
-        .nav-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; background: var(--glass); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border-radius: 50px; display: flex; justify-content: space-around; padding: 16px; border: 1px solid rgba(255,255,255,0.1); z-index: 5000; box-shadow: 0 20px 50px rgba(0,0,0,0.7); }
-        .nav-item { font-size: 24px; opacity: 0.4; transition: 0.3s; }
-        .nav-item.active { opacity: 1; color: var(--apple-red); transform: scale(1.1); }
+        /* Navigation & Mini Player */
+        .nav-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; background: var(--glass); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-radius: 50px; display: flex; justify-content: space-around; padding: 16px; border: 1px solid rgba(255,255,255,0.1); z-index: 8000; }
+        .nav-item { font-size: 24px; opacity: 0.4; }
+        .nav-item.active { opacity: 1; color: var(--apple-red); }
 
-        .mini-player { position: fixed; bottom: 105px; width: 92%; left: 4%; background: rgba(25,25,25,0.95); backdrop-filter: blur(25px); border-radius: 18px; padding: 12px 18px; display: none; align-items: center; justify-content: space-between; z-index: 4000; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .mini-player { position: fixed; bottom: 105px; width: 92%; left: 4%; background: rgba(25,25,25,0.98); backdrop-filter: blur(25px); border-radius: 18px; padding: 12px 18px; display: none; align-items: center; justify-content: space-between; z-index: 7500; border: 1px solid rgba(255,255,255,0.1); }
         
         .overlay { position: fixed; inset: 0; background: #000; z-index: 6000; display: none; overflow-y: auto; padding: 60px 25px; }
-        .track-row { display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid #111; font-size: 16px; font-weight: 600; }
-        
-        /* Premium Metadata Styling */
-        .album-footer { margin-top: 40px; padding-bottom: 60px; color: #8e8e93; font-size: 14px; line-height: 1.6; }
-        .album-footer p { margin: 2px 0; }
+        .track-row { display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid #111; font-weight: 600; }
+        .album-footer { margin-top: 40px; padding-bottom: 100px; color: #8e8e93; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -54,11 +49,11 @@
         </div>
     </div>
 
-    <div class="section-label">Recently Played <span style="color:var(--apple-red); font-weight:900;">›</span></div>
+    <div class="section-label">Recently Played</div>
     <div class="recently-grid" id="recent-list"></div>
 
     <div id="album-overlay" class="overlay">
-        <div onclick="closeAlbum()" style="color:var(--apple-red); font-weight:800; margin-bottom:35px; cursor:pointer; font-size: 18px;">✕ Close</div>
+        <div onclick="closeAlbum()" style="color:var(--apple-red); font-weight:800; margin-bottom:35px; cursor:pointer;">✕ Close</div>
         <div id="album-header" style="text-align:center;"></div>
         <div id="track-list" style="margin-top:30px;"></div>
         <div id="album-footer" class="album-footer"></div>
@@ -66,10 +61,10 @@
 
     <div class="mini-player" id="mini-p">
         <div style="display:flex; align-items:center;">
-            <img id="m-art" src="" style="width:44px; border-radius:8px; margin-right:15px; box-shadow: 0 4px 10px rgba(0,0,0,0.4);">
-            <div><div id="m-title" style="font-size:15px; font-weight:800;"></div><div id="m-artist" style="font-size:12px; color:#888; font-weight:500;"></div></div>
+            <img id="m-art" src="" style="width:44px; border-radius:8px; margin-right:15px;">
+            <div><div id="m-title" style="font-size:15px; font-weight:800;"></div><div id="m-artist" style="font-size:12px; color:#888;"></div></div>
         </div>
-        <div onclick="togglePlay()" id="m-play-btn" style="font-size:26px; cursor:pointer; padding: 5px;">⏸</div>
+        <div onclick="togglePlay()" id="m-play-btn" style="font-size:26px; cursor:pointer;">⏸</div>
     </div>
 
     <div class="nav-bar">
@@ -87,39 +82,23 @@
                 title: "BULLY", artist: "Kanye West", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
                 date: "March 28, 2026", info: "18 songs, 42 minutes", copyright: "℗ 2026 YZY/gamma.",
                 tracks: [
-                    { name: "KING", file: "KING_spotdown.org bully.mp3" }, { name: "THIS A MUST", file: "THIS A MUST_spotdown.org.mp3" },
-                    { name: "FATHER", file: "FATHER (feat. Travis Scott)_spotdown.org.mp3" }, { name: "ALL THE LOVE", file: "ALL THE LOVE (feat. Andre Troutman)_spotdown.org.mp3" },
-                    { name: "PUNCH DRUNK", file: "PUNCH DRUNK_spotdown.org.mp3" }, { name: "WHATEVER WORKS", file: "WHATEVER WORKS_spotdown.org.mp3" },
-                    { name: "MAMA’S FAVORITE", file: "MAMA’S FAVORITE_spotdown.org.mp3" }, { name: "SISTERS AND BROTHERS", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
-                    { name: "BULLY", file: "BULLY (feat. CeeLo Green)_spotdown.org.mp3" }, { name: "HIGHS AND LOWS", file: "HIGHS AND LOWS_spotdown.org.mp3" },
-                    { name: "I CAN'T WAIT", file: "I CAN'T WAIT_spotdown.org.mp3" }, { name: "WHITE LINES", file: "WHITE LINES (feat. Andre Troutman)_spotdown.org.mp3" },
-                    { name: "CIRCLES", file: "CIRCLES (feat. Don Toliver)_spotdown.org.mp3" }, { name: "PREACHER MAN", file: "PREACHER MAN.mp3" },
-                    { name: "BEAUTY AND THE BEAST", file: "BEAUTY AND THE BEAST.mp3" }, { name: "DAMN", file: "DAMN.mp3" },
-                    { name: "LAST BREATH", file: "LAST BREATH (feat. Peso Pluma)_spotdown.org.mp3" }, { name: "THIS ONE HERE", file: "THIS ONE HERE_spotdown.org.mp3" }
+                    { name: "KING", file: "KING_spotdown.org bully.mp3" },
+                    { name: "I CAN'T WAIT", file: "I%20CAN'T%20WAIT_spotdown.org.mp3" },
+                    { name: "PREACHER MAN", file: "PREACHER%20MAN.mp3" },
+                    { name: "BEAUTY AND THE BEAST", file: "BEAUTY%20AND%20THE%20BEAST.mp3" }
                 ]
             },
             {
-                title: "VULTURES 1", artist: "¥$, Kanye West & Ty Dolla $ign", img: "https://upload.wikimedia.org/wikipedia/commons/b/b2/Vultures_1_cover.jpg",
+                title: "VULTURES 1", artist: "¥$, Kanye West & Ty Dolla $ign", img: "https://raw.githubusercontent.com/LucasTheMaker/Music/main/Vultures_1_cover.jpg",
                 date: "February 10, 2024", info: "15 songs, 52 minutes", copyright: "℗ 2024 YZY",
-                tracks: [
-                    { name: "STARS", file: "01 STARS.mp3" }, { name: "KEYS TO MY LIFE", file: "02 KEYS TO MY LIFE.mp3" },
-                    { name: "PAID", file: "03 PAID.mp3" }, { name: "TALKING", file: "04 TALKING.mp3" },
-                    { name: "BACK TO ME", file: "05 BACK TO ME.mp3" }, { name: "HOODRAT", file: "06 HOODRAT.mp3" },
-                    { name: "DO IT", file: "07 DO IT.mp3" }, { name: "PAPERWORK", file: "08 PAPERWORK.mp3" },
-                    { name: "BURN", file: "09 BURN.mp3" }, { name: "FUK SUMN", file: "10 FUK SUMN.mp3" },
-                    { name: "VULTURES", file: "11 VULTURES.mp3" }, { name: "CARNIVAL", file: "12 CARNIVAL.mp3" },
-                    { name: "BEG FORGIVENESS", file: "13 BEG FORGIVENESS.mp3" }, { name: "PROBLEMATIC", file: "14 PROBLEMATIC.mp3" },
-                    { name: "KING", file: "15 KING.mp3" }
-                ]
+                tracks: [{ name: "STARS", file: "01%20STARS.mp3" }, { name: "CARNIVAL", file: "12%20CARNIVAL.mp3" }]
             },
             {
                 title: "ye", artist: "Kanye West", img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
                 date: "June 1, 2018", info: "7 songs, 24 minutes", copyright: "℗ 2018 Getting Out Our Dreams II, LLC. Distributed By Def Jam.",
                 tracks: [
-                    { name: "I Thought About Killing You", file: "1. I Thought About Killing You.mp3" }, { name: "Yikes", file: "2. Yikes.mp3" },
-                    { name: "All Mine", file: "3. All Mine.mp3" }, { name: "Wouldn't Leave", file: "4. Wouldn't Leave (feat. PARTYNEXTDOOR).mp3" },
-                    { name: "No Mistakes", file: "5. No Mistakes.mp3" }, { name: "Ghost Town", file: "6. Ghost Town (feat. PARTYNEXTDOOR).mp3" },
-                    { name: "Violent Crimes", file: "7. Violent Crimes.mp3" }
+                    { name: "I Thought About Killing You", file: "1.%20I%20Thought%20About%20Killing%20You.mp3" },
+                    { name: "Ghost Town", file: "6.%20Ghost%20Town%20(feat.%20PARTYNEXTDOOR).mp3" }
                 ]
             }
         ];
@@ -134,15 +113,15 @@
 
         function openAlbum(i) {
             curAlb = i; const alb = albums[i];
-            document.getElementById('album-header').innerHTML = `<img src="${alb.img}" style="width:230px; border-radius:20px; box-shadow:0 30px 60px rgba(0,0,0,0.7);"><h1 style="margin:25px 0 5px; font-weight:900;">${alb.title}</h1><p style="color:var(--apple-red); font-weight:800; font-size:18px;">${alb.artist}</p>`;
-            document.getElementById('track-list').innerHTML = alb.tracks.map((t, idx) => `<div class="track-row" onclick="playSong(${idx})"><span style="width:45px; opacity:0.3; font-weight:900;">${idx+1}</span>${t.name}</div>`).join('');
+            document.getElementById('album-header').innerHTML = `<img src="${alb.img}" style="width:230px; border-radius:20px;"><h1 style="margin:25px 0 5px;">${alb.title}</h1><p style="color:var(--apple-red); font-weight:800;">${alb.artist}</p>`;
+            document.getElementById('track-list').innerHTML = alb.tracks.map((t, idx) => `<div class="track-row" onclick="playSong(${idx})"><span style="width:45px; opacity:0.3;">${idx+1}</span>${t.name}</div>`).join('');
             document.getElementById('album-footer').innerHTML = `<p>${alb.date}</p><p>${alb.info}</p><p>${alb.copyright}</p>`;
             document.getElementById('album-overlay').style.display = 'block';
         }
 
         function playSong(idx) {
             const track = albums[curAlb].tracks[idx];
-            audio.src = GITHUB_BASE + encodeURIComponent(track.file);
+            audio.src = GITHUB_BASE + track.file;
             document.getElementById('m-title').innerText = track.name;
             document.getElementById('m-artist').innerText = albums[curAlb].artist;
             document.getElementById('m-art').src = albums[curAlb].img;
