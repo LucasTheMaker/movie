@@ -1,157 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Goated Music</title>
-    <style>
-        :root { --apple-red: #ff3b30; --bg: #000; --glass: rgba(30, 30, 30, 0.85); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: #fff; margin: 0; padding-bottom: 180px; overflow-x: hidden; }
+<script>
+// =======================
+// 🧠 APP CORE
+// =======================
 
-        header { padding: 60px 25px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; background: #000; z-index: 1000; }
-        .brand { font-size: 20px; font-weight: 900; color: var(--apple-red); letter-spacing: 1px; }
-        .profile-icon { width: 38px; height: 38px; border-radius: 50%; background: url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_profile_custom.jpg') center/cover; border: 1px solid rgba(255,255,255,0.2); }
+const GITHUB_BASE = "https://raw.githubusercontent.com/LucasTheMaker/Music/main/";
+const audio = document.getElementById("audio-core");
 
-        h2 { font-size: 34px; margin: 10px 25px; font-weight: 800; letter-spacing: -1px; }
+// DEVICE DETECTION
+const Device = {
+    isMobile: () => window.innerWidth < 768
+};
 
-        .top-picks-scroll { display: flex; gap: 20px; overflow-x: auto; padding: 10px 25px; scrollbar-width: none; }
-        .pick-card { position: relative; flex: 0 0 90%; aspect-ratio: 1/1.1; border-radius: 28px; overflow: hidden; background: linear-gradient(to bottom, transparent 40%, #000), url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_profile_custom.jpg') center/cover; }
-        .pick-card .label { position: absolute; bottom: 25px; left: 25px; }
+// =======================
+// 🎵 PLAYER ENGINE
+// =======================
 
-        .section-label { padding: 30px 25px 10px; font-size: 22px; font-weight: 700; }
-        .recently-grid { display: flex; gap: 15px; overflow-x: auto; padding: 10px 25px; scrollbar-width: none; }
-        .recent-item { flex: 0 0 160px; cursor: pointer; }
-        .recent-item img { width: 100%; aspect-ratio: 1/1; border-radius: 16px; background: #111; box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+const Player = {
+    state: {
+        currentTrack: null,
+        currentAlbum: null,
+        queue: [],
+        index: 0,
+        isPlaying: false,
+        shuffle: false,
+        repeat: "off" // off | one | all
+    },
 
-        /* FIXED MINI PLAYER VISIBILITY */
-        .mini-player { position: fixed; bottom: 105px; width: 92%; left: 4%; background: rgba(25,25,25,0.98); backdrop-filter: blur(25px); border-radius: 18px; padding: 12px 18px; display: none; align-items: center; justify-content: space-between; z-index: 9999; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
-        
-        .nav-bar { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; background: var(--glass); backdrop-filter: blur(40px); border-radius: 50px; display: flex; justify-content: space-around; padding: 16px; border: 1px solid rgba(255,255,255,0.1); z-index: 9998; }
-        .nav-item { font-size: 24px; opacity: 0.4; }
-        .nav-item.active { opacity: 1; color: var(--apple-red); }
+    getURL(file) {
+        return GITHUB_BASE + encodeURIComponent(file);
+    },
 
-        .overlay { position: fixed; inset: 0; background: #000; z-index: 9000; display: none; overflow-y: auto; padding: 60px 25px; }
-        .track-row { display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid #111; font-weight: 600; cursor: pointer; }
-        .album-footer { margin-top: 40px; padding-bottom: 180px; color: #8e8e93; font-size: 14px; line-height: 1.6; }
-    </style>
-</head>
-<body>
+    play(track, album, index) {
+        audio.pause();
+        audio.currentTime = 0;
 
-    <header><div class="brand">GOATED</div><div class="profile-icon"></div></header>
-    <h2>Listen Now</h2>
+        audio.src = this.getURL(track.file);
 
-    <div class="top-picks-scroll">
-        <div class="pick-card" onclick="openAlbum(0)"><div class="label"><h3 style="font-size:32px; font-weight:900;">Kanye West</h3></div></div>
-    </div>
+        this.state.currentTrack = track;
+        this.state.currentAlbum = album;
+        this.state.index = index;
+        this.state.isPlaying = true;
 
-    <div class="section-label">Recently Played</div>
-    <div class="recently-grid" id="recent-list"></div>
+        audio.play();
+        UI.updateMiniPlayer();
+    },
 
-    <div id="album-overlay" class="overlay">
-        <div onclick="closeAlbum()" style="color:var(--apple-red); font-weight:800; margin-bottom:35px; cursor:pointer; font-size:18px;">✕ Close</div>
-        <div id="album-header" style="text-align:center;"></div>
-        <div id="track-list" style="margin-top:30px;"></div>
-        <div id="album-footer" class="album-footer"></div>
-    </div>
+    toggle() {
+        if (!this.state.currentTrack) return;
 
-    <div class="mini-player" id="mini-p">
-        <div style="display:flex; align-items:center;">
-            <img id="m-art" src="" style="width:44px; height:44px; border-radius:8px; margin-right:15px; object-fit:cover;">
-            <div><div id="m-title" style="font-size:15px; font-weight:800;"></div><div id="m-artist" style="font-size:12px; color:#888;"></div></div>
-        </div>
-        <div onclick="togglePlay()" id="m-play-btn" style="font-size:26px; cursor:pointer;">⏸</div>
-    </div>
-
-    <div class="nav-bar">
-        <div class="nav-item active">🏠</div><div class="nav-item">🧭</div><div class="nav-item">📻</div><div class="nav-item">📚</div>
-    </div>
-
-    <audio id="audio-core"></audio>
-
-    <script>
-        const GITHUB_BASE = "https://raw.githubusercontent.com/LucasTheMaker/Music/main/";
-        const audio = document.getElementById('audio-core');
-        
-        const albums = [
-            {
-                title: "BULLY", artist: "Kanye West", img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
-                date: "March 28, 2026", info: "18 songs, 42 minutes", copyright: "℗ 2026 YZY/gamma.",
-                tracks: [
-                    { name: "KING", file: "KING_spotdown.org bully.mp3" }, { name: "THIS A MUST", file: "THIS A MUST_spotdown.org.mp3" },
-                    { name: "FATHER", file: "FATHER (feat. Travis Scott)_spotdown.org.mp3" }, { name: "ALL THE LOVE", file: "ALL THE LOVE (feat. Andre Troutman)_spotdown.org.mp3" },
-                    { name: "PUNCH DRUNK", file: "PUNCH DRUNK_spotdown.org.mp3" }, { name: "WHATEVER WORKS", file: "WHATEVER WORKS_spotdown.org.mp3" },
-                    { name: "MAMA’S FAVORITE", file: "MAMA’S FAVORITE_spotdown.org.mp3" }, { name: "SISTERS AND BROTHERS", file: "SISTERS AND BROTHERS_spotdown.org.mp3" },
-                    { name: "BULLY", file: "BULLY (feat. CeeLo Green)_spotdown.org.mp3" }, { name: "HIGHS AND LOWS", file: "HIGHS AND LOWS_spotdown.org.mp3" },
-                    { name: "I CAN'T WAIT", file: "I%20CAN'T%20WAIT_spotdown.org.mp3" }, { name: "WHITE LINES", file: "WHITE LINES (feat. Andre Troutman)_spotdown.org.mp3" },
-                    { name: "CIRCLES", file: "CIRCLES (feat. Don Toliver)_spotdown.org.mp3" }, { name: "PREACHER MAN", file: "PREACHER%20MAN.mp3" },
-                    { name: "BEAUTY AND THE BEAST", file: "BEAUTY%20AND%20THE%20BEAST.mp3" }, { name: "DAMN", file: "DAMN.mp3" },
-                    { name: "LAST BREATH", file: "LAST BREATH (feat. Peso Pluma)_spotdown.org.mp3" }, { name: "THIS ONE HERE", file: "THIS ONE HERE_spotdown.org.mp3" }
-                ]
-            },
-            {
-                title: "VULTURES 1", artist: "¥$, Kanye West & Ty Dolla $ign", img: "https://raw.githubusercontent.com/LucasTheMaker/Music/main/Vultures_1_cover.jpg",
-                date: "February 10, 2024", info: "15 songs, 52 minutes", copyright: "℗ 2024 YZY",
-                tracks: [
-                    { name: "STARS", file: "01%20STARS.mp3" }, { name: "KEYS TO MY LIFE", file: "02%20KEYS%20TO%20MY%20LIFE.mp3" },
-                    { name: "PAID", file: "03%20PAID.mp3" }, { name: "TALKING", file: "04%20TALKING.mp3" },
-                    { name: "BACK TO ME", file: "05%20BACK%20TO%20ME.mp3" }, { name: "HOODRAT", file: "06%20HOODRAT.mp3" },
-                    { name: "DO IT", file: "07%20DO%20IT.mp3" }, { name: "PAPERWORK", file: "08%20PAPERWORK.mp3" },
-                    { name: "BURN", file: "09%20BURN.mp3" }, { name: "FUK SUMN", file: "10%20FUK%20SUMN.mp3" },
-                    { name: "VULTURES", file: "11%20VULTURES.mp3" }, { name: "CARNIVAL", file: "12%20CARNIVAL.mp3" },
-                    { name: "BEG FORGIVENESS", file: "13%20BEG%20FORGIVENESS.mp3" }, { name: "PROBLEMATIC", file: "14%20PROBLEMATIC.mp3" },
-                    { name: "KING", file: "15%20KING.mp3" }
-                ]
-            },
-            {
-                title: "ye", artist: "Kanye West", img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
-                date: "June 1, 2018", info: "7 songs, 24 minutes", copyright: "℗ 2018 Getting Out Our Dreams II, LLC. Distributed By Def Jam.",
-                tracks: [
-                    { name: "I Thought About Killing You", file: "1.%20I%20Thought%20About%20Killing%20You.mp3" },
-                    { name: "Yikes", file: "2.%20Yikes.mp3" },
-                    { name: "All Mine", file: "3.%20All%20Mine.mp3" },
-                    { name: "Wouldn't Leave", file: "4.%20Wouldn't%20Leave%20(feat.%20PARTYNEXTDOOR).mp3" },
-                    { name: "No Mistakes", file: "5.%20No%20Mistakes.mp3" },
-                    { name: "Ghost Town", file: "6.%20Ghost%20Town%20(feat.%20PARTYNEXTDOOR).mp3" },
-                    { name: "Violent Crimes", file: "7.%20Violent%20Crimes.mp3" }
-                ]
-            }
-        ];
-
-        let curAlb = 0;
-        function init() {
-            const list = document.getElementById('recent-list');
-            albums.forEach((alb, i) => {
-                list.innerHTML += `<div class="recent-item" onclick="openAlbum(${i})"><img src="${alb.img}"><p>${alb.title}</p><span>${alb.artist}</span></div>`;
-            });
-        }
-
-        function openAlbum(i) {
-            curAlb = i; const alb = albums[i];
-            document.getElementById('album-header').innerHTML = `<img src="${alb.img}" style="width:230px; border-radius:20px; box-shadow:0 30px 60px rgba(0,0,0,0.7);"><h1 style="margin:25px 0 5px; font-weight:900;">${alb.title}</h1><p style="color:var(--apple-red); font-weight:800; font-size:18px;">${alb.artist}</p>`;
-            document.getElementById('track-list').innerHTML = alb.tracks.map((t, idx) => `<div class="track-row" onclick="playSong(${idx})"><span style="width:45px; opacity:0.3; font-weight:900;">${idx+1}</span>${t.name}</div>`).join('');
-            document.getElementById('album-footer').innerHTML = `<p>${alb.date}</p><p>${alb.info}</p><p>${alb.copyright}</p>`;
-            document.getElementById('album-overlay').style.display = 'block';
-        }
-
-        function playSong(idx) {
-            const track = albums[curAlb].tracks[idx];
-            audio.src = GITHUB_BASE + track.file;
-            document.getElementById('m-title').innerText = track.name;
-            document.getElementById('m-artist').innerText = albums[curAlb].artist;
-            document.getElementById('m-art').src = albums[curAlb].img;
-            document.getElementById('mini-p').style.display = 'flex';
+        if (audio.paused) {
             audio.play();
-            document.getElementById('m-play-btn').innerText = "⏸";
+            this.state.isPlaying = true;
+        } else {
+            audio.pause();
+            this.state.isPlaying = false;
         }
 
-        function togglePlay() {
-            if (audio.paused) { audio.play(); document.getElementById('m-play-btn').innerText = "⏸"; }
-            else { audio.pause(); document.getElementById('m-play-btn').innerText = "▶️"; }
+        UI.updateMiniPlayer();
+    },
+
+    next() {
+        const { currentAlbum, index, shuffle } = this.state;
+        if (!currentAlbum) return;
+
+        let nextIndex;
+
+        if (shuffle) {
+            nextIndex = Math.floor(Math.random() * currentAlbum.tracks.length);
+        } else {
+            nextIndex = index + 1;
         }
 
-        function closeAlbum() { document.getElementById('album-overlay').style.display = 'none'; }
-        init();
-    </script>
-</body>
-</html>
+        if (nextIndex >= currentAlbum.tracks.length) {
+            if (this.state.repeat === "all") nextIndex = 0;
+            else return;
+        }
+
+        this.play(currentAlbum.tracks[nextIndex], currentAlbum, nextIndex);
+    }
+};
+
+// AUTO NEXT
+audio.addEventListener("ended", () => {
+    if (Player.state.repeat === "one") {
+        Player.play(
+            Player.state.currentTrack,
+            Player.state.currentAlbum,
+            Player.state.index
+        );
+    } else {
+        Player.next();
+    }
+});
+
+// =======================
+// 🎨 UI SYSTEM
+// =======================
+
+const UI = {
+    updateMiniPlayer() {
+        const { currentTrack, currentAlbum, isPlaying } = Player.state;
+        if (!currentTrack) return;
+
+        document.getElementById("m-title").innerText = currentTrack.name;
+        document.getElementById("m-artist").innerText = currentAlbum.artist;
+        document.getElementById("m-art").src = currentAlbum.img;
+
+        document.getElementById("mini-p").style.display = "flex";
+        document.getElementById("m-play-btn").innerText = isPlaying ? "⏸" : "▶️";
+    },
+
+    openAlbum(i) {
+        App.currentAlbumIndex = i;
+        const alb = App.albums[i];
+
+        document.getElementById("album-header").innerHTML = `
+            <img src="${alb.img}" style="width:230px; border-radius:20px;">
+            <h1>${alb.title}</h1>
+            <p style="color:#ff3b30;">${alb.artist}</p>
+        `;
+
+        document.getElementById("track-list").innerHTML =
+            alb.tracks.map((t, idx) =>
+                `<div class="track-row" onclick="App.play(${idx})">
+                    <span>${idx + 1}</span>${t.name}
+                </div>`
+            ).join("");
+
+        document.getElementById("album-overlay").style.display = "block";
+
+        // MOBILE VS DESKTOP BEHAVIOR
+        if (Device.isMobile()) {
+            document.getElementById("album-overlay").style.transform = "translateY(0)";
+        }
+    },
+
+    closeAlbum() {
+        const overlay = document.getElementById("album-overlay");
+
+        if (Device.isMobile()) {
+            overlay.style.transform = "translateY(100%)";
+            setTimeout(() => overlay.style.display = "none", 300);
+        } else {
+            overlay.style.display = "none";
+        }
+    }
+};
+
+// =======================
+// 📀 APP DATA + CONTROL
+// =======================
+
+const App = {
+    currentAlbumIndex: 0,
+
+    albums: [
+        {
+            title: "BULLY",
+            artist: "Kanye West",
+            img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
+            tracks: [
+                { name: "KING", file: "KING_spotdown.org bully.mp3" },
+                { name: "THIS A MUST", file: "THIS A MUST_spotdown.org.mp3" }
+            ]
+        },
+        {
+            title: "ye",
+            artist: "Kanye West",
+            img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
+            tracks: [
+                { name: "Yikes", file: "2. Yikes.mp3" }
+            ]
+        }
+    ],
+
+    play(idx) {
+        const album = this.albums[this.currentAlbumIndex];
+        Player.play(album.tracks[idx], album, idx);
+    },
+
+    init() {
+        const list = document.getElementById("recent-list");
+
+        this.albums.forEach((alb, i) => {
+            list.innerHTML += `
+                <div class="recent-item" onclick="UI.openAlbum(${i})">
+                    <img src="${alb.img}">
+                    <p>${alb.title}</p>
+                </div>
+            `;
+        });
+    }
+};
+
+// =======================
+// 🎮 GLOBAL HOOKS
+// =======================
+
+function togglePlay() { Player.toggle(); }
+function openAlbum(i) { UI.openAlbum(i); }
+function closeAlbum() { UI.closeAlbum(); }
+
+// =======================
+// 🚀 INIT
+// =======================
+
+App.init();
+</script>
