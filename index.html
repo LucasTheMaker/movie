@@ -3,18 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apple Music Style Kanye</title>
+<title>Apple Music Kanye Fixed</title>
 
 <style>
 body{
 margin:0;
-font-family:-apple-system, BlinkMacSystemFont, Arial;
+font-family:-apple-system, Arial;
 background:#000;
 color:#fff;
 overflow:hidden;
 }
 
-/* PAGES */
 .page{
 display:none;
 height:100vh;
@@ -23,7 +22,7 @@ padding:20px;
 }
 .page.active{display:block;}
 
-/* HOME */
+/* HOME TILE */
 .artistTile{
 width:100%;
 height:220px;
@@ -37,9 +36,9 @@ font-weight:700;
 cursor:pointer;
 }
 
-/* ARTIST HEADER */
+/* HEADER */
 .header{
-height:260px;
+height:220px;
 border-radius:20px;
 background:url('https://upload.wikimedia.org/wikipedia/commons/0/0e/Kanye_West_at_2019_Met_Gala_%28cropped%29.jpg') center/cover;
 display:flex;
@@ -49,7 +48,7 @@ font-size:28px;
 font-weight:800;
 }
 
-/* ALBUM GRID */
+/* GRID */
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
@@ -66,7 +65,7 @@ cursor:pointer;
 
 .albumCard img{
 width:100%;
-height:140px;
+height:130px;
 object-fit:cover;
 }
 
@@ -75,9 +74,9 @@ padding:10px;
 font-size:14px;
 }
 
-/* TRACK LIST */
+/* TRACKS (FIXED) */
 .track{
-padding:15px;
+padding:18px;
 border-bottom:1px solid #111;
 display:flex;
 justify-content:space-between;
@@ -90,30 +89,38 @@ position:fixed;
 bottom:0;
 left:0;
 width:100%;
-background:rgba(20,20,20,0.9);
-backdrop-filter:blur(20px);
-padding:15px;
+background:rgba(20,20,20,0.95);
+backdrop-filter:blur(25px);
+padding:12px;
 box-sizing:border-box;
 border-top:1px solid rgba(255,255,255,0.1);
 }
 
 #now{
-font-size:14px;
-color:#fff;
+font-size:13px;
+color:#aaa;
+margin-bottom:8px;
 }
 
+/* BUTTON ROW (FIXED APPLE STYLE) */
 .controls{
 display:flex;
 justify-content:space-between;
-margin-top:10px;
+align-items:center;
 }
 
 button{
-background:rgba(255,255,255,0.1);
+background:rgba(255,255,255,0.08);
 border:none;
 color:#fff;
-padding:8px 12px;
-border-radius:10px;
+padding:10px 14px;
+border-radius:12px;
+font-size:16px;
+}
+
+.playBtn{
+transform:scale(1.2);
+background:rgba(255,255,255,0.15);
 }
 </style>
 </head>
@@ -132,9 +139,10 @@ border-radius:10px;
 <!-- PLAYER -->
 <div id="player">
 <div id="now">Nothing playing</div>
+
 <div class="controls">
-<button onclick="prev()">⏮</button>
-<button onclick="toggle()">⏯</button>
+<button onclick="goBack()">⬅</button>
+<button class="playBtn" onclick="togglePlay()">▶</button>
 <button onclick="next()">⏭</button>
 </div>
 </div>
@@ -173,15 +181,22 @@ tracks:[
 // ================= STATE =================
 let currentAlbum=null;
 let currentIndex=0;
+let historyStack=["home"];
 
 // ================= AUDIO =================
 const audio=document.getElementById("audio");
 const now=document.getElementById("now");
 
 // ================= NAV =================
+function showPage(page){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(page).classList.add("active");
+historyStack.push(page);
+}
+
+// HOME
 function showHome(){
-document.getElementById("home").classList.add("active");
-document.getElementById("artist").classList.remove("active");
+showPage("home");
 
 document.getElementById("home").innerHTML=`
 <h2>Browse</h2>
@@ -191,9 +206,9 @@ Kanye West
 `;
 }
 
+// ARTIST
 function openArtist(){
-document.getElementById("home").classList.remove("active");
-document.getElementById("artist").classList.add("active");
+showPage("artist");
 
 document.getElementById("artist").innerHTML=`
 <div class="header">Kanye West</div>
@@ -209,24 +224,25 @@ ${albums.map((a,i)=>`
 `;
 }
 
+// ALBUM (FIXED TRACKLIST)
 function openAlbum(i){
 currentAlbum=albums[i];
-
-document.getElementById("artist").classList.remove("active");
-document.getElementById("album").classList.add("active");
+showPage("album");
 
 document.getElementById("album").innerHTML=`
 <h2>${currentAlbum.name}</h2>
+
 ${currentAlbum.tracks.map((t,x)=>`
-<div class="track" onclick="play(${x})">
+<div class="track" onclick="playTrack(${x})">
 <div>${t.name}</div>
+<div>▶</div>
 </div>
 `).join("")}
 `;
 }
 
 // ================= PLAYER =================
-function play(i){
+function playTrack(i){
 currentIndex=i;
 const t=currentAlbum.tracks[i];
 
@@ -236,23 +252,36 @@ audio.play();
 now.innerText=currentAlbum.name+" - "+t.name;
 }
 
-function toggle(){
-if(audio.paused) audio.play();
-else audio.pause();
+// PLAY / PAUSE (CENTER BUTTON FIXED)
+function togglePlay(){
+if(!audio.src) return;
+
+if(audio.paused){
+audio.play();
+document.querySelector(".playBtn").innerText="⏸";
+}else{
+audio.pause();
+document.querySelector(".playBtn").innerText="▶";
+}
 }
 
+// NEXT
 function next(){
 if(!currentAlbum) return;
+
 currentIndex++;
 if(currentIndex>=currentAlbum.tracks.length) currentIndex=0;
-play(currentIndex);
+playTrack(currentIndex);
 }
 
-function prev(){
-if(!currentAlbum) return;
-currentIndex--;
-if(currentIndex<0) currentIndex=0;
-play(currentIndex);
+// BACK (REAL NAV FIX)
+function goBack(){
+historyStack.pop();
+const last=historyStack.pop() || "home";
+
+if(last==="home") showHome();
+if(last==="artist") openArtist();
+if(last==="album") openArtist();
 }
 
 // ================= INIT =================
