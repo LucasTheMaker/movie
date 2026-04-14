@@ -1,148 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apple Music Kanye Fixed</title>
+<title>Music App</title>
 
 <style>
 body{
 margin:0;
-font-family:-apple-system, Arial;
+font-family:-apple-system;
 background:#000;
 color:#fff;
-overflow:hidden;
 }
 
-.page{
-display:none;
-height:100vh;
-overflow:auto;
-padding:20px;
-}
+.page{display:none;padding:15px;}
 .page.active{display:block;}
 
-/* HOME TILE */
-.artistTile{
-width:100%;
-height:220px;
-border-radius:25px;
-background:url('https://upload.wikimedia.org/wikipedia/commons/0/0e/Kanye_West_at_2019_Met_Gala_%28cropped%29.jpg') center/cover;
-display:flex;
-align-items:flex-end;
-padding:15px;
-font-size:22px;
-font-weight:700;
-cursor:pointer;
+/* HERO */
+.hero{
+height:300px;
+position:relative;
+overflow:hidden;
 }
-
-/* HEADER */
-.header{
-height:220px;
-border-radius:20px;
-background:url('https://upload.wikimedia.org/wikipedia/commons/0/0e/Kanye_West_at_2019_Met_Gala_%28cropped%29.jpg') center/cover;
-display:flex;
-align-items:flex-end;
-padding:20px;
-font-size:28px;
+.hero img{
+width:100%;
+height:100%;
+object-fit:cover;
+filter:brightness(0.7);
+}
+.hero::after{
+content:"";
+position:absolute;
+bottom:0;
+width:100%;
+height:100px;
+background:linear-gradient(transparent,#000);
+}
+.heroName{
+position:absolute;
+bottom:20px;
+left:15px;
+font-size:30px;
 font-weight:800;
 }
 
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:15px;
-margin-top:20px;
-}
-
-.albumCard{
-background:#111;
-border-radius:15px;
-overflow:hidden;
-cursor:pointer;
-}
-
-.albumCard img{
-width:100%;
-height:130px;
-object-fit:cover;
-}
-
-.albumCard div{
-padding:10px;
-font-size:14px;
-}
-
-/* TRACKS (FIXED) */
-.track{
-padding:18px;
-border-bottom:1px solid #111;
+/* SCROLL ROW */
+.row{
 display:flex;
-justify-content:space-between;
+gap:12px;
+overflow-x:auto;
+}
+
+.card{
+min-width:140px;
 cursor:pointer;
+}
+.card img{
+width:140px;
+height:140px;
+border-radius:12px;
+}
+
+/* SONG LIST */
+.song{
+display:flex;
+align-items:center;
+gap:10px;
+padding:12px 0;
+border-bottom:1px solid #111;
+cursor:pointer;
+}
+.song img{
+width:45px;
+height:45px;
+border-radius:8px;
 }
 
 /* PLAYER */
 #player{
 position:fixed;
-bottom:0;
-left:0;
-width:100%;
-background:rgba(20,20,20,0.95);
-backdrop-filter:blur(25px);
-padding:12px;
-box-sizing:border-box;
-border-top:1px solid rgba(255,255,255,0.1);
-}
-
-#now{
-font-size:13px;
-color:#aaa;
-margin-bottom:8px;
-}
-
-/* BUTTON ROW (FIXED APPLE STYLE) */
-.controls{
+bottom:10px;
+left:10px;
+right:10px;
+background:rgba(40,40,40,0.9);
+border-radius:18px;
+padding:10px;
 display:flex;
-justify-content:space-between;
 align-items:center;
+gap:10px;
 }
 
-button{
-background:rgba(255,255,255,0.08);
+#player img{
+width:45px;
+height:45px;
+border-radius:8px;
+}
+
+.controls button{
+background:none;
 border:none;
 color:#fff;
-padding:10px 14px;
-border-radius:12px;
-font-size:16px;
-}
-
-.playBtn{
-transform:scale(1.2);
-background:rgba(255,255,255,0.15);
+font-size:18px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME -->
 <div id="home" class="page active"></div>
-
-<!-- ARTIST -->
 <div id="artist" class="page"></div>
-
-<!-- ALBUM -->
 <div id="album" class="page"></div>
 
-<!-- PLAYER -->
 <div id="player">
-<div id="now">Nothing playing</div>
-
+<img id="cover">
+<div>
+<div id="title">Nothing playing</div>
+<div style="color:#aaa;font-size:12px;">Kanye West</div>
+</div>
 <div class="controls">
-<button onclick="goBack()">⬅</button>
-<button class="playBtn" onclick="togglePlay()">▶</button>
+<button onclick="togglePlay()">⏯</button>
 <button onclick="next()">⏭</button>
 </div>
 </div>
@@ -151,141 +126,120 @@ background:rgba(255,255,255,0.15);
 
 <script>
 
-// ================= DATA =================
-const albums = [
-{
+// DATA
+const albums=[{
 name:"BULLY",
 img:"https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
 tracks:[
-{name:"KING",file:"KING_spotdown.org bully.mp3"},
-{name:"THIS A MUST",file:"THIS A MUST_spotdown.org.mp3"}
+{name:"KING",file:"music/king.mp3"},
+{name:"THIS A MUST",file:"music/this_a_must.mp3"},
+{name:"FATHER",file:"music/father.mp3"},
+{name:"ALL THE LOVE",file:"music/all_the_love.mp3"},
+{name:"PUNCH DRUNK",file:"music/punch_drunk.mp3"}
 ]
-},
-{
-name:"ye",
-img:"https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
-tracks:[
-{name:"Yikes",file:"2. Yikes.mp3"}
-]
-},
-{
-name:"VULTURES 1",
-img:"https://upload.wikimedia.org/wikipedia/en/6/6b/Vultures_1_cover.jpg",
-tracks:[
-{name:"STARS",file:"STARS.mp3"},
-{name:"CARNIVAL",file:"CARNIVAL.mp3"}
-]
-}
-];
+}];
 
-// ================= STATE =================
 let currentAlbum=null;
 let currentIndex=0;
-let historyStack=["home"];
 
-// ================= AUDIO =================
 const audio=document.getElementById("audio");
-const now=document.getElementById("now");
 
-// ================= NAV =================
-function showPage(page){
+// NAV
+function show(page){
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
 document.getElementById(page).classList.add("active");
-historyStack.push(page);
 }
 
 // HOME
-function showHome(){
-showPage("home");
+function home(){
+show("home");
+home.innerHTML=`
+<h1>Home</h1>
 
-document.getElementById("home").innerHTML=`
-<h2>Browse</h2>
-<div class="artistTile" onclick="openArtist()">
-Kanye West
+<h2>Artists</h2>
+<div class="row">
+<div class="card" onclick="artistPage()">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Kanye_West_at_2019_Met_Gala_%28cropped%29.jpg">
+<div>Kanye West</div>
+</div>
+</div>
+
+<h2>Albums</h2>
+<div class="row">
+${albums.map((a,i)=>`
+<div class="card" onclick="openAlbum(${i})">
+<img src="${a.img}">
+<div>${a.name}</div>
+</div>`).join("")}
 </div>
 `;
 }
 
 // ARTIST
-function openArtist(){
-showPage("artist");
+function artistPage(){
+show("artist");
 
-document.getElementById("artist").innerHTML=`
-<div class="header">Kanye West</div>
+const a=albums[0];
 
-<div class="grid">
-${albums.map((a,i)=>`
-<div class="albumCard" onclick="openAlbum(${i})">
+artist.innerHTML=`
+<div class="hero">
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Kanye_West_at_2019_Met_Gala_%28cropped%29.jpg">
+<div class="heroName">Kanye West</div>
+</div>
+
+<h2>Top Songs</h2>
+
+${a.tracks.map((t,i)=>`
+<div class="song" onclick="currentAlbum=albums[0]; play(${i})">
 <img src="${a.img}">
-<div>${a.name}</div>
+<div>${t.name}</div>
 </div>
 `).join("")}
-</div>
 `;
 }
 
-// ALBUM (FIXED TRACKLIST)
+// ALBUM
 function openAlbum(i){
 currentAlbum=albums[i];
-showPage("album");
+show("album");
 
-document.getElementById("album").innerHTML=`
+album.innerHTML=`
 <h2>${currentAlbum.name}</h2>
 
-${currentAlbum.tracks.map((t,x)=>`
-<div class="track" onclick="playTrack(${x})">
+${currentAlbum.tracks.map((t,i)=>`
+<div class="song" onclick="play(${i})">
+<img src="${currentAlbum.img}">
 <div>${t.name}</div>
-<div>▶</div>
 </div>
 `).join("")}
 `;
 }
 
-// ================= PLAYER =================
-function playTrack(i){
+// PLAYER
+function play(i){
 currentIndex=i;
 const t=currentAlbum.tracks[i];
 
 audio.src=t.file;
 audio.play();
 
-now.innerText=currentAlbum.name+" - "+t.name;
+title.innerText=t.name;
+cover.src=currentAlbum.img;
 }
 
-// PLAY / PAUSE (CENTER BUTTON FIXED)
 function togglePlay(){
-if(!audio.src) return;
-
-if(audio.paused){
-audio.play();
-document.querySelector(".playBtn").innerText="⏸";
-}else{
-audio.pause();
-document.querySelector(".playBtn").innerText="▶";
-}
+if(audio.paused) audio.play();
+else audio.pause();
 }
 
-// NEXT
 function next(){
-if(!currentAlbum) return;
-
 currentIndex++;
 if(currentIndex>=currentAlbum.tracks.length) currentIndex=0;
-playTrack(currentIndex);
+play(currentIndex);
 }
 
-// BACK (REAL NAV FIX)
-function goBack(){
-historyStack.pop();
-const last=historyStack.pop() || "home";
-
-if(last==="home") showHome();
-if(last==="artist") openArtist();
-if(last==="album") openArtist();
-}
-
-// ================= INIT =================
-showHome();
+// INIT
+home();
 
 </script>
 
