@@ -1,171 +1,35 @@
+<body>
+
+<div id="home"></div>
+<div id="artist"></div>
+
+<div id="mini">
+  <div>
+    <div id="m-title"></div>
+    <div id="m-artist"></div>
+  </div>
+  <button id="m-btn">▶</button>
+</div>
+
+<div id="full">
+  <h2 id="f-title"></h2>
+  <p id="f-artist"></p>
+  <div id="queue"></div>
+</div>
+
+<audio id="audio"></audio>
+
 <script>
-try {
+window.onload = function(){
 
-const home = document.getElementById("home");
-const artist = document.getElementById("artist");
-const mini = document.getElementById("mini");
-const full = document.getElementById("full");
+document.body.style.background = "#000";
+document.body.style.color = "#fff";
 
-const m_title = document.getElementById("m-title");
-const m_artist = document.getElementById("m-artist");
-const m_btn = document.getElementById("m-btn");
+// quick visible test FIRST
+document.getElementById("home").innerHTML =
+"<h1>APP LOADED</h1><p>If you see this, JS works.</p>";
 
-const f_title = document.getElementById("f-title");
-const f_artist = document.getElementById("f-artist");
-const queue = document.getElementById("queue");
-
-const audio = document.getElementById("audio");
-
-if(!home || !artist || !mini || !full){
-  document.body.innerHTML = "<h1 style='color:red'>Missing HTML elements</h1>";
-  throw new Error("Missing DOM elements");
-}
-
-// ================= DATA =================
-const App = {
-albums:[
-{
-title:"BULLY",
-artist:"Kanye West",
-img:"https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
-tracks:[
-{name:"KING",file:"KING_spotdown.org bully.mp3"},
-{name:"THIS A MUST",file:"THIS A MUST_spotdown.org.mp3"}
-]
-},
-{
-title:"ye",
-artist:"Kanye West",
-img:"https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
-tracks:[
-{name:"Yikes",file:"2. Yikes.mp3"}
-]
-},
-{
-title:"VULTURES 1",
-artist:"Kanye West",
-img:"https://upload.wikimedia.org/wikipedia/en/6/6b/Vultures_1_cover.jpg",
-tracks:[
-{name:"STARS",file:"STARS.mp3"},
-{name:"CARNIVAL",file:"CARNIVAL.mp3"}
-]
-}
-]
 };
-
-// ================= PLAYER =================
-const Player = {
-state:{track:null,album:null,index:0,queue:[],playing:false},
-
-BASE:"https://raw.githubusercontent.com/LucasTheMaker/Music/main/",
-
-url(file){
-return this.BASE + file.split("/").map(encodeURIComponent).join("/");
-},
-
-play(track, album, index){
-Player.state.track = track;
-Player.state.album = album;
-Player.state.index = index;
-Player.state.queue = album.tracks;
-Player.state.playing = true;
-
-audio.src = Player.url(track.file);
-audio.load();
-
-audio.play().catch(e=>{
-console.log("Audio error:", e);
-alert("Audio failed: check file name in GitHub repo");
-});
-
-full.style.display="block";
-UI.render();
-},
-
-toggle(){
-if(!audio.src) return;
-if(audio.paused) audio.play();
-else audio.pause();
-UI.render();
-},
-
-next(){
-let i = Player.state.index + 1;
-if(i >= Player.state.queue.length) i = 0;
-const a = Player.state.album;
-Player.play(a.tracks[i], a, i);
-}
-};
-
-audio.onended = ()=>Player.next();
-
-// ================= UI =================
-const UI = {
-
-init(){
-home.innerHTML = `
-<h2>Listen Now</h2>
-<div class="card" onclick="UI.openArtist()">
-Kanye West Discography
-</div>
-`;
-},
-
-openArtist(){
-home.innerHTML = "";
-artist.innerHTML = App.albums.map((a,i)=>`
-<div class="album" onclick="UI.openAlbum(${i})">
-<img src="${a.img}">
-<div>${a.title}</div>
-</div>
-`).join("");
-},
-
-openAlbum(i){
-artist.innerHTML="";
-const a = App.albums[i];
-
-artist.innerHTML = `
-<h2>${a.title}</h2>
-${a.tracks.map((t,x)=>`
-<div class="album" onclick="window.__play(${i},${x})">
-${t.name}
-</div>
-`).join("")}
-`;
-},
-
-render(){
-const s = Player.state;
-if(!s.track) return;
-
-mini.style.display="flex";
-m_title.innerText=s.track.name;
-m_artist.innerText=s.album.title+" • "+s.album.artist;
-m_btn.innerText=s.playing?"⏸":"▶";
-
-f_title.innerText=s.track.name;
-f_artist.innerText=s.album.title+" • "+s.album.artist;
-
-queue.innerHTML=s.queue.map((t,i)=>`
-<div style="opacity:${i===s.index?1:0.5}">
-${t.name}
-</div>
-`).join("");
-}
-};
-
-// bridge
-window.__play = (i,x)=>{
-const a = App.albums[i];
-Player.play(a.tracks[x], a, x);
-};
-
-UI.init();
-
-} catch(err) {
-document.body.innerHTML =
-"<h1 style='color:red'>JS CRASHED</h1><pre>"+err+"</pre>";
-console.log(err);
-}
 </script>
+
+</body>
