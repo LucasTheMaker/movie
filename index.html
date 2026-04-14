@@ -1,23 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Spotify Style Player</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spotify Swipe Player</title>
 
 <style>
 body{
 margin:0;
-font-family: -apple-system, Arial;
+font-family:-apple-system, Arial;
 background:#000;
 color:#fff;
 overflow:hidden;
 }
 
+/* BACKGROUND BLUR */
+#bg{
+position:fixed;
+inset:0;
+background-size:cover;
+background-position:center;
+filter:blur(30px) brightness(0.4);
+transform:scale(1.2);
+z-index:-1;
+transition:0.4s;
+}
+
+/* HOME */
 .page{display:none;padding:20px;}
 .page.active{display:block;}
 
-/* HOME */
 .card{
 height:200px;
 border-radius:20px;
@@ -28,78 +40,122 @@ padding:15px;
 font-size:22px;
 font-weight:700;
 cursor:pointer;
+margin-bottom:10px;
 }
 
-/* ALBUM */
+/* TRACK LIST */
 .track{
 padding:15px;
 border-bottom:1px solid #111;
-cursor:pointer;
 display:flex;
 justify-content:space-between;
+cursor:pointer;
 }
 
-/* PLAYER */
+/* PLAYER (MINI) */
 #player{
 position:fixed;
 bottom:0;
 left:0;
 width:100%;
-background:#111;
+background:rgba(20,20,20,0.6);
+backdrop-filter:blur(20px);
 padding:15px;
 box-sizing:border-box;
+border-top:1px solid rgba(255,255,255,0.1);
+transition:0.3s;
 }
 
-#progress{
-width:100%;
-}
-
-.controls{
-display:flex;
-justify-content:space-between;
+/* FULL PLAYER */
+#fullPlayer{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.7);
+backdrop-filter:blur(30px);
+display:none;
+flex-direction:column;
+justify-content:center;
 align-items:center;
-margin-top:10px;
+transition:0.3s;
 }
 
-button{
-background:#222;
-border:none;
-color:#fff;
-padding:8px 12px;
-border-radius:10px;
+#art{
+width:250px;
+height:250px;
+border-radius:20px;
+background-size:cover;
+background-position:center;
+box-shadow:0 20px 60px rgba(0,0,0,0.6);
+}
+
+#title{
+margin-top:20px;
+font-size:22px;
+font-weight:700;
 }
 
 .small{
-font-size:12px;
 color:#aaa;
+font-size:12px;
+}
+
+/* CONTROLS */
+.controls{
+display:flex;
+gap:10px;
+margin-top:20px;
+}
+
+button{
+background:rgba(255,255,255,0.1);
+border:none;
+color:#fff;
+padding:10px 14px;
+border-radius:12px;
+backdrop-filter:blur(10px);
+}
+
+input[type=range]{
+width:80%;
+}
+
+/* SWIPE AREA */
+#swipeArea{
+position:absolute;
+inset:0;
 }
 </style>
 </head>
 
 <body>
 
-<!-- PAGES -->
-<div id="home" class="page active"></div>
-<div id="albumPage" class="page"></div>
+<div id="bg"></div>
 
-<!-- PLAYER -->
+<!-- HOME -->
+<div id="home" class="page active"></div>
+<div id="album" class="page"></div>
+
+<!-- MINI PLAYER -->
 <div id="player">
 <div id="now">Nothing playing</div>
+</div>
+
+<!-- FULL PLAYER -->
+<div id="fullPlayer">
+<div id="swipeArea"></div>
+
+<div id="art"></div>
+<div id="title"></div>
+<div id="subtitle" class="small"></div>
+
+<div class="controls">
+<button onclick="prev()">⏮</button>
+<button onclick="togglePlay()">⏯</button>
+<button onclick="next()">⏭</button>
+</div>
 
 <input id="progress" type="range" min="0" max="100" value="0">
-
-<div class="controls">
-<button onclick="togglePlay()">⏯</button>
-<button onclick="prev()">⏮</button>
-<button onclick="next()">⏭</button>
-<button onclick="toggleShuffle()">🔀</button>
-<button onclick="toggleRepeat()">🔁</button>
-<button onclick="toggleFav()">❤️</button>
-</div>
-
-<div class="controls">
 <input id="volume" type="range" min="0" max="1" step="0.01" value="1">
-</div>
 </div>
 
 <audio id="audio"></audio>
@@ -111,84 +167,88 @@ const albums = [
 {
 name:"BULLY",
 artist:"Kanye West",
+img:"https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
 tracks:[
-{name:"KING", file:"KING_spotdown.org bully.mp3"},
-{name:"THIS A MUST", file:"THIS A MUST_spotdown.org.mp3"}
+{name:"KING",file:"KING_spotdown.org bully.mp3"},
+{name:"THIS A MUST",file:"THIS A MUST_spotdown.org.mp3"}
 ]
 },
 {
 name:"ye",
 artist:"Kanye West",
+img:"https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
 tracks:[
-{name:"Yikes", file:"2. Yikes.mp3"}
+{name:"Yikes",file:"2. Yikes.mp3"}
 ]
 },
 {
 name:"VULTURES 1",
 artist:"Kanye West",
+img:"https://upload.wikimedia.org/wikipedia/en/6/6b/Vultures_1_cover.jpg",
 tracks:[
-{name:"STARS", file:"STARS.mp3"},
-{name:"CARNIVAL", file:"CARNIVAL.mp3"}
+{name:"STARS",file:"STARS.mp3"},
+{name:"CARNIVAL",file:"CARNIVAL.mp3"}
 ]
 }
 ];
 
 // ================= STATE =================
-let currentAlbum = null;
-let currentIndex = 0;
-let isShuffle = false;
-let repeat = false;
-
-let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
+let currentAlbum=null;
+let currentIndex=0;
 
 // ================= AUDIO =================
-const audio = document.getElementById("audio");
-const now = document.getElementById("now");
-const progress = document.getElementById("progress");
-const volume = document.getElementById("volume");
+const audio=document.getElementById("audio");
+const bg=document.getElementById("bg");
+const full=document.getElementById("fullPlayer");
+const art=document.getElementById("art");
+const title=document.getElementById("title");
+const subtitle=document.getElementById("subtitle");
+const now=document.getElementById("now");
 
 // ================= NAV =================
 function showHome(){
 document.getElementById("home").classList.add("active");
-document.getElementById("albumPage").classList.remove("active");
+document.getElementById("album").classList.remove("active");
 
-let html = `<h2>Albums</h2>`;
-albums.forEach((a,i)=>{
-html += `<div class="card" onclick="openAlbum(${i})">${a.name}</div>`;
-});
-document.getElementById("home").innerHTML = html;
+document.getElementById("home").innerHTML=
+"<h2>Albums</h2>" +
+albums.map((a,i)=>
+`<div class="card" onclick="openAlbum(${i})">${a.name}</div>`
+).join("");
 }
 
 function openAlbum(i){
-currentAlbum = albums[i];
+currentAlbum=albums[i];
+
 document.getElementById("home").classList.remove("active");
-document.getElementById("albumPage").classList.add("active");
+document.getElementById("album").classList.add("active");
 
-let html = `<h2>${currentAlbum.name}</h2>`;
-
-currentAlbum.tracks.forEach((t,i)=>{
-html += `
-<div class="track" onclick="play(${i})">
+document.getElementById("album").innerHTML=
+"<h2>"+currentAlbum.name+"</h2>" +
+currentAlbum.tracks.map((t,x)=>
+`<div class="track" onclick="play(${x})">
 <div>${t.name}</div>
-<div onclick="event.stopPropagation(); toggleFavTrack('${t.name}')">
-${favorites.includes(t.name) ? "❤️" : "🤍"}
-</div>
-</div>
-`;
-});
-
-document.getElementById("albumPage").innerHTML = html;
+</div>`
+).join("");
 }
 
 // ================= PLAYER =================
 function play(i){
-currentIndex = i;
-const t = currentAlbum.tracks[i];
+currentIndex=i;
+const t=currentAlbum.tracks[i];
 
-audio.src = t.file;
+audio.src=t.file;
 audio.play();
 
-now.innerText = currentAlbum.name + " - " + t.name;
+now.innerText=currentAlbum.name+" - "+t.name;
+
+art.style.backgroundImage=`url(${currentAlbum.img})`;
+bg.style.backgroundImage=`url(${currentAlbum.img})`;
+
+title.innerText=t.name;
+subtitle.innerText=currentAlbum.name+" • "+currentAlbum.artist;
+
+full.style.display="flex";
 }
 
 function togglePlay(){
@@ -197,69 +257,69 @@ else audio.pause();
 }
 
 function next(){
-if(!currentAlbum) return;
-
-if(isShuffle){
-currentIndex = Math.floor(Math.random()*currentAlbum.tracks.length);
-}else{
 currentIndex++;
-if(currentIndex >= currentAlbum.tracks.length){
-if(repeat) currentIndex = 0;
-else return;
-}
-}
+if(currentIndex>=currentAlbum.tracks.length) currentIndex=0;
 play(currentIndex);
 }
 
 function prev(){
-if(!currentAlbum) return;
 currentIndex--;
-if(currentIndex < 0) currentIndex = 0;
+if(currentIndex<0) currentIndex=0;
 play(currentIndex);
 }
 
 // ================= CONTROLS =================
-function toggleShuffle(){ isShuffle = !isShuffle; }
-function toggleRepeat(){ repeat = !repeat; }
-
-function toggleFav(){
-if(!currentAlbum) return;
-const t = currentAlbum.tracks[currentIndex].name;
-
-if(favorites.includes(t)){
-favorites = favorites.filter(f => f !== t);
-}else{
-favorites.push(t);
-}
-
-localStorage.setItem("fav", JSON.stringify(favorites));
-}
-
-// ================= TRACK FAVORITES =================
-function toggleFavTrack(name){
-if(favorites.includes(name)){
-favorites = favorites.filter(f => f !== name);
-}else{
-favorites.push(name);
-}
-localStorage.setItem("fav", JSON.stringify(favorites));
-openAlbum(albums.indexOf(currentAlbum));
-}
-
-// ================= PROGRESS =================
-audio.ontimeupdate = ()=>{
-progress.value = (audio.currentTime / audio.duration) * 100 || 0;
+audio.ontimeupdate=()=>{
+document.getElementById("progress").value=
+(audio.currentTime/audio.duration)*100 || 0;
 };
 
-progress.oninput = ()=>{
-audio.currentTime = (progress.value / 100) * audio.duration;
+document.getElementById("progress").oninput=()=>{
+audio.currentTime=
+(document.getElementById("progress").value/100)*audio.duration;
 };
 
-volume.oninput = ()=>{
-audio.volume = volume.value;
+document.getElementById("volume").oninput=()=>{
+audio.volume=document.getElementById("volume").value;
 };
 
-audio.onended = next;
+// ================= SWIPE =================
+let startY=0,startX=0;
+
+const area=document.getElementById("swipeArea");
+
+area.addEventListener("touchstart",e=>{
+startY=e.touches[0].clientY;
+startX=e.touches[0].clientX;
+});
+
+area.addEventListener("touchend",e=>{
+let endY=e.changedTouches[0].clientY;
+let endX=e.changedTouches[0].clientX;
+
+let diffY=startY-endY;
+let diffX=startX-endX;
+
+// swipe up → full view already
+if(diffY>80){
+full.style.display="flex";
+}
+
+// swipe down → close
+if(diffY<-80){
+full.style.display="none";
+}
+
+// swipe left → next
+if(diffX>80){
+next();
+}
+
+// swipe right → prev
+if(diffX<-80){
+prev();
+}
+});
 
 // ================= INIT =================
 showHome();
