@@ -1,283 +1,196 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Goated Music</title>
-
-<style>
-body{
-margin:0;
-font-family:-apple-system;
-background:#000;
-color:#fff;
-}
-
-/* HOME */
-#home{
-padding:20px;
-}
-
-.card{
-height:220px;
-border-radius:25px;
-background:url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_profile_custom.jpg') center/cover;
-display:flex;
-align-items:flex-end;
-padding:20px;
-font-size:28px;
-font-weight:900;
-cursor:pointer;
-margin-top:20px;
-}
-
-/* ARTIST */
-#artist{
-padding:20px;
-}
-
-.album{
-display:flex;
-gap:15px;
-align-items:center;
-padding:15px;
-border-bottom:1px solid #111;
-cursor:pointer;
-}
-
-.album img{
-width:70px;
-border-radius:12px;
-}
-
-/* MINI PLAYER */
-#mini{
-position:fixed;
-bottom:90px;
-left:5%;
-width:90%;
-background:rgba(30,30,30,0.7);
-backdrop-filter:blur(20px);
-padding:10px;
-border-radius:15px;
-display:none;
-justify-content:space-between;
-align-items:center;
-z-index:9999;
-}
-
-/* FULL PLAYER */
-#full{
-position:fixed;
-inset:0;
-background:#000;
-z-index:10000;
-display:none;
-padding:30px;
-}
-
-/* NAV */
-#nav{
-position:fixed;
-bottom:20px;
-width:90%;
-left:5%;
-background:rgba(30,30,30,0.7);
-padding:15px;
-border-radius:50px;
-text-align:center;
-}
-</style>
-</head>
-
-<body>
-
-<div id="home"></div>
-<div id="artist"></div>
-
-<!-- MINI PLAYER -->
-<div id="mini">
-<div>
-<div id="m-title"></div>
-<div id="m-artist" style="font-size:12px;color:#aaa;"></div>
-</div>
-<div onclick="Player.toggle()" id="m-btn">▶</div>
-</div>
-
-<!-- FULL PLAYER -->
-<div id="full">
-<h2 id="f-title"></h2>
-<p id="f-artist"></p>
-<div id="queue"></div>
-<button onclick="Player.next()">Next</button>
-<button onclick="Player.toggle()">Play/Pause</button>
-</div>
-
-<div id="nav">Home</div>
-
-<audio id="audio"></audio>
-
 <script>
-// ================= AUDIO =================
-const audio=document.getElementById("audio");
-const BASE="https://raw.githubusercontent.com/LucasTheMaker/Music/main/";
+// ================= ELEMENTS =================
+const home = document.getElementById("home");
+const artist = document.getElementById("artist");
+const mini = document.getElementById("mini");
+const full = document.getElementById("full");
 
-// ================= DATA =================
-const App={
-albums:[
+const m_title = document.getElementById("m-title");
+const m_artist = document.getElementById("m-artist");
+const m_btn = document.getElementById("m-btn");
+
+const f_title = document.getElementById("f-title");
+const f_artist = document.getElementById("f-artist");
+const queue = document.getElementById("queue");
+
+const audio = document.getElementById("audio");
+
+// ================= DATA (EXPANDED TO 3 ALBUMS) =================
+const App = {
+albums: [
 {
-title:"BULLY",
-artist:"Kanye West",
-img:"https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
-tracks:[
-{name:"KING",file:"KING_spotdown.org bully.mp3"},
-{name:"THIS A MUST",file:"THIS A MUST_spotdown.org.mp3"}
+title: "BULLY",
+artist: "Kanye West",
+img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
+tracks: [
+{name: "KING", file: "KING_spotdown.org bully.mp3"},
+{name: "THIS A MUST", file: "THIS A MUST_spotdown.org.mp3"}
 ]
 },
 {
-title:"ye",
-artist:"Kanye West",
-img:"https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
-tracks:[
-{name:"Yikes",file:"2. Yikes.mp3"}
+title: "ye",
+artist: "Kanye West",
+img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
+tracks: [
+{name: "Yikes", file: "2. Yikes.mp3"}
+]
+},
+{
+title: "VULTURES 1",
+artist: "Kanye West",
+img: "https://upload.wikimedia.org/wikipedia/en/6/6b/Vultures_1_cover.jpg",
+tracks: [
+{name: "STARS", file: "STARS.mp3"},
+{name: "CARNIVAL", file: "CARNIVAL.mp3"}
 ]
 }
-],
-currentAlbum:0
+]
 };
 
 // ================= PLAYER =================
-const Player={
-state:{track:null,album:null,index:0,queue:[],playing:false},
+const Player = {
+state: {
+track: null,
+album: null,
+index: 0,
+queue: [],
+playing: false
+},
 
-url(f){return BASE+encodeURIComponent(f);},
+BASE: "https://raw.githubusercontent.com/LucasTheMaker/Music/main/",
 
-play(t,a,i){
-audio.pause();
-audio.currentTime=0;
+// safer file handling (NO SONG CHANGES)
+url(file){
+return this.BASE + file.split("/").map(encodeURIComponent).join("/");
+},
 
-audio.src=this.url(t.file);
+play(track, album, index){
+this.state.track = track;
+this.state.album = album;
+this.state.index = index;
+this.state.queue = album.tracks;
+this.state.playing = true;
 
-this.state.track=t;
-this.state.album=a;
-this.state.index=i;
-this.state.queue=a.tracks;
-this.state.playing=true;
+const src = this.url(track.file);
+console.log("Now playing:", src);
 
-audio.play();
+audio.src = src;
+audio.load();
 
-UI.updateMini();
-UI.updateFull();
+audio.play().catch(err=>{
+console.error("Play failed:", err);
+});
+
+full.style.display = "block";
+
+UI.renderMini();
+UI.renderFull();
 },
 
 toggle(){
-if(audio.paused){audio.play();this.state.playing=true;}
-else{audio.pause();this.state.playing=false;}
-UI.updateMini();
+if(!audio.src) return;
+
+if(audio.paused){
+audio.play();
+this.state.playing = true;
+}else{
+audio.pause();
+this.state.playing = false;
+}
+
+UI.renderMini();
 },
 
 next(){
-let i=this.state.index+1;
-if(i>=this.state.queue.length)i=0;
-this.play(this.state.queue[i],this.state.album,i);
+let i = this.state.index + 1;
+if(i >= this.state.queue.length) i = 0;
+
+this.play(this.state.queue[i], this.state.album, i);
 }
 };
 
-audio.onended=()=>Player.next();
+audio.onended = () => Player.next();
 
 // ================= UI =================
-const UI={
+const UI = {
 
-initHome(){
-home.innerHTML=`
+init(){
+home.innerHTML = `
 <h2>Listen Now</h2>
 <div class="card" onclick="UI.openArtist()">
-Kanye West
+Kanye West Discography
 </div>
 `;
 },
 
 openArtist(){
-home.innerHTML="";
+home.innerHTML = "";
 
-artist.innerHTML=`
+artist.innerHTML = `
 <h2>Kanye West</h2>
 
-<div class="album" onclick="UI.openAlbum(0)">
-<img src="${App.albums[0].img}">
-<div>BULLY</div>
+${App.albums.map((a,i)=>`
+<div class="album" onclick="UI.openAlbum(${i})">
+<img src="${a.img}">
+<div>
+<div>${a.title}</div>
+<div style="font-size:12px;color:#aaa">${a.artist}</div>
 </div>
-
-<div class="album" onclick="UI.openAlbum(1)">
-<img src="${App.albums[1].img}">
-<div>ye</div>
-</div>
-`;
-},
-
-openAlbum(i){
-artist.innerHTML="";
-
-const a=App.albums[i];
-
-artist.innerHTML=`
-<h2>${a.title}</h2>
-${a.tracks.map((t,x)=>`
-<div onclick="App.play(${i},${x})">
-${x+1}. ${t.name}
 </div>
 `).join("")}
 `;
 },
 
-updateMini(){
-const s=Player.state;
-if(!s.track)return;
+openAlbum(i){
+artist.innerHTML = "";
 
-mini.style.display="flex";
-m_title.innerText=s.track.name;
-m_artist.innerText=s.album.artist;
-m_btn.innerText=s.playing?"⏸":"▶";
+const album = App.albums[i];
+
+artist.innerHTML = `
+<h2>${album.title}</h2>
+
+${album.tracks.map((t,x)=>`
+<div class="album" onclick="App.play(${i},${x})">
+<div>${x+1}. ${t.name}</div>
+</div>
+`).join("")}
+`;
 },
 
-updateFull(){
-const s=Player.state;
-if(!s.track)return;
+renderMini(){
+const s = Player.state;
+if(!s.track) return;
 
-f_title.innerText=s.track.name;
-f_artist.innerText=s.album.artist;
+mini.style.display = "flex";
+m_title.innerText = s.track.name;
+m_artist.innerText = `${s.album.title} • ${s.album.artist}`;
+m_btn.innerText = s.playing ? "⏸" : "▶";
+},
 
-queue.innerHTML=s.queue.map((t,i)=>
-`<div style="opacity:${i===s.index?1:.5}">
+renderFull(){
+const s = Player.state;
+if(!s.track) return;
+
+f_title.innerText = s.track.name;
+f_artist.innerText = `${s.album.title} • ${s.album.artist}`;
+
+queue.innerHTML = s.queue.map((t,i)=>`
+<div style="opacity:${i===s.index?1:0.5}">
 ${t.name}
-</div>`
-).join("");
-
-full.style.display="block";
+</div>
+`).join("");
 }
 };
 
-// ================= APP =================
-const AppPlay={
-play(albumIndex,trackIndex){
-const a=App.albums[albumIndex];
-Player.play(a.tracks[trackIndex],a,trackIndex);
+// ================= BRIDGE =================
+window.App = {
+albums: App.albums,
+play(albumIndex, trackIndex){
+const album = App.albums[albumIndex];
+Player.play(album.tracks[trackIndex], album, trackIndex);
 }
 };
 
-// bridge
-function AppPlayProxy(i,x){
-const a=App.albums[i];
-Player.play(a.tracks[x],a,x);
-}
-
-// override clicks
-window.App={play:AppPlayProxy,albums:App.albums};
-
-// ================= INIT =================
-UI.initHome();
-
+// ================= START =================
+UI.init();
 </script>
-
-</body>
-</html>
