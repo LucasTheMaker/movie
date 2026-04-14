@@ -1,176 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Spotify Style Player</title>
+
+<style>
+body{
+margin:0;
+font-family: -apple-system, Arial;
+background:#000;
+color:#fff;
+overflow:hidden;
+}
+
+.page{display:none;padding:20px;}
+.page.active{display:block;}
+
+/* HOME */
+.card{
+height:200px;
+border-radius:20px;
+background:#222;
+display:flex;
+align-items:flex-end;
+padding:15px;
+font-size:22px;
+font-weight:700;
+cursor:pointer;
+}
+
+/* ALBUM */
+.track{
+padding:15px;
+border-bottom:1px solid #111;
+cursor:pointer;
+display:flex;
+justify-content:space-between;
+}
+
+/* PLAYER */
+#player{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#111;
+padding:15px;
+box-sizing:border-box;
+}
+
+#progress{
+width:100%;
+}
+
+.controls{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:10px;
+}
+
+button{
+background:#222;
+border:none;
+color:#fff;
+padding:8px 12px;
+border-radius:10px;
+}
+
+.small{
+font-size:12px;
+color:#aaa;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGES -->
+<div id="home" class="page active"></div>
+<div id="albumPage" class="page"></div>
+
+<!-- PLAYER -->
+<div id="player">
+<div id="now">Nothing playing</div>
+
+<input id="progress" type="range" min="0" max="100" value="0">
+
+<div class="controls">
+<button onclick="togglePlay()">⏯</button>
+<button onclick="prev()">⏮</button>
+<button onclick="next()">⏭</button>
+<button onclick="toggleShuffle()">🔀</button>
+<button onclick="toggleRepeat()">🔁</button>
+<button onclick="toggleFav()">❤️</button>
+</div>
+
+<div class="controls">
+<input id="volume" type="range" min="0" max="1" step="0.01" value="1">
+</div>
+</div>
+
+<audio id="audio"></audio>
+
 <script>
-window.addEventListener("DOMContentLoaded", () => {
 
-// ================= ELEMENTS =================
-const home = document.getElementById("home");
-const artist = document.getElementById("artist");
-const mini = document.getElementById("mini");
-const full = document.getElementById("full");
-
-const m_title = document.getElementById("m-title");
-const m_artist = document.getElementById("m-artist");
-const m_btn = document.getElementById("m-btn");
-
-const f_title = document.getElementById("f-title");
-const f_artist = document.getElementById("f-artist");
-const queue = document.getElementById("queue");
-
-const audio = document.getElementById("audio");
-
-// ================= DATA (UNCHANGED SONGS) =================
-const App = {
-albums: [
+// ================= DATA =================
+const albums = [
 {
-title: "BULLY",
-artist: "Kanye West",
-img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
-tracks: [
-{name: "KING", file: "KING_spotdown.org bully.mp3"},
-{name: "THIS A MUST", file: "THIS A MUST_spotdown.org.mp3"}
+name:"BULLY",
+artist:"Kanye West",
+tracks:[
+{name:"KING", file:"KING_spotdown.org bully.mp3"},
+{name:"THIS A MUST", file:"THIS A MUST_spotdown.org.mp3"}
 ]
 },
 {
-title: "ye",
-artist: "Kanye West",
-img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
-tracks: [
-{name: "Yikes", file: "2. Yikes.mp3"}
+name:"ye",
+artist:"Kanye West",
+tracks:[
+{name:"Yikes", file:"2. Yikes.mp3"}
 ]
 },
 {
-title: "VULTURES 1",
-artist: "Kanye West",
-img: "https://upload.wikimedia.org/wikipedia/en/6/6b/Vultures_1_cover.jpg",
-tracks: [
-{name: "STARS", file: "STARS.mp3"},
-{name: "CARNIVAL", file: "CARNIVAL.mp3"}
+name:"VULTURES 1",
+artist:"Kanye West",
+tracks:[
+{name:"STARS", file:"STARS.mp3"},
+{name:"CARNIVAL", file:"CARNIVAL.mp3"}
 ]
 }
-]
-};
+];
+
+// ================= STATE =================
+let currentAlbum = null;
+let currentIndex = 0;
+let isShuffle = false;
+let repeat = false;
+
+let favorites = JSON.parse(localStorage.getItem("fav") || "[]");
+
+// ================= AUDIO =================
+const audio = document.getElementById("audio");
+const now = document.getElementById("now");
+const progress = document.getElementById("progress");
+const volume = document.getElementById("volume");
+
+// ================= NAV =================
+function showHome(){
+document.getElementById("home").classList.add("active");
+document.getElementById("albumPage").classList.remove("active");
+
+let html = `<h2>Albums</h2>`;
+albums.forEach((a,i)=>{
+html += `<div class="card" onclick="openAlbum(${i})">${a.name}</div>`;
+});
+document.getElementById("home").innerHTML = html;
+}
+
+function openAlbum(i){
+currentAlbum = albums[i];
+document.getElementById("home").classList.remove("active");
+document.getElementById("albumPage").classList.add("active");
+
+let html = `<h2>${currentAlbum.name}</h2>`;
+
+currentAlbum.tracks.forEach((t,i)=>{
+html += `
+<div class="track" onclick="play(${i})">
+<div>${t.name}</div>
+<div onclick="event.stopPropagation(); toggleFavTrack('${t.name}')">
+${favorites.includes(t.name) ? "❤️" : "🤍"}
+</div>
+</div>
+`;
+});
+
+document.getElementById("albumPage").innerHTML = html;
+}
 
 // ================= PLAYER =================
-const Player = {
-state:{
-track:null,
-album:null,
-index:0,
-queue:[],
-playing:false
-},
+function play(i){
+currentIndex = i;
+const t = currentAlbum.tracks[i];
 
-BASE:"https://raw.githubusercontent.com/LucasTheMaker/Music/main/",
-
-url(file){
-return this.BASE + file.split("/").map(encodeURIComponent).join("/");
-},
-
-play(track, album, index){
-Player.state.track = track;
-Player.state.album = album;
-Player.state.index = index;
-Player.state.queue = album.tracks;
-Player.state.playing = true;
-
-audio.src = this.url(track.file);
-audio.load();
-
-audio.play().catch(e=>{
-console.log("Audio error:", e);
-});
-
-full.style.display = "block";
-UI.render();
-},
-
-toggle(){
-if(!audio.src) return;
-
-if(audio.paused){
+audio.src = t.file;
 audio.play();
-Player.state.playing = true;
+
+now.innerText = currentAlbum.name + " - " + t.name;
+}
+
+function togglePlay(){
+if(audio.paused) audio.play();
+else audio.pause();
+}
+
+function next(){
+if(!currentAlbum) return;
+
+if(isShuffle){
+currentIndex = Math.floor(Math.random()*currentAlbum.tracks.length);
 }else{
-audio.pause();
-Player.state.playing = false;
+currentIndex++;
+if(currentIndex >= currentAlbum.tracks.length){
+if(repeat) currentIndex = 0;
+else return;
+}
+}
+play(currentIndex);
 }
 
-UI.render();
-},
-
-next(){
-let i = Player.state.index + 1;
-if(i >= Player.state.queue.length) i = 0;
-const a = Player.state.album;
-Player.play(a.tracks[i], a, i);
+function prev(){
+if(!currentAlbum) return;
+currentIndex--;
+if(currentIndex < 0) currentIndex = 0;
+play(currentIndex);
 }
-};
 
-audio.onended = ()=>Player.next();
+// ================= CONTROLS =================
+function toggleShuffle(){ isShuffle = !isShuffle; }
+function toggleRepeat(){ repeat = !repeat; }
 
-// ================= UI =================
-const UI = {
+function toggleFav(){
+if(!currentAlbum) return;
+const t = currentAlbum.tracks[currentIndex].name;
 
-init(){
-home.innerHTML = `
-<h2>Listen Now</h2>
-<div class="card" onclick="UI.openArtist()">
-Kanye West Discography
-</div>
-`;
-},
-
-openArtist(){
-home.innerHTML = "";
-artist.innerHTML = App.albums.map((a,i)=>`
-<div class="album" onclick="UI.openAlbum(${i})">
-<img src="${a.img}">
-<div>${a.title}</div>
-</div>
-`).join("");
-},
-
-openAlbum(i){
-artist.innerHTML="";
-const a = App.albums[i];
-
-artist.innerHTML = `
-<h2>${a.title}</h2>
-${a.tracks.map((t,x)=>`
-<div class="album" onclick="window.__play(${i},${x})">
-${t.name}
-</div>
-`).join("")}
-`;
-},
-
-render(){
-const s = Player.state;
-if(!s.track) return;
-
-mini.style.display="flex";
-m_title.innerText=s.track.name;
-m_artist.innerText=s.album.title+" • "+s.album.artist;
-m_btn.innerText=s.playing?"⏸":"▶";
-
-f_title.innerText=s.track.name;
-f_artist.innerText=s.album.title+" • "+s.album.artist;
-
-queue.innerHTML=s.queue.map((t,i)=>`
-<div style="opacity:${i===s.index?1:0.5}">
-${t.name}
-</div>
-`).join("");
+if(favorites.includes(t)){
+favorites = favorites.filter(f => f !== t);
+}else{
+favorites.push(t);
 }
+
+localStorage.setItem("fav", JSON.stringify(favorites));
+}
+
+// ================= TRACK FAVORITES =================
+function toggleFavTrack(name){
+if(favorites.includes(name)){
+favorites = favorites.filter(f => f !== name);
+}else{
+favorites.push(name);
+}
+localStorage.setItem("fav", JSON.stringify(favorites));
+openAlbum(albums.indexOf(currentAlbum));
+}
+
+// ================= PROGRESS =================
+audio.ontimeupdate = ()=>{
+progress.value = (audio.currentTime / audio.duration) * 100 || 0;
 };
 
-// bridge
-window.__play = (i,x)=>{
-const a = App.albums[i];
-Player.play(a.tracks[x], a, x);
+progress.oninput = ()=>{
+audio.currentTime = (progress.value / 100) * audio.duration;
 };
 
-// START APP
-UI.init();
+volume.oninput = ()=>{
+audio.volume = volume.value;
+};
 
-});
+audio.onended = next;
+
+// ================= INIT =================
+showHome();
+
 </script>
+
+</body>
+</html>
