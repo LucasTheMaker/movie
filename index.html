@@ -1,4 +1,6 @@
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+
 // ================= ELEMENTS =================
 const home = document.getElementById("home");
 const artist = document.getElementById("artist");
@@ -15,7 +17,7 @@ const queue = document.getElementById("queue");
 
 const audio = document.getElementById("audio");
 
-// ================= DATA (EXPANDED TO 3 ALBUMS) =================
+// ================= DATA (UNCHANGED SONGS) =================
 const App = {
 albums: [
 {
@@ -49,17 +51,16 @@ tracks: [
 
 // ================= PLAYER =================
 const Player = {
-state: {
-track: null,
-album: null,
-index: 0,
-queue: [],
-playing: false
+state:{
+track:null,
+album:null,
+index:0,
+queue:[],
+playing:false
 },
 
-BASE: "https://raw.githubusercontent.com/LucasTheMaker/Music/main/",
+BASE:"https://raw.githubusercontent.com/LucasTheMaker/Music/main/",
 
-// safer file handling (NO SONG CHANGES)
 url(file){
 return this.BASE + file.split("/").map(encodeURIComponent).join("/");
 },
@@ -71,15 +72,9 @@ this.state.index = index;
 this.state.queue = album.tracks;
 this.state.playing = true;
 
-const src = this.url(track.file);
-console.log("Now playing:", src);
-
-audio.src = src;
+audio.src = this.url(track.file);
 audio.load();
-
-audio.play().catch(err=>{
-console.error("Play failed:", err);
-});
+audio.play().catch(err=>console.log("Play error:", err));
 
 full.style.display = "block";
 
@@ -104,7 +99,6 @@ UI.renderMini();
 next(){
 let i = this.state.index + 1;
 if(i >= this.state.queue.length) i = 0;
-
 this.play(this.state.queue[i], this.state.album, i);
 }
 };
@@ -128,14 +122,10 @@ home.innerHTML = "";
 
 artist.innerHTML = `
 <h2>Kanye West</h2>
-
 ${App.albums.map((a,i)=>`
 <div class="album" onclick="UI.openAlbum(${i})">
 <img src="${a.img}">
-<div>
 <div>${a.title}</div>
-<div style="font-size:12px;color:#aaa">${a.artist}</div>
-</div>
 </div>
 `).join("")}
 `;
@@ -148,7 +138,6 @@ const album = App.albums[i];
 
 artist.innerHTML = `
 <h2>${album.title}</h2>
-
 ${album.tracks.map((t,x)=>`
 <div class="album" onclick="App.play(${i},${x})">
 <div>${x+1}. ${t.name}</div>
@@ -193,4 +182,6 @@ Player.play(album.tracks[trackIndex], album, trackIndex);
 
 // ================= START =================
 UI.init();
+
+});
 </script>
