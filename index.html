@@ -1,209 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goated Music</title>
+
+<style>
+:root {
+    --bg:#000;
+    --glass:rgba(30,30,30,0.7);
+    --red:#ff3b30;
+}
+
+body {
+    margin:0;
+    font-family:-apple-system;
+    background:var(--bg);
+    color:#fff;
+}
+
+/* HEADER */
+header {
+    padding:50px 20px 10px;
+    display:flex;
+    justify-content:space-between;
+}
+
+/* ARTIST CARD */
+.artist-card {
+    margin:20px;
+    height:220px;
+    border-radius:25px;
+    background:url('https://raw.githubusercontent.com/playermatrix/assets/main/ye_profile_custom.jpg') center/cover;
+    display:flex;
+    align-items:flex-end;
+    padding:20px;
+    font-size:28px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+/* ARTIST VIEW */
+#artist-view {
+    display:none;
+    padding:20px;
+}
+
+.album {
+    margin:15px 0;
+    display:flex;
+    gap:15px;
+    cursor:pointer;
+}
+
+.album img {
+    width:80px;
+    border-radius:12px;
+}
+
+/* MINI PLAYER */
+.mini-player {
+    position:fixed;
+    bottom:90px;
+    left:5%;
+    width:90%;
+    background:var(--glass);
+    backdrop-filter:blur(30px);
+    border-radius:15px;
+    padding:10px;
+    display:none;
+    justify-content:space-between;
+    align-items:center;
+    z-index:9999;
+}
+
+/* FULL PLAYER */
+#full-player {
+    position:fixed;
+    inset:0;
+    background:#000;
+    z-index:10000;
+    display:none;
+    transform:translateY(100%);
+    transition:.3s;
+    padding:30px;
+    text-align:center;
+}
+
+/* QUEUE */
+#queue-list {
+    margin-top:20px;
+    text-align:left;
+}
+
+/* NAV */
+.nav {
+    position:fixed;
+    bottom:20px;
+    width:90%;
+    left:5%;
+    background:var(--glass);
+    border-radius:50px;
+    padding:15px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div style="color:#ff3b30;font-weight:900;">GOATED</div>
+</header>
+
+<h2 style="padding:0 20px;">Listen Now</h2>
+
+<!-- ARTIST CARD -->
+<div class="artist-card" onclick="UI.openArtist()">
+Kanye West
+</div>
+
+<!-- ARTIST PAGE -->
+<div id="artist-view"></div>
+
+<!-- MINI PLAYER -->
+<div class="mini-player" id="mini-p">
+<div style="display:flex;align-items:center;">
+<img id="m-art" style="width:40px;border-radius:8px;margin-right:10px;">
+<div>
+<div id="m-title"></div>
+<div id="m-artist" style="font-size:12px;color:#aaa;"></div>
+</div>
+</div>
+<div onclick="event.stopPropagation();togglePlay()" id="m-btn">⏸</div>
+</div>
+
+<!-- FULL PLAYER -->
+<div id="full-player">
+<img id="fp-art" style="width:70%;border-radius:20px;">
+<h2 id="fp-title"></h2>
+<p id="fp-artist"></p>
+
+<div>
+<button onclick="Player.prev()">⏮</button>
+<button onclick="togglePlay()">⏯</button>
+<button onclick="Player.next()">⏭</button>
+</div>
+
+<div id="queue-list"></div>
+</div>
+
+<div class="nav">Home</div>
+
+<audio id="audio-core"></audio>
+
 <script>
-// =======================
-// 🧠 APP CORE
-// =======================
+// ================= CORE =================
+const BASE="https://raw.githubusercontent.com/LucasTheMaker/Music/main/";
+const audio=document.getElementById("audio-core");
 
-const GITHUB_BASE = "https://raw.githubusercontent.com/LucasTheMaker/Music/main/";
-const audio = document.getElementById("audio-core");
+// ================= PLAYER =================
+const Player={
+state:{
+track:null,album:null,index:0,queue:[],
+playing:false,shuffle:false,repeat:"all"
+},
 
-// DEVICE DETECTION
-const Device = {
-    isMobile: () => window.innerWidth < 768
+url(f){return BASE+encodeURIComponent(f);},
+
+play(t,a,i){
+audio.pause();audio.currentTime=0;
+audio.src=this.url(t.file);
+
+this.state.track=t;
+this.state.album=a;
+this.state.index=i;
+this.state.queue=a.tracks;
+this.state.playing=true;
+
+audio.play();
+UI.update();
+},
+
+toggle(){
+if(audio.paused){audio.play();this.state.playing=true;}
+else{audio.pause();this.state.playing=false;}
+UI.update();
+},
+
+next(){
+let i=this.state.shuffle
+?Math.floor(Math.random()*this.state.queue.length)
+:this.state.index+1;
+
+if(i>=this.state.queue.length)i=0;
+this.play(this.state.queue[i],this.state.album,i);
+},
+
+prev(){
+let i=this.state.index-1;
+if(i<0)i=this.state.queue.length-1;
+this.play(this.state.queue[i],this.state.album,i);
+}
 };
 
-// =======================
-// 🎵 PLAYER ENGINE
-// =======================
+audio.onended=()=>Player.next();
 
-const Player = {
-    state: {
-        currentTrack: null,
-        currentAlbum: null,
-        queue: [],
-        index: 0,
-        isPlaying: false,
-        shuffle: false,
-        repeat: "off" // off | one | all
-    },
+// ================= UI =================
+const UI={
+update(){
+const s=Player.state;
+if(!s.track)return;
 
-    getURL(file) {
-        return GITHUB_BASE + encodeURIComponent(file);
-    },
+m_title.innerText=s.track.name;
+m_artist.innerText=s.album.artist;
+m_art.src=s.album.img;
 
-    play(track, album, index) {
-        audio.pause();
-        audio.currentTime = 0;
+mini_p.style.display="flex";
+m_btn.innerText=s.playing?"⏸":"▶";
 
-        audio.src = this.getURL(track.file);
+fp_title.innerText=s.track.name;
+fp_artist.innerText=s.album.artist;
+fp_art.src=s.album.img;
 
-        this.state.currentTrack = track;
-        this.state.currentAlbum = album;
-        this.state.index = index;
-        this.state.isPlaying = true;
+full_player.style.background=
+`linear-gradient(#000a,#000),url(${s.album.img}) center/cover`;
 
-        audio.play();
-        UI.updateMiniPlayer();
-    },
+this.queue();
+},
 
-    toggle() {
-        if (!this.state.currentTrack) return;
+queue(){
+queue_list.innerHTML=Player.state.queue.map((t,i)=>
+`<div style="opacity:${i===Player.state.index?1:.5}">
+${t.name}
+</div>`).join("");
+},
 
-        if (audio.paused) {
-            audio.play();
-            this.state.isPlaying = true;
-        } else {
-            audio.pause();
-            this.state.isPlaying = false;
-        }
+openArtist(){
+artist_view.style.display="block";
+artist_view.innerHTML=App.albums.map((a,i)=>
+`<div class="album" onclick="App.openAlbum(${i})">
+<img src="${a.img}"><div>${a.title}</div>
+</div>`).join("");
+},
 
-        UI.updateMiniPlayer();
-    },
+openAlbum(i){
+App.cur=i;
+const a=App.albums[i];
 
-    next() {
-        const { currentAlbum, index, shuffle } = this.state;
-        if (!currentAlbum) return;
+artist_view.innerHTML=a.tracks.map((t,x)=>
+`<div onclick="App.play(${x})" style="padding:15px;border-bottom:1px solid #111;">
+${x+1}. ${t.name}
+</div>`).join("");
+},
 
-        let nextIndex;
+openPlayer(){
+full_player.style.display="block";
+setTimeout(()=>full_player.style.transform="translateY(0)",10);
+},
 
-        if (shuffle) {
-            nextIndex = Math.floor(Math.random() * currentAlbum.tracks.length);
-        } else {
-            nextIndex = index + 1;
-        }
-
-        if (nextIndex >= currentAlbum.tracks.length) {
-            if (this.state.repeat === "all") nextIndex = 0;
-            else return;
-        }
-
-        this.play(currentAlbum.tracks[nextIndex], currentAlbum, nextIndex);
-    }
+closePlayer(){
+full_player.style.transform="translateY(100%)";
+setTimeout(()=>full_player.style.display="none",300);
+}
 };
 
-// AUTO NEXT
-audio.addEventListener("ended", () => {
-    if (Player.state.repeat === "one") {
-        Player.play(
-            Player.state.currentTrack,
-            Player.state.currentAlbum,
-            Player.state.index
-        );
-    } else {
-        Player.next();
-    }
+// ================= APP =================
+const App={
+cur:0,
+albums:[
+{
+title:"BULLY",
+artist:"Kanye West",
+img:"https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
+tracks:[
+{name:"KING",file:"KING_spotdown.org bully.mp3"},
+{name:"THIS A MUST",file:"THIS A MUST_spotdown.org.mp3"}
+]
+}
+],
+
+play(i){
+const a=this.albums[this.cur];
+Player.play(a.tracks[i],a,i);
+}
+};
+
+// ================= EVENTS =================
+function togglePlay(){Player.toggle();}
+mini_p.onclick=()=>UI.openPlayer();
+
+// swipe down
+let start=0;
+full_player.addEventListener("touchstart",e=>start=e.touches[0].clientY);
+full_player.addEventListener("touchmove",e=>{
+if(e.touches[0].clientY-start>120)UI.closePlayer();
 });
 
-// =======================
-// 🎨 UI SYSTEM
-// =======================
-
-const UI = {
-    updateMiniPlayer() {
-        const { currentTrack, currentAlbum, isPlaying } = Player.state;
-        if (!currentTrack) return;
-
-        document.getElementById("m-title").innerText = currentTrack.name;
-        document.getElementById("m-artist").innerText = currentAlbum.artist;
-        document.getElementById("m-art").src = currentAlbum.img;
-
-        document.getElementById("mini-p").style.display = "flex";
-        document.getElementById("m-play-btn").innerText = isPlaying ? "⏸" : "▶️";
-    },
-
-    openAlbum(i) {
-        App.currentAlbumIndex = i;
-        const alb = App.albums[i];
-
-        document.getElementById("album-header").innerHTML = `
-            <img src="${alb.img}" style="width:230px; border-radius:20px;">
-            <h1>${alb.title}</h1>
-            <p style="color:#ff3b30;">${alb.artist}</p>
-        `;
-
-        document.getElementById("track-list").innerHTML =
-            alb.tracks.map((t, idx) =>
-                `<div class="track-row" onclick="App.play(${idx})">
-                    <span>${idx + 1}</span>${t.name}
-                </div>`
-            ).join("");
-
-        document.getElementById("album-overlay").style.display = "block";
-
-        // MOBILE VS DESKTOP BEHAVIOR
-        if (Device.isMobile()) {
-            document.getElementById("album-overlay").style.transform = "translateY(0)";
-        }
-    },
-
-    closeAlbum() {
-        const overlay = document.getElementById("album-overlay");
-
-        if (Device.isMobile()) {
-            overlay.style.transform = "translateY(100%)";
-            setTimeout(() => overlay.style.display = "none", 300);
-        } else {
-            overlay.style.display = "none";
-        }
-    }
-};
-
-// =======================
-// 📀 APP DATA + CONTROL
-// =======================
-
-const App = {
-    currentAlbumIndex: 0,
-
-    albums: [
-        {
-            title: "BULLY",
-            artist: "Kanye West",
-            img: "https://raw.githubusercontent.com/LucasTheMaker/movie/main/bully_cover.png",
-            tracks: [
-                { name: "KING", file: "KING_spotdown.org bully.mp3" },
-                { name: "THIS A MUST", file: "THIS A MUST_spotdown.org.mp3" }
-            ]
-        },
-        {
-            title: "ye",
-            artist: "Kanye West",
-            img: "https://upload.wikimedia.org/wikipedia/en/7/74/Ye_album_cover.jpg",
-            tracks: [
-                { name: "Yikes", file: "2. Yikes.mp3" }
-            ]
-        }
-    ],
-
-    play(idx) {
-        const album = this.albums[this.currentAlbumIndex];
-        Player.play(album.tracks[idx], album, idx);
-    },
-
-    init() {
-        const list = document.getElementById("recent-list");
-
-        this.albums.forEach((alb, i) => {
-            list.innerHTML += `
-                <div class="recent-item" onclick="UI.openAlbum(${i})">
-                    <img src="${alb.img}">
-                    <p>${alb.title}</p>
-                </div>
-            `;
-        });
-    }
-};
-
-// =======================
-// 🎮 GLOBAL HOOKS
-// =======================
-
-function togglePlay() { Player.toggle(); }
-function openAlbum(i) { UI.openAlbum(i); }
-function closeAlbum() { UI.closeAlbum(); }
-
-// =======================
-// 🚀 INIT
-// =======================
-
-App.init();
 </script>
+
+</body>
+</html>
